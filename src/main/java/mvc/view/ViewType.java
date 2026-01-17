@@ -1,0 +1,21 @@
+package mvc.view;
+
+public enum ViewType {
+    LOG_IN,
+    SIGN_UP,
+    MAIN,
+    ADD_COLLECTION,
+    ADD_ITEM,
+    ADD_RECIPE,
+    PRIVATE_ZONE,
+    SHOW_COLLECTION,
+    SHOW_COLLECTIONS,
+    SHOW_RECIPE,
+    SHOW_ITEM,
+    SHOW_ACCOUNTS,
+    REMOVE,
+    MODIFY_COLLECTION,
+    MODIFY_RECIPE,
+    MODIFY_ITEM,
+    INVENTORY
+}
