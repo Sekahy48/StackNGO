@@ -65,10 +65,8 @@ public abstract class ShowGridDisplayView<T extends GenericDTO> extends Abstract
         scrollPane.setFitToWidth(true);
         scrollPane.setStyle("-fx-background-color: transparent;");
   
-        UIPrefabsFactory.initSideBar(this.sideBar, this.inventoryButton, this.userButton, this.collectionButton, this.splitPane, contentGrid);
-
-        root.getChildren().add(splitPane);
-
+        this.initSidebar(this.contentGrid);
+        
     }
 
     protected Button createElementCard(T dto){

@@ -2,8 +2,10 @@ package mvc.view;
 
 import java.util.Optional;
 
+import creational.UIPrefabsFactory;
 import dataTransportLayer.EventBuffer;
 import identificators.GenericId;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -24,7 +26,7 @@ public abstract class AbstractView {
     protected GenericId parentId;
     protected String parentName;
  
-    protected Button userButton, collectionButton, inventoryButton;
+    protected Button userButton, collectionButton, inventoryButton, itemButton;
 
     protected VBox sideBar;
     protected SplitPane splitPane;
@@ -41,6 +43,7 @@ public abstract class AbstractView {
 
         this.userButton = new Button();
         this.collectionButton = new Button();
+        this.itemButton = new Button();
         this.inventoryButton = new Button();
         this.sideBar = new VBox(10);
         this.splitPane = new SplitPane();
@@ -50,6 +53,8 @@ public abstract class AbstractView {
     public Button getUserButton() { return this.userButton; }
 
     public Button getCollectionButton() { return this.collectionButton; }
+
+    public Button getItemButton() { return this.itemButton; }
 
     public Button getInventoryButton() { return this.inventoryButton; }
 
@@ -101,5 +106,10 @@ public abstract class AbstractView {
 
     public String getParentName(){
         return this.parentName;
+    }
+
+    protected void initSidebar(Node content){
+        UIPrefabsFactory.initSideBar(this.sideBar, this.inventoryButton, this.userButton, this.itemButton, this.collectionButton, this.splitPane, content);
+        root.getChildren().add(splitPane);
     }
 }

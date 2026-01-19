@@ -3,9 +3,11 @@ package mvc.controller.show;
 import java.util.ArrayList;
 import java.util.List;
 
+import command.ICommand;
 import command.screen.RedirectCommand;
 import command.show.ShowCollection;
 import command.show.ShowItem;
+import command.show.ShowItems;
 import dataTransportLayer.EventBuffer;
 import dataTransportLayer.ItemWithCollectionDTO;
 
@@ -33,8 +35,17 @@ public class ShowItemsController extends ShowGridDisplayController<ItemWithColle
         return dto.item.iconPath; // accounts no tienen imagen
     }
 
-    @Override
+    @Override 
     protected RedirectCommand createCommand(ItemWithCollectionDTO dto) {
-        return new RedirectCommand(this.context.getCoreController().getShowItemDataBuffer(), new ShowItem(dto.item.id));
+
+        ICommand back = new RedirectCommand(buffer, new ShowItems());
+
+        ICommand forward = new ShowItem(dto.item.id, back);
+
+        return new RedirectCommand(
+            context.getCoreController().getShowItemDataBuffer(),
+            forward
+        );
     }
+
 }

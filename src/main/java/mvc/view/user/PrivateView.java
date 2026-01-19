@@ -108,14 +108,7 @@ public class PrivateView extends AbstractUserView {
         content.setPadding(new Insets(20));
         content.getChildren().addAll(userBar, separator, actionsColumn);
 
-        UIPrefabsFactory.initSideBar(
-                this.sideBar,
-                this.inventoryButton,
-                this.userButton,
-                this.collectionButton,
-                this.splitPane,
-                content
-        );
+        this.initSidebar(content);
 
         this.root = new VBox();
         this.root.getChildren().add(splitPane);

@@ -7,6 +7,7 @@ import command.modify.screen.ModifyCollectionCommand;
 import command.screen.ChangeScreenCommand;
 import command.screen.ChangeToCommand;
 import command.screen.RedirectCommand;
+import command.show.ShowCollection;
 import command.show.ShowCollections;
 import command.show.ShowItem;
 import command.show.ShowRecipe;
@@ -155,7 +156,7 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
             button.setOnAction(e -> {
                this.buffer.publish(new RedirectCommand(
                        this.context.getCoreController().getShowItemDataBuffer(),
-                       new ShowItem(dto.id)
+                       new ShowItem(dto.id, new RedirectCommand(buffer, new ShowCollection(context.getCurrentCollection())))
                ));
                this.buffer.publish(new ChangeToCommand(ViewType.SHOW_ITEM, dto));
             });

@@ -18,9 +18,9 @@ public class ScreenManager implements IScreenManager {
     // Logo siempre visible
     private final ImageView logoOverlay;
 
-    public ScreenManager(ViewContext viewContext) {
+    public ScreenManager() {
         this.root = new StackPane();
-        this.viewContext = viewContext;
+        this.viewContext = new ViewContext();
 
         // Crear el logo overlay
         Image logo = new Image(getClass().getResource("/images/logo.png").toExternalForm());

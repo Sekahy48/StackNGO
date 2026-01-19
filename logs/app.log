@@ -1431,3 +1431,29 @@
 (2026-01-15 03:38:30)	[INFO] class mvc.controller.show.entry.data.ShowCollectionDataController: El usuario b ha borrado la coleccion con nombre TW3
 (2026-01-15 03:38:32)	[INFO] class mvc.controller.show.entry.data.ShowCollectionDataController: El usuario b ha borrado la coleccion con nombre Satisfactory
 (2026-01-15 03:39:08)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 01:42:31)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 02:50:42)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 03:15:31)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 03:16:58)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 03:17:39)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 03:28:58)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 03:31:48)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 03:50:06)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 03:51:25)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 03:52:57)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 04:02:25)	[ERROR] class mvc.controller.user.LoginController: No existe una cuenta con nombre aa
+(2026-01-18 04:02:28)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 04:04:01)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 05:01:54)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 05:07:54)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 05:11:19)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 05:11:24)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-18 05:11:24)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-18 05:11:24)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-18 05:11:24)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-18 05:11:27)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-18 05:11:27)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-18 05:11:27)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-18 05:12:48)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 05:15:16)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-18 19:49:25)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion

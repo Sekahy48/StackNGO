@@ -31,6 +31,18 @@ public class RuntimeContext {
     private AccountFactory accountFactory;
     private CoreController coreController;
     
+
+
+
+
+
+
+    private SystemContext sysCtx;
+    private DataContext dataCtx;
+    private SessionContext sessionCtx;
+
+    
+
     public RuntimeContext(){
         this.repo = new EntriesRepository(32, null);
         this.daoCollection = new HashMap<DAOType, GenericDAO<? extends GenericDTO, ?>>();
@@ -40,6 +52,52 @@ public class RuntimeContext {
         this.accountFactory = new AccountFactory();
     }
 
+    public void setSystemContext(SystemContext sys){
+        this.sysCtx = sys;
+    }
+
+    public void setDataContext(DataContext data){
+        this.dataCtx = data;
+    }
+
+    public void setSessionContext(SessionContext session){
+        this.sessionCtx = session;
+    }
+
+    public SystemContext getSystemContext(){
+        return this.sysCtx;
+    }
+
+    public DataContext getDataContext(){
+        return this.dataCtx;
+    }
+
+    public SessionContext getSessionContext(){
+        return this.sessionCtx;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
     public void setCurrentCollection(CollectionDTO currentCollection){
         this.currentCollection = currentCollection;
     }

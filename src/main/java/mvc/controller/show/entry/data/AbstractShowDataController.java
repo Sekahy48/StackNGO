@@ -28,6 +28,5 @@ public abstract class AbstractShowDataController<T extends AbstractShowDataView>
     }
 
     public abstract void handleButton();
-
-    protected abstract void goBack();
+ 
 }

@@ -89,7 +89,7 @@ public class ShowItemDataController extends AbstractShowDataController<ShowItemD
         }
     }
 
-    protected void goBack() {
+    /*protected void goBack() {
         CollectionDAO dao = (CollectionDAO) this.context.getDAO(DAOType.COLLECTION);
         CollectionDTO dto = dao.read(this.context.getCurrentCollection().getId());
 
@@ -97,7 +97,7 @@ public class ShowItemDataController extends AbstractShowDataController<ShowItemD
                 this.context.getCoreController().getShowCollectionDataBuffer(),
                 new ShowCollection(dto)
         ));
-    }
+    }*/
 
     public void showItem(Integer id) {
 

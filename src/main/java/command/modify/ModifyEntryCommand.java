@@ -71,7 +71,7 @@ public class ModifyEntryCommand implements ICommand {
         ICommand showCommand;
         switch (modType) {
             case COLLECTION -> showCommand = new ShowCollection(controller.getRuntimeContext().getCollectionById(dto.id));
-            case ITEM -> showCommand = new ShowItem(controller.getRuntimeContext().getItemDTOById(dto.id).id);
+            case ITEM -> showCommand = new ShowItem(controller.getRuntimeContext().getItemDTOById(dto.id).id, null);
             case RECIPE -> showCommand = new ShowRecipe(controller.getRuntimeContext().getRecipeDTOById(dto.id));
             default -> throw new IllegalArgumentException("Tipo desconocido: " + modType);
         }

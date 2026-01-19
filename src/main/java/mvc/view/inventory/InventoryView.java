@@ -218,12 +218,7 @@ public class InventoryView extends AbstractView {
         contentContainer.setBottom(bottomBar);
 
         // Aquí NO hay VBox extra
-        UIPrefabsFactory.initSideBar(this.sideBar,
-                                    this.inventoryButton,
-                                    this.userButton,
-                                    this.collectionButton,
-                                    this.splitPane,
-                                    contentContainer);
+        this.initSidebar(contentContainer);
 
         // Root
         this.root = new VBox();

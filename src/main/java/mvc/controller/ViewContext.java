@@ -1,6 +1,7 @@
 package mvc.controller;
 
 import creational.view.AbstractViewFactory;
+import creational.view.ViewFactory;
 import mvc.view.AbstractView;
 import mvc.view.ViewType;
 
@@ -12,8 +13,8 @@ public class ViewContext {
     private final AbstractViewFactory viewFactory;
     private final Map<ViewType, AbstractView> viewMap;
 
-    public ViewContext(AbstractViewFactory viewFactory) {
-        this.viewFactory = viewFactory;
+    public ViewContext() {
+        this.viewFactory = new ViewFactory();
         this.viewMap = new HashMap<ViewType, AbstractView>();
     }
 

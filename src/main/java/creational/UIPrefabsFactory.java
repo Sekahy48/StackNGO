@@ -221,12 +221,13 @@ public class UIPrefabsFactory {
         return btn;
     }
 
-    public static void initSideBar(VBox sideBar, Button inventoryButton, Button userButton, Button collectionButton, SplitPane splitPane, Node content) {
+    public static void initSideBar(VBox sideBar, Button inventoryButton, Button userButton, Button itemButton,  Button collectionButton, SplitPane splitPane, Node content) {
         int defaultSize = 50;
         sideBar.setAlignment(Pos.TOP_LEFT);
         sideBar.setPadding(new Insets(10));
         sideBar.setMaxWidth(75);
 
+        // Inventory
         ImageView inventoryIcon = new ImageView(new Image("images/inventario.png"));
         inventoryIcon.setFitWidth(defaultSize);
         inventoryIcon.setFitHeight(defaultSize);
@@ -234,6 +235,7 @@ public class UIPrefabsFactory {
         inventoryButton.setGraphic(inventoryIcon);
         inventoryButton.setStyle("-fx-background-color: transparent;");
 
+        // Private zone
         ImageView userIcon = new ImageView(new Image("images/usuario.png"));
         userIcon.setFitWidth(defaultSize);
         userIcon.setFitHeight(defaultSize);
@@ -241,6 +243,7 @@ public class UIPrefabsFactory {
         userButton.setGraphic(userIcon);
         userButton.setStyle("-fx-background-color: transparent;");
 
+        // Collections
         ImageView collectionsIcon = new ImageView(new Image("images/caja.png"));
         collectionsIcon.setFitWidth(defaultSize);
         collectionsIcon.setFitHeight(defaultSize);
@@ -248,7 +251,15 @@ public class UIPrefabsFactory {
         collectionButton.setGraphic(collectionsIcon);
         collectionButton.setStyle("-fx-background-color: transparent;");
 
-        sideBar.getChildren().addAll(userButton, collectionButton, inventoryButton);
+        // Items
+        ImageView itemsIcon = new ImageView(new Image("images/items.png"));
+        itemsIcon.setFitWidth(defaultSize);
+        itemsIcon.setFitHeight(defaultSize);
+
+        itemButton.setGraphic(itemsIcon);
+        itemButton.setStyle("-fx-background-color: transparent;");
+
+        sideBar.getChildren().addAll(userButton, collectionButton, itemButton, inventoryButton);
         sideBar.setStyle("-fx-border-color: black; -fx-border-width: 2;");
         sideBar.setPrefWidth(150);
 
@@ -258,6 +269,7 @@ public class UIPrefabsFactory {
         splitPane.setDividerPositions(0.15);
         VBox.setVgrow(splitPane, Priority.ALWAYS);
     }
+ 
 
     public static Button createGoBackButton(){
         Image icon = new Image("images/volver.png");   // ruta relativa o URL

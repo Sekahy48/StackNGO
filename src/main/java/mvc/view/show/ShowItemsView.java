@@ -1,5 +1,6 @@
 package mvc.view.show;
 
+import creational.ImageUtils;
 import dataTransportLayer.ItemWithCollectionDTO;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -14,10 +15,6 @@ public class ShowItemsView extends ShowGridDisplayView<ItemWithCollectionDTO> {
         super();
     }
 
-    @Override
-    protected void build() {
-
-    }
 
     @Override
     protected Button createElementCard(ItemWithCollectionDTO dto){
@@ -33,7 +30,7 @@ public class ShowItemsView extends ShowGridDisplayView<ItemWithCollectionDTO> {
     private Button createItemCard(String imagePath, String title, String collection) {
         ImageView imageView;
         if (imagePath != null && !imagePath.isEmpty()) {
-            imageView = new ImageView(new Image(imagePath));
+            imageView = new ImageView(ImageUtils.getImage(imagePath));
             imageView.setFitWidth(120);
             imageView.setFitHeight(120);
             imageView.setPreserveRatio(true);

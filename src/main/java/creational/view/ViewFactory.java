@@ -12,6 +12,7 @@ import mvc.view.modify.ItemModifyView;
 import mvc.view.modify.RecipeModifyView;
 import mvc.view.show.ShowAccountsView;
 import mvc.view.show.ShowCollectionsView;
+import mvc.view.show.ShowItemsView;
 import mvc.view.show.entry.data.ShowCollectionDataView;
 import mvc.view.show.entry.data.ShowItemDataView;
 import mvc.view.show.entry.data.ShowRecipeDataView;
@@ -39,6 +40,7 @@ public class ViewFactory implements AbstractViewFactory {
             case SHOW_COLLECTIONS ->  new ShowCollectionsView();
             case SHOW_RECIPE -> new ShowRecipeDataView();
             case SHOW_ITEM -> new ShowItemDataView();
+            case SHOW_ITEMS -> new ShowItemsView();
             case SHOW_ACCOUNTS ->  new ShowAccountsView();
             case MODIFY_COLLECTION -> new CollectionModifyView();
             case MODIFY_RECIPE -> new RecipeModifyView();

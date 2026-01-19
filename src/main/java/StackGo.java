@@ -4,7 +4,10 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import mvc.context.DataContext;
 import mvc.context.RuntimeContext;
+import mvc.context.SessionContext;
+import mvc.context.SystemContext;
 import mvc.controller.CoreController;
 import mvc.controller.ViewContext;
 import mvc.view.ScreenManager;
@@ -15,12 +18,19 @@ public class StackGo extends Application {
     @Override
     public void start(Stage stage) throws Exception { 
 
-        AbstractViewFactory factory = new ViewFactory();
-        ViewContext viewContext = new ViewContext(factory);
-        ScreenManager screenManager = new ScreenManager(viewContext);
+        ScreenManager screenManager = new ScreenManager();
+        DataContext dataContext = new DataContext();
+        SessionContext sessionContext = new SessionContext();
+        CoreController coreController = new CoreController();
+        SystemContext systemContext = new SystemContext(screenManager, coreController);
+
         RuntimeContext runtimeContext = new RuntimeContext();
-        runtimeContext.setScreenManager(screenManager);
-        CoreController coreController = new CoreController(runtimeContext);
+        runtimeContext.setSessionContext(sessionContext);
+        runtimeContext.setSystemContext(systemContext);
+        runtimeContext.setDataContext(dataContext);
+        coreController.setContext(runtimeContext);
+
+ 
 
         Scene scene = new Scene(screenManager.getRoot(), 800, 600);
         screenManager.setScene(scene);
@@ -36,6 +46,7 @@ public class StackGo extends Application {
 
         stage.setScene(scene);
         stage.show();
+        stage.setMaximized(true);
 
     }
 

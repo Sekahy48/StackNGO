@@ -71,7 +71,7 @@ public class PrivateController extends AbstractUserController<PrivateView> {
                 AccountDAO dao = (AccountDAO) this.context.getDAO(DAOType.ACCOUNT);
                 AccountDTO dto = dao.read(a.value());
                 this.buffer.publish(new RedirectCommand(
-                        this.context.getCoreController().getShowAccountsBuffer(),
+                        this.context.getCoreController().getController(ViewType.SHOW_ACCOUNTS).getBuffer(),
                         new ShowAccounts()
                 ));
                 this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_ACCOUNTS));
@@ -101,7 +101,7 @@ public class PrivateController extends AbstractUserController<PrivateView> {
         seeCollectionsButton.setOnAction(
                 e -> {
                     this.buffer.publish(new RedirectCommand(
-                            this.context.getCoreController().getShowCollectionsBuffer(),
+                            this.context.getCoreController().getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
                             new ShowCollections()
                             )
                     );
