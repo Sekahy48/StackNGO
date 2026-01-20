@@ -1,15 +1,14 @@
 package mvc.controller.show;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import command.ICommand;
 import command.screen.RedirectCommand;
-import command.show.ShowCollection;
 import command.show.ShowItem;
 import command.show.ShowItems;
 import dataTransportLayer.EventBuffer;
 import dataTransportLayer.ItemWithCollectionDTO;
+import mvc.view.ViewType;
 
 /**
  * Controlador para la vista de cuentas.
@@ -43,7 +42,7 @@ public class ShowItemsController extends ShowGridDisplayController<ItemWithColle
         ICommand forward = new ShowItem(dto.item.id, back);
 
         return new RedirectCommand(
-            context.getCoreController().getShowItemDataBuffer(),
+            context.getCoreController().getController(ViewType.SHOW_ITEM).getBuffer(),
             forward
         );
     }

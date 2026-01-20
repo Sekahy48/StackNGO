@@ -1,20 +1,18 @@
 package mvc.controller.add;
 
-import command.add.item.AddItemImageCommand;
+import java.io.File;
+
 import command.screen.ChangeScreenCommand;
 import command.screen.RedirectCommand;
 import command.show.ShowCollection;
 import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.EntryDTO;
 import dataTransportLayer.EventBuffer;
-import javafx.scene.control.Button;
 import javafx.stage.FileChooser;
 import mvc.controller.AbstractController;
 import mvc.model.entries.repository.EntryIdGenerator;
 import mvc.view.ViewType;
 import mvc.view.add.AbstractAddView;
-
-import java.io.File;
 
 public abstract class AbstractAddController extends AbstractController<AbstractAddView> {
 
@@ -39,7 +37,7 @@ public abstract class AbstractAddController extends AbstractController<AbstractA
         CollectionDTO dto = this.context.getCurrentCollection();
 
         this.buffer.publish(new RedirectCommand(
-                this.context.getCoreController().getShowCollectionDataBuffer(),
+                this.context.getCoreController().getController(ViewType.SHOW_COLLECTION).getBuffer(),
                 new ShowCollection(dto)
         ));
         this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_COLLECTION));

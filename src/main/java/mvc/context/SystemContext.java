@@ -17,4 +17,14 @@ public class SystemContext implements Context{
     public AbstractView getView(ViewType view){
         return this.screenManager.getView(view);
     }
+
+    // Temporal, TODO quitar
+    public ScreenManager getScreenManager(){
+        return this.screenManager;
+    }
+
+    // Temporal, TODO quitar
+    public CoreController getCoreController(){
+        return this.coreController;
+    }
 }

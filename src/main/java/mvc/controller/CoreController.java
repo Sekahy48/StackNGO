@@ -1,12 +1,10 @@
 package mvc.controller;
   
-import java.lang.ModuleLayer.Controller;
 import java.util.HashMap;
 import java.util.Map;
 
 import dataTransportLayer.EventBuffer;
 import mvc.context.RuntimeContext;
-import mvc.context.SystemContext;
 import mvc.controller.add.AddCollectionController;
 import mvc.controller.add.AddItemController;
 import mvc.controller.add.AddRecipeController;
@@ -17,7 +15,6 @@ import mvc.controller.modify.RecipeModifyController;
 import mvc.controller.show.ShowAccountsController;
 import mvc.controller.show.ShowCollectionsController;
 import mvc.controller.show.ShowItemsController;
-import mvc.controller.show.ShowRecipesController;
 import mvc.controller.show.entry.data.ShowCollectionDataController;
 import mvc.controller.show.entry.data.ShowItemDataController;
 import mvc.controller.show.entry.data.ShowRecipeDataController;
@@ -33,7 +30,10 @@ public class CoreController {
     private final Map<ViewType, AbstractController<?>> controllers = new HashMap<>();
 
 
-    //#endregion
+    public void initControllers(RuntimeContext context){
+        this.context = context;
+        this.initControllers();
+    }
 
     private void initControllers() {
 

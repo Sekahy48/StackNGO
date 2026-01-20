@@ -4,12 +4,9 @@ import command.delete.DeleteItemCommand;
 import command.modify.screen.ModifyItemCommand;
 import command.screen.ChangeScreenCommand;
 import command.screen.RedirectCommand;
-import command.show.ShowCollection;
 import creational.ImageUtils;
-import dataAccessLayer.DAO.CollectionDAO;
 import dataAccessLayer.DAO.DAOType;
 import dataAccessLayer.DAO.ItemDAO;
-import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.EventBuffer;
 import dataTransportLayer.ItemDTO;
 import identificators.EntryId;
@@ -56,7 +53,7 @@ public class ShowItemDataController extends AbstractShowDataController<ShowItemD
         modifyBtn.setOnAction(
                 e -> {
                     this.buffer.publish(new ChangeScreenCommand(ViewType.MODIFY_ITEM));
-                    this.buffer.publish(new RedirectCommand(context.getCoreController().getModifyItemBuffer(),
+                    this.buffer.publish(new RedirectCommand(context.getCoreController().getController(ViewType.MODIFY_ITEM).getBuffer(),
                                                             new ModifyItemCommand(context.getItemDTOById(this.view.getParentId().value()))
                                                             ));
                 }

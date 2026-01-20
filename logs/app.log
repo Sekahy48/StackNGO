@@ -1457,3 +1457,8 @@
 (2026-01-18 05:12:48)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
 (2026-01-18 05:15:16)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
 (2026-01-18 19:49:25)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-20 15:56:15)	[INFO] class mvc.controller.user.SignUpController: El usuario Seka48 ha creado su cuenta correctamente
+(2026-01-20 15:56:30)	[INFO] class mvc.controller.user.LoginController: El usuario Seka48 ha iniciado sesion
+(2026-01-20 15:59:59)	[INFO] class mvc.controller.user.LoginController: El usuario Seka48 ha iniciado sesion
+(2026-01-20 16:01:35)	[INFO] class mvc.controller.user.SignUpController: El usuario a ha creado su cuenta correctamente
+(2026-01-20 16:01:42)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion

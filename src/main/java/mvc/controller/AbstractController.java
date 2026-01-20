@@ -53,7 +53,7 @@ public abstract class AbstractController<T extends AbstractView> implements IObs
 
                 e -> {
                     this.buffer.publish(new RedirectCommand(
-                                    this.context.getCoreController().getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
+                                    this.context.getSystemContext().getCoreController().getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
                                     new ShowCollections()
                                  
                             )

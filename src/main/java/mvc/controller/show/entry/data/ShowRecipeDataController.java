@@ -61,7 +61,7 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
         modifyButton.setOnAction(
                 e -> {
                     this.buffer.publish(new ChangeScreenCommand(ViewType.MODIFY_RECIPE));
-                    this.buffer.publish(new RedirectCommand(context.getCoreController().getModifyRecipeBuffer(),
+                    this.buffer.publish(new RedirectCommand(context.getCoreController().getController(ViewType.MODIFY_RECIPE).getBuffer(),
                                                             new ModifyRecipeCommand(context.getRecipeDTOById(this.view.getParentId().value()))
                                                             ));
                 }
@@ -183,7 +183,7 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
 
     protected void goBack() {
         this.buffer.publish(new RedirectCommand(
-                this.context.getCoreController().getShowCollectionDataBuffer(),
+                this.context.getCoreController().getController(ViewType.SHOW_COLLECTION).getBuffer(),
                 new ShowCollection(this.context.getCurrentCollection())
         ));
     }

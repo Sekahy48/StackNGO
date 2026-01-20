@@ -3,7 +3,6 @@ package mvc.controller.show;
 import java.util.List;
 
 import command.screen.ChangeScreenCommand;
-import command.screen.ChangeToCommand;
 import command.screen.RedirectCommand;
 import command.show.ShowAccounts;
 import command.user.DeleteAccountAdminCommand;
@@ -46,10 +45,10 @@ public class ShowAccountsController extends ShowGridDisplayController<AccountDTO
     protected RedirectCommand createCommand(AccountDTO dto) {
         Account account = context.getAccount(dto.name);
         if (account.getId().equals(this.context.getAccount().getId())) {
-            return new RedirectCommand(this.context.getCoreController().getPrivateBuffer(),
+            return new RedirectCommand(this.context.getCoreController().getController(ViewType.PRIVATE_ZONE).getBuffer(),
                     new DeleteAccountCommand(account));
         }
-        return new RedirectCommand(this.context.getCoreController().getShowAccountsBuffer(),
+        return new RedirectCommand(this.context.getCoreController().getController(ViewType.SHOW_ACCOUNTS).getBuffer(),
                 new DeleteAccountAdminCommand(account));
     }
 

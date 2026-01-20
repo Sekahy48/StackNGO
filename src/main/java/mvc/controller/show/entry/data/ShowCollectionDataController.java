@@ -87,7 +87,7 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
         modifyButton.setOnAction(
                 e -> {
                     this.buffer.publish(new ChangeScreenCommand(ViewType.MODIFY_COLLECTION));
-                    this.buffer.publish(new RedirectCommand(context.getCoreController().getModifyCollectionBuffer(), 
+                    this.buffer.publish(new RedirectCommand(context.getCoreController().getController(ViewType.MODIFY_COLLECTION).getBuffer(), 
                                                             new ModifyCollectionCommand(context.getCurrentCollection())));
                 }
         );
@@ -96,7 +96,7 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
 
     protected void goBack() {
         this.buffer.publish(new RedirectCommand(
-                this.context.getCoreController().getShowCollectionsBuffer(),
+                this.context.getCoreController().getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
                 new ShowCollections()
         ));
         this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_COLLECTIONS));
@@ -155,7 +155,7 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
             Button button = new Button();
             button.setOnAction(e -> {
                this.buffer.publish(new RedirectCommand(
-                       this.context.getCoreController().getShowItemDataBuffer(),
+                       this.context.getCoreController().getController(ViewType.SHOW_ITEM).getBuffer(),
                        new ShowItem(dto.id, new RedirectCommand(buffer, new ShowCollection(context.getCurrentCollection())))
                ));
                this.buffer.publish(new ChangeToCommand(ViewType.SHOW_ITEM, dto));
@@ -169,7 +169,7 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
             Button button = new Button();
             button.setOnAction(e -> {
                 this.buffer.publish(new RedirectCommand(
-                        this.context.getCoreController().getShowRecipeDataBuffer(),
+                        this.context.getCoreController().getController(ViewType.SHOW_RECIPE).getBuffer(),
                         new ShowRecipe(dto)
                 ));
                 this.buffer.publish(new ChangeToCommand(ViewType.SHOW_RECIPE, dto));

@@ -43,13 +43,20 @@ public class RuntimeContext {
 
     
 
-    public RuntimeContext(){
+    public RuntimeContext(DataContext data, SessionContext session, SystemContext system){
         this.repo = new EntriesRepository(32, null);
         this.daoCollection = new HashMap<DAOType, GenericDAO<? extends GenericDTO, ?>>();
 
         this.setDAOs();
         this.entriesFactory = new StandardEntryFactory();
         this.accountFactory = new AccountFactory();
+        this.screenManager = system.getScreenManager();
+        this.coreController = system.getCoreController();
+        //Lo de arriba habra que quitarlo
+
+        this.dataCtx = data;
+        this.sessionCtx = session;
+        this.sysCtx = system;
     }
 
     public void setSystemContext(SystemContext sys){

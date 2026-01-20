@@ -3,11 +3,10 @@ package mvc.controller.show;
 import java.util.List;
 
 import command.screen.RedirectCommand;
-import command.show.ShowCollection;
-import command.show.ShowItem;
 import command.show.ShowRecipe;
 import dataTransportLayer.EventBuffer;
-import dataTransportLayer.RecipeWithCollectionDTO; 
+import dataTransportLayer.RecipeWithCollectionDTO;
+import mvc.view.ViewType; 
 
 /**
  * Controlador para la vista de cuentas.
@@ -36,7 +35,7 @@ public class ShowRecipesController extends ShowGridDisplayController<RecipeWithC
     @Override
     protected RedirectCommand createCommand(RecipeWithCollectionDTO dto) {
         return new RedirectCommand(
-                this.context.getCoreController().getShowRecipeDataBuffer(),
+                this.context.getCoreController().getController(ViewType.SHOW_RECIPE).getBuffer(),
                 new ShowRecipe(dto.recipe));
     }
 }
