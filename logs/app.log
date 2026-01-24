@@ -1462,3 +1462,103 @@
 (2026-01-20 15:59:59)	[INFO] class mvc.controller.user.LoginController: El usuario Seka48 ha iniciado sesion
 (2026-01-20 16:01:35)	[INFO] class mvc.controller.user.SignUpController: El usuario a ha creado su cuenta correctamente
 (2026-01-20 16:01:42)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-20 23:01:29)	[ERROR] class mvc.controller.user.LoginController: No existe una cuenta con nombre a
+(2026-01-20 23:01:38)	[INFO] class mvc.controller.user.SignUpController: El usuario a ha creado su cuenta correctamente
+(2026-01-20 23:01:39)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-20 23:46:35)	[INFO] class mvc.controller.user.SignUpController: El usuario b ha creado su cuenta correctamente
+(2026-01-20 23:46:39)	[INFO] class mvc.controller.user.LoginController: El usuario b ha iniciado sesion
+(2026-01-20 23:48:46)	[INFO] class mvc.controller.add.AddCollectionController: El usuario b ha creado una coleccion con nombre Huevos
+(2026-01-20 23:49:11)	[INFO] class command.modify.ModifyEntryCommand: La coleccion con nombre sas ha sido modificada.
+(2026-01-20 23:49:17)	[INFO] class command.modify.ModifyEntryCommand: La coleccion con nombre Huevos ha sido modificada.
+(2026-01-20 23:49:40)	[INFO] class mvc.controller.add.AddItemController: El usuario b ha creado un item llamado Berserk en la coleccion Huevos
+(2026-01-20 23:50:22)	[INFO] class mvc.controller.add.AddItemController: El usuario b ha creado un item llamado Navidad en la coleccion Huevos
+(2026-01-20 23:50:45)	[INFO] class mvc.controller.add.AddItemController: El usuario b ha creado un item llamado Hueralt en la coleccion Huevos
+(2026-01-20 23:51:16)	[INFO] class mvc.controller.add.AddRecipeController: El usuario b ha creado una receta llamada Hueralt en la coleccion Huevos
+(2026-01-20 23:55:13)	[INFO] class mvc.model.entries.Recipe con id 36: La receta se ha ejecutado correctamente.
+(2026-01-20 23:55:19)	[INFO] class mvc.model.entries.Recipe con id 36: La receta se ha ejecutado correctamente.
+(2026-01-20 23:56:09)	[INFO] class mvc.model.entries.Recipe con id 40: La receta se ha ejecutado correctamente.
+(2026-01-20 23:57:32)	[INFO] class mvc.model.entries.Recipe con id 36: La receta se ha ejecutado correctamente.
+(2026-01-20 23:59:40)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Iron Pickaxe en la coleccion Minecraft ha sido modificada.
+(2026-01-21 00:01:11)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 00:01:12)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 00:01:12)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 00:01:14)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 00:01:14)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 00:01:15)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 00:01:15)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 00:01:15)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 00:01:15)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 00:01:15)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 00:01:15)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 00:01:15)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 00:01:27)	[ERROR] class mvc.controller.user.LoginController: Contraseña incorrecta para el usuario A
+(2026-01-21 00:01:29)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 00:39:23)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 01:45:22)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 01:45:45)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 01:45:59)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Stick en la coleccion Minecraft ha sido modificada.
+(2026-01-21 01:46:00)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 01:46:01)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 01:46:01)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 01:46:02)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 01:46:02)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 01:46:06)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 01:46:06)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 01:56:00)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 01:58:23)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 01:58:24)	[WARNING] class mvc.controller.show.entry.data.ShowItemDataController: goBack sin contexto de navegación
+(2026-01-21 02:03:18)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 02:03:30)	[INFO] class command.modify.ModifyEntryCommand: La receta con nombre Oak Chest en la coleccion Minecraft ha sido modificada.
+(2026-01-21 02:03:40)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Oak Planks en la coleccion Minecraft ha sido modificada.
+(2026-01-21 02:03:48)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Oak Planks en la coleccion Minecraft ha sido modificada.
+(2026-01-21 02:41:07)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 02:41:30)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 02:41:40)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Stick en la coleccion Minecraft ha sido modificada.
+(2026-01-21 02:41:47)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Stick en la coleccion Minecraft ha sido modificada.
+(2026-01-21 02:41:58)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 02:45:38)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 02:47:33)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 02:47:41)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Stick en la coleccion Minecraft ha sido modificada.
+(2026-01-21 02:48:06)	[ERROR] class mvc.controller.user.LoginController: No existe una cuenta con nombre aa
+(2026-01-21 02:48:09)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:07:58)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:08:03)	[INFO] class command.modify.ModifyEntryCommand: La coleccion con nombre Minecraft ha sido modificada.
+(2026-01-21 03:13:51)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:14:23)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:15:36)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:21:47)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:22:24)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Stick en la coleccion Minecraft ha sido modificada.
+(2026-01-21 03:22:30)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Stick en la coleccion Minecraft ha sido modificada.
+(2026-01-21 03:27:08)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:28:09)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:29:17)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:30:49)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:30:57)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Chest en la coleccion Minecraft ha sido modificada.
+(2026-01-21 03:31:03)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Chest en la coleccion Minecraft ha sido modificada.
+(2026-01-21 03:31:08)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Chest en la coleccion Minecraft ha sido modificada.
+(2026-01-21 03:31:31)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Iron Chestplate en la coleccion Minecraft ha sido modificada.
+(2026-01-21 03:31:36)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Iron Chestplate en la coleccion Minecraft ha sido modificada.
+(2026-01-21 03:32:42)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:38:26)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:48:45)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-21 03:48:53)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Stick en la coleccion Minecraft ha sido modificada.
+(2026-01-21 03:48:57)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Chest en la coleccion Minecraft ha sido modificada.
+(2026-01-21 03:49:19)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-23 01:03:45)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-23 01:14:51)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-23 01:14:57)	[INFO] class command.modify.ModifyEntryCommand: La receta con nombre Oak Chest en la coleccion Minecraft ha sido modificada.
+(2026-01-23 01:15:04)	[INFO] class command.modify.ModifyEntryCommand: La receta con nombre Iron Plate en la coleccion Minecraft ha sido modificada.
+(2026-01-23 01:15:09)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Stick en la coleccion Minecraft ha sido modificada.
+(2026-01-23 01:15:13)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Chest en la coleccion Minecraft ha sido modificada.
+(2026-01-23 01:15:22)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Chest en la coleccion Minecraft ha sido modificada.
+(2026-01-23 02:47:27)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-23 02:47:42)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-01-23 14:03:38)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-23 14:03:58)	[INFO] class command.modify.ModifyEntryCommand: La receta con nombre Iron Plate en la coleccion Minecraft ha sido modificada.
+(2026-01-23 14:04:11)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Chest en la coleccion Minecraft ha sido modificada.
+(2026-01-23 14:04:18)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Iron Chestplate en la coleccion Minecraft ha sido modificada.
+(2026-01-23 14:04:28)	[INFO] class command.modify.ModifyEntryCommand: El item con nombre Iron Chestplate en la coleccion Minecraft ha sido modificada.
+(2026-01-23 14:04:43)	[INFO] class mvc.controller.add.AddItemController: El usuario a ha creado un item llamado sus en la coleccion TW3
+(2026-01-23 14:04:53)	[INFO] class mvc.controller.show.entry.data.ShowItemDataController: El usuario a ha borrado el item con nombre Iron Chestplate en la coleccion TW3
+(2026-01-23 14:05:26)	[INFO] class mvc.controller.add.AddItemController: El usuario a ha creado un item llamado Iron Chestplate en la coleccion Minecraft
+(2026-01-23 14:05:39)	[INFO] class mvc.controller.show.entry.data.ShowRecipeDataController: El usuario a ha creado el output Iron Chestplate en la receta Iron Plate en la coleccion Minecraft

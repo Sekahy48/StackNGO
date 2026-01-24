@@ -53,7 +53,7 @@ public abstract class AbstractController<T extends AbstractView> implements IObs
 
                 e -> {
                     this.buffer.publish(new RedirectCommand(
-                                    this.context.getSystemContext().getCoreController().getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
+                                    this.context.getSystemContext().getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
                                     new ShowCollections()
                                  
                             )
@@ -65,7 +65,7 @@ public abstract class AbstractController<T extends AbstractView> implements IObs
         itemButton.setOnAction(
                 e -> {
                     this.buffer.publish(new RedirectCommand(
-                                    this.context.getCoreController().getController(ViewType.SHOW_ITEMS).getBuffer(),
+                                    this.context.getSystemContext().getController(ViewType.SHOW_ITEMS).getBuffer(),
                                     new ShowItems()
                                  
                             )
@@ -123,5 +123,7 @@ public abstract class AbstractController<T extends AbstractView> implements IObs
         }
     }
 
-
+    public void updateAtShow(){
+        // De momento no hace nada
+    }
 }

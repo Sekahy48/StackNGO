@@ -4,11 +4,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
- 
-import dataTransportLayer.GenericDTO;
+
+import dataTransportLayer.EntryDTO; 
 import mvc.model.entries.Entry;
 
-public abstract class AbstractEntryDAO<T extends GenericDTO, E extends Entry> extends AbstractDAO<T, E> {
+public abstract class AbstractEntryDAO<T extends EntryDTO, E extends Entry> extends AbstractDAO<T, E> implements ChildDAO<T> {
 
     /* ====== MÉTODOS QUE LAS HIJAS DEBEN DEFINIR ====== */
 
@@ -106,12 +106,14 @@ public abstract class AbstractEntryDAO<T extends GenericDTO, E extends Entry> ex
         return -1;
     }
 
-    @Override
-    public List<T> readAll(int collectionId) {
+    
+    public List<T> readAllByParent(int collectionId) {
         try {
             return readAllInternal(collectionId);
         } catch (SQLException e) {
             return List.of();
         }
     }
+
+    
 }

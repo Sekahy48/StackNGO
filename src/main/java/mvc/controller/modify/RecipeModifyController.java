@@ -97,7 +97,7 @@ public class RecipeModifyController extends AbstractModifyController<RecipeModif
 
         if (!newName.equals(dto.name)) {
 
-            if (dao.existsEntryByName(newName, dto.id, this.context.getCurrentCollection().getId())) {
+            if (dao.existsEntryByName(newName, dto.id, this.context.getSessionContext().getCurrentCollection().getId())) {
                 this.view.showAlert("Nombre duplicado","Ya existe una receta con ese nombre", Alert.AlertType.ERROR);
                 return null;
             }

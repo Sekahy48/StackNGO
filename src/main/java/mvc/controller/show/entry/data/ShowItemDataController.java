@@ -52,10 +52,10 @@ public class ShowItemDataController extends AbstractShowDataController<ShowItemD
 
         modifyBtn.setOnAction(
                 e -> {
-                    this.buffer.publish(new ChangeScreenCommand(ViewType.MODIFY_ITEM));
-                    this.buffer.publish(new RedirectCommand(context.getCoreController().getController(ViewType.MODIFY_ITEM).getBuffer(),
+                    this.buffer.publish(new RedirectCommand(context.getSystemContext().getController(ViewType.MODIFY_ITEM).getBuffer(),
                                                             new ModifyItemCommand(context.getItemDTOById(this.view.getParentId().value()))
                                                             ));
+                    this.buffer.publish(new ChangeScreenCommand(ViewType.MODIFY_ITEM));
                 }
         );
     }
@@ -80,7 +80,7 @@ public class ShowItemDataController extends AbstractShowDataController<ShowItemD
                 dao.delete(id.value());
                 this.context.getEntriesRepo().tryToRemoveEntry(id);
                 this.view.showAlert("Item eliminado", "El item con nombre " + dto.name + " ha sido eliminado", Alert.AlertType.INFORMATION);
-                Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha borrado el item con nombre " + dto.name + " en la coleccion " + this.context.getCurrentCollection().getName());
+                Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha borrado el item con nombre " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
                 goBack();
             }
         }

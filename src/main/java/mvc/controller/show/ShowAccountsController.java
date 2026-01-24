@@ -45,10 +45,10 @@ public class ShowAccountsController extends ShowGridDisplayController<AccountDTO
     protected RedirectCommand createCommand(AccountDTO dto) {
         Account account = context.getAccount(dto.name);
         if (account.getId().equals(this.context.getAccount().getId())) {
-            return new RedirectCommand(this.context.getCoreController().getController(ViewType.PRIVATE_ZONE).getBuffer(),
+            return new RedirectCommand(this.context.getSystemContext().getController(ViewType.PRIVATE_ZONE).getBuffer(),
                     new DeleteAccountCommand(account));
         }
-        return new RedirectCommand(this.context.getCoreController().getController(ViewType.SHOW_ACCOUNTS).getBuffer(),
+        return new RedirectCommand(this.context.getSystemContext().getController(ViewType.SHOW_ACCOUNTS).getBuffer(),
                 new DeleteAccountAdminCommand(account));
     }
 

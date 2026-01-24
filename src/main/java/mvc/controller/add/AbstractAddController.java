@@ -34,10 +34,10 @@ public abstract class AbstractAddController extends AbstractController<AbstractA
     public abstract void handleButton();
 
     protected void goBack() {
-        CollectionDTO dto = this.context.getCurrentCollection();
+        CollectionDTO dto = this.context.getSessionContext().getCurrentCollection();
 
         this.buffer.publish(new RedirectCommand(
-                this.context.getCoreController().getController(ViewType.SHOW_COLLECTION).getBuffer(),
+                this.context.getSystemContext().getController(ViewType.SHOW_COLLECTION).getBuffer(),
                 new ShowCollection(dto)
         ));
         this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_COLLECTION));

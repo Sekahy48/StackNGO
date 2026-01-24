@@ -1,5 +1,6 @@
 package mvc.context;
 
+import mvc.controller.AbstractController;
 import mvc.controller.CoreController;
 import mvc.view.AbstractView;
 import mvc.view.ScreenManager;
@@ -12,19 +13,18 @@ public class SystemContext implements Context{
     public SystemContext(ScreenManager screenManager, CoreController coreController){
         this.screenManager = screenManager;
         this.coreController = coreController;
-    }
+    } 
 
-    public AbstractView getView(ViewType view){
+    public <T extends AbstractView> T getView(ViewType view){
         return this.screenManager.getView(view);
     }
 
-    // Temporal, TODO quitar
-    public ScreenManager getScreenManager(){
-        return this.screenManager;
+    public <T extends AbstractView> AbstractController<T> getController(ViewType controller){
+        return this.coreController.getController(controller);
     }
 
-    // Temporal, TODO quitar
-    public CoreController getCoreController(){
-        return this.coreController;
+    public void show(ViewType view){
+        this.getController(view).updateAtShow();
+        this.screenManager.show(view);
     }
 }

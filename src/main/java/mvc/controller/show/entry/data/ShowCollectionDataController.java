@@ -87,8 +87,8 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
         modifyButton.setOnAction(
                 e -> {
                     this.buffer.publish(new ChangeScreenCommand(ViewType.MODIFY_COLLECTION));
-                    this.buffer.publish(new RedirectCommand(context.getCoreController().getController(ViewType.MODIFY_COLLECTION).getBuffer(), 
-                                                            new ModifyCollectionCommand(context.getCurrentCollection())));
+                    this.buffer.publish(new RedirectCommand(context.getSystemContext().getController(ViewType.MODIFY_COLLECTION).getBuffer(), 
+                                                            new ModifyCollectionCommand(context.getSessionContext().getCurrentCollection())));
                 }
         );
 
@@ -96,7 +96,7 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
 
     protected void goBack() {
         this.buffer.publish(new RedirectCommand(
-                this.context.getCoreController().getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
+                this.context.getSystemContext().getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
                 new ShowCollections()
         ));
         this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_COLLECTIONS));
@@ -123,7 +123,7 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
 
     public void showCollection(Integer id) {
 
-        this.context.setCurrentCollection(this.context.getCollectionById(id));
+        this.context.getSessionContext().setCurrentCollection(this.context.getCollectionById(id));
 
         CollectionDAO dao = (CollectionDAO) this.context.getDAO(DAOType.COLLECTION);
         CollectionDTO dto = dao.read(id);
@@ -146,17 +146,17 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
         recipes.getChildren().clear();
 
         ItemDAO itemDAO = (ItemDAO) this.context.getDAO(DAOType.ITEM);
-        List<ItemDTO> listaItems = itemDAO.readAll(id);
+        List<ItemDTO> listaItems = itemDAO.readAllByParent(id);
 
         RecipeDAO recipeDAO = (RecipeDAO) this.context.getDAO(DAOType.RECIPE);
-        List<RecipeDTO> listaRecetas = recipeDAO.readAll(id);
+        List<RecipeDTO> listaRecetas = recipeDAO.readAllByParent(id);
 
         for (ItemDTO dto : listaItems) {
             Button button = new Button();
             button.setOnAction(e -> {
                this.buffer.publish(new RedirectCommand(
-                       this.context.getCoreController().getController(ViewType.SHOW_ITEM).getBuffer(),
-                       new ShowItem(dto.id, new RedirectCommand(buffer, new ShowCollection(context.getCurrentCollection())))
+                       this.context.getSystemContext().getController(ViewType.SHOW_ITEM).getBuffer(),
+                       new ShowItem(dto.id, new RedirectCommand(buffer, new ShowCollection(context.getSessionContext().getCurrentCollection())))
                ));
                this.buffer.publish(new ChangeToCommand(ViewType.SHOW_ITEM, dto));
             });
@@ -169,7 +169,7 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
             Button button = new Button();
             button.setOnAction(e -> {
                 this.buffer.publish(new RedirectCommand(
-                        this.context.getCoreController().getController(ViewType.SHOW_RECIPE).getBuffer(),
+                        this.context.getSystemContext().getController(ViewType.SHOW_RECIPE).getBuffer(),
                         new ShowRecipe(dto)
                 ));
                 this.buffer.publish(new ChangeToCommand(ViewType.SHOW_RECIPE, dto));

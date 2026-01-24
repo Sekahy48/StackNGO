@@ -14,7 +14,7 @@ public class ChangeScreenCommand implements ICommand {
 
     @Override
     public void execute(AbstractController controller) {
-        controller.getRuntimeContext().getScreenManager().show(view);
+        controller.getRuntimeContext().getSystemContext().show(view);
     }
 
     @Override

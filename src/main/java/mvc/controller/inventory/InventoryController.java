@@ -123,7 +123,7 @@ public class InventoryController extends AbstractController<InventoryView>{
             this.context.getEntriesRepo().modifyEntry(actRecipe);
             
 
-            Recipe recipe = context.getRecipeByIdFromBD(this.currentRecipe.id);
+            Recipe recipe = context.getRecipeById(this.currentRecipe.id);
             ArrayList<ItemIdStack> inventoryItems = new ArrayList<>();
             for(IInventoryElement element : this.inventory.flattenInventory()){
                 if(element.isLeaf())inventoryItems.add(new ItemIdStack(element.getItem().getId(), element.getAmount()));

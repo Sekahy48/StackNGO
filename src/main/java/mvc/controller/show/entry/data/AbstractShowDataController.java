@@ -1,15 +1,8 @@
 package mvc.controller.show.entry.data;
-
-import command.screen.ChangeScreenCommand;
-import command.screen.RedirectCommand;
-import command.show.ShowCollection;
-import dataTransportLayer.CollectionDTO;
-import dataTransportLayer.EventBuffer;
-import identificators.EntryId;
+   
+import dataTransportLayer.EventBuffer; 
 import javafx.scene.control.Button;
-import mvc.controller.AbstractController;
-import mvc.model.entries.Entry;
-import mvc.view.ViewType;
+import mvc.controller.AbstractController; 
 import mvc.view.show.entry.data.AbstractShowDataView;
 
 public abstract class AbstractShowDataController<T extends AbstractShowDataView> extends AbstractController<T> {

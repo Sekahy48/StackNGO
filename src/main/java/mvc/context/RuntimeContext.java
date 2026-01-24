@@ -9,13 +9,11 @@ import creational.StandardEntryFactory;
 import creational.AccountFactory;
 import creational.DTOFactory;
 import dataAccessLayer.DAO.*;
-import domain.accounts.Account;
-import mvc.controller.CoreController;
+import domain.accounts.Account; 
 import identificators.EntryId;
 import mvc.model.entries.*;
 import mvc.model.entries.repository.EntriesRepository;
-import dataTransportLayer.*;
-import mvc.view.ScreenManager;
+import dataTransportLayer.*; 
 
 /**
  * Clase que contiene todo lo necesario en referencias sobre informacion o como
@@ -24,12 +22,10 @@ import mvc.view.ScreenManager;
 public class RuntimeContext {
     private EntriesRepository repo;
     private Account currentAccount;
-    private CollectionDTO currentCollection;
-    private ScreenManager screenManager;
+    private CollectionDTO currentCollection; 
     private Map<DAOType, GenericDAO<? extends GenericDTO, ?>> daoCollection;
     private StandardEntryFactory entriesFactory;
-    private AccountFactory accountFactory;
-    private CoreController coreController;
+    private AccountFactory accountFactory; 
     
 
 
@@ -47,16 +43,17 @@ public class RuntimeContext {
         this.repo = new EntriesRepository(32, null);
         this.daoCollection = new HashMap<DAOType, GenericDAO<? extends GenericDTO, ?>>();
 
-        this.setDAOs();
+        
         this.entriesFactory = new StandardEntryFactory();
-        this.accountFactory = new AccountFactory();
-        this.screenManager = system.getScreenManager();
-        this.coreController = system.getCoreController();
+        this.accountFactory = new AccountFactory(); 
+        //this.coreController = system.getCoreController();
         //Lo de arriba habra que quitarlo
 
         this.dataCtx = data;
         this.sessionCtx = session;
         this.sysCtx = system;
+
+        this.setDAOs();
     }
 
     public void setSystemContext(SystemContext sys){
@@ -83,65 +80,7 @@ public class RuntimeContext {
         return this.sessionCtx;
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    public void setCurrentCollection(CollectionDTO currentCollection){
-        this.currentCollection = currentCollection;
-    }
-
-    public CollectionDTO getCurrentCollection(){
-        return this.currentCollection;
-    }
-
-    public CollectionDTO getCollectionById(int id){
-        CollectionDAO dao = (CollectionDAO) this.getDAO(DAOType.COLLECTION);
-        return dao.read(id);
-    }
-
-    public EntriesRepository getRepo() {
-        return repo;
-    }
-
-    public StandardEntryFactory getEntriesFactory(){
-        return entriesFactory;
-    }
-
-    public void setCoreController(CoreController controller) {
-        this.coreController = controller;
-    }
-
-    public CoreController getCoreController() {
-        return coreController;
-    }
-
-    public void setScreenManager(ScreenManager screenManager){
-        this.screenManager = screenManager;
-    }
-
-    public void setAccount(Account account){
-        this.currentAccount = account;
-    }
-
+    //TODO eliminar
     private void setDAOs(){
         daoCollection.put(DAOType.ACCOUNT, new AccountDAO());
         daoCollection.put(DAOType.COLLECTION, new CollectionDAO());
@@ -149,50 +88,103 @@ public class RuntimeContext {
         daoCollection.put(DAOType.RECIPE, new RecipeDAO());
 
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     
+
+     
+    //TODO eliminar
+    public CollectionDTO getCollectionById(int id){
+        CollectionDAO dao = (CollectionDAO) this.getDAO(DAOType.COLLECTION);
+        return dao.read(id);
+    }
+
+    //TODO eliminar
+    public EntriesRepository getRepo() {
+        return repo;
+    }
+
+    //TODO eliminar
+    public StandardEntryFactory getEntriesFactory(){
+        return entriesFactory;
+    }
+ 
+
+     
+    //TODO eliminar (ahora esta en session)
+    public void setAccount(Account account){
+        this.currentAccount = account;
+    }
+
+    //TODO eliminar, ya hace lo mismo otro metodo
     public EntriesRepository getEntriesRepo(){
         return this.repo;
     }
 
+    //TODO eliminar (ahora esta en session)
     public Account getAccount(){
         return this.currentAccount;
     }
 
+    //TODO eliminar
     public Account createAccount(AccountDTO dto){
         return this.accountFactory.createAccount(dto);
     }
 
+    // TODO eliminar
     public List<CollectionDTO> getCollections(){
         CollectionDAO dao = (CollectionDAO) this.daoCollection.get(DAOType.COLLECTION);
-        return dao.readAll(currentAccount.getId().value());
+        return dao.readAllByParent(currentAccount.getId().value());
     }
 
+    // TODO eliminar
     public List<AccountDTO> getAccounts(){
         AccountDAO dao = (AccountDAO) this.daoCollection.get(DAOType.ACCOUNT);
-        return dao.readAll(currentAccount.getId().value());
+        return dao.readAll();
     } 
 
+    //TODO eliminar
     public List<ItemWithCollectionDTO> getItems() {
         List<ItemWithCollectionDTO> out = new ArrayList<>();
         ItemDAO dao = (ItemDAO) this.daoCollection.get(DAOType.ITEM);
         for (CollectionDTO c : getCollections()) {
-            for (ItemDTO i : dao.readAll(c.id)) {
+            for (ItemDTO i : dao.readAllByParent(c.id)) {
                 out.add(DTOFactory.itemWithCollection(i, c.name));
             }
         }
         return out;
     }
-
+    //TODO eliminar
     public List<RecipeWithCollectionDTO> getRecipes() { 
         List<RecipeWithCollectionDTO> out = new ArrayList<>();
         RecipeDAO dao = (RecipeDAO) this.daoCollection.get(DAOType.RECIPE);
         for (CollectionDTO c : getCollections()) {
-            for (RecipeDTO r : dao.readAll(c.id)) {
+            for (RecipeDTO r : dao.readAllByParent(c.id)) {
                 out.add(DTOFactory.recipeWithCollection(r, c.name));
             }
         }
         return out;
     }
 
+    //TODO eliminar
     public List<RecipeWithCollectionDTO> getRecipesByCollection(EntryId collectionId) {
         List<RecipeWithCollectionDTO> out = new ArrayList<>();
         RecipeDAO dao = (RecipeDAO) this.daoCollection.get(DAOType.RECIPE);
@@ -206,13 +198,14 @@ public class RuntimeContext {
         }
 
         if (dto != null) {
-            for (RecipeDTO r : dao.readAll(dto.id)) {
+            for (RecipeDTO r : dao.readAllByParent(dto.id)) {
                 out.add(DTOFactory.recipeWithCollection(r, dto.name));
             }
         }
         return out;
     }
 
+    //TODO eliminar
     public List<ItemWithCollectionDTO> getItemsByCollection(EntryId collectionId) {
         List<ItemWithCollectionDTO> out = new ArrayList<>();
         ItemDAO dao = (ItemDAO) this.daoCollection.get(DAOType.ITEM);
@@ -227,34 +220,36 @@ public class RuntimeContext {
         }
 
         if (dto != null) {
-            for (ItemDTO i : dao.readAll(dto.id)){
+            for (ItemDTO i : dao.readAllByParent(dto.id)){
                 out.add(DTOFactory.itemWithCollection(i, dto.name));
             }
         }
         return out;
     }
 
+    //TODO eliminar
     public List<ItemDTO> getItemsAsEntriesByCollection(EntryId collectionId) {
         List<ItemDTO> out = new ArrayList<>();
         ItemDAO dao = (ItemDAO) this.daoCollection.get(DAOType.ITEM);
 
-        out = dao.readAll(collectionId.value());
+        out = dao.readAllByParent(collectionId.value());
         return out;
     }
 
+    //TODO eliminar
     public List<RecipeDTO> getRecipesAsEntriesByCollection(EntryId collectionId) {
         List<RecipeDTO> out = new ArrayList<>();
         RecipeDAO dao = (RecipeDAO) this.daoCollection.get(DAOType.RECIPE);
 
-        out = dao.readAll(collectionId.value());
+        out = dao.readAllByParent(collectionId.value());
         return out;
     }
-
+    //TODO eliminar
     public ItemDTO getItemDTOById(int id){
         ItemDAO dao = (ItemDAO) this.daoCollection.get(DAOType.ITEM);
         return dao.read(id);
     }
-
+    //TODO eliminar
     public Item getItemById(int id){
         ItemDAO dao = (ItemDAO) this.daoCollection.get(DAOType.ITEM);
         ItemDTO dto = dao.read(id);
@@ -266,12 +261,12 @@ public class RuntimeContext {
             return item;
         }
     }
-
+    //TODO eliminar
     public RecipeDTO getRecipeDTOById(int id){
         RecipeDAO dao = (RecipeDAO) this.daoCollection.get(DAOType.RECIPE);
         return dao.read(id);
     }
-
+    //TODO eliminar
     public Recipe getRecipeById(int id){
         RecipeDAO dao = (RecipeDAO) this.daoCollection.get(DAOType.RECIPE);
         RecipeDTO dto = dao.read(id);
@@ -284,7 +279,7 @@ public class RuntimeContext {
         }
     }
 
-    public Recipe getRecipeByIdFromBD(int id){
+    /*public Recipe getRecipeByIdFromBD(int id){
         RecipeDAO dao = (RecipeDAO) this.daoCollection.get(DAOType.RECIPE);
         RecipeDTO dto = dao.read(id);
         Recipe item = this.entriesFactory.createRecipe(dto);
@@ -292,31 +287,39 @@ public class RuntimeContext {
         return item;
         
     }
+        ELIMINAR, NO SE USA*/
 
+        //TODO eliminar
     public List<ItemStackDTO> getInputs(int id){
         return null;
     }
-
+    //TODO eliminar
     public List<ItemStackDTO> getOutputs(int id){
         return null;
     }
 
+    //TODO eliminar
     public Account getAccount(String account){
         AccountDAO dao = (AccountDAO) this.daoCollection.get(DAOType.ACCOUNT);
         return dao.read(account) != null ? this.accountFactory.loadAccount(dao.read(account)) : null;
     }
 
+    //TODO eliminar
     public AccountDTO getAccountDTO(int id){
         AccountDAO dao = (AccountDAO) this.daoCollection.get(DAOType.ACCOUNT);
         return dao.read(id);
     }
 
-    public ScreenManager getScreenManager() {
-        return screenManager;
-    }
-
+     
+    //REVISAR
     public GenericDAO<? extends GenericDTO, ?> getDAO(DAOType type) {
         return this.daoCollection.get(type);
+    }
+
+    //TODO eliminar
+    public CollectionDTO getCollectionByName(String collection) {
+        CollectionDAO dao = (CollectionDAO) daoCollection.get(DAOType.COLLECTION);
+        return dao.readByName(collection);
     }
  
 }

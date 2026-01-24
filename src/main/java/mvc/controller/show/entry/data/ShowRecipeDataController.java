@@ -61,7 +61,7 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
         modifyButton.setOnAction(
                 e -> {
                     this.buffer.publish(new ChangeScreenCommand(ViewType.MODIFY_RECIPE));
-                    this.buffer.publish(new RedirectCommand(context.getCoreController().getController(ViewType.MODIFY_RECIPE).getBuffer(),
+                    this.buffer.publish(new RedirectCommand(context.getSystemContext().getController(ViewType.MODIFY_RECIPE).getBuffer(),
                                                             new ModifyRecipeCommand(context.getRecipeDTOById(this.view.getParentId().value()))
                                                             ));
                 }
@@ -77,7 +77,7 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
                 e -> {
                     ItemDAO itemDAO = (ItemDAO) this.context.getDAO(DAOType.ITEM);
                     RecipeDAO recipeDAO = (RecipeDAO) this.context.getDAO(DAOType.RECIPE);
-                    List<ItemDTO> items = itemDAO.readAll(this.context.getCurrentCollection().getId());
+                    List<ItemDTO> items = itemDAO.readAllByParent(this.context.getSessionContext().getCurrentCollection().getId());
                     addPopUp(
                             addInputButton,
                             items,
@@ -90,7 +90,7 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
                     ItemDAO itemDAO = (ItemDAO) this.context.getDAO(DAOType.ITEM);
                     RecipeDAO recipeDAO = (RecipeDAO) this.context.getDAO(DAOType.RECIPE);
 
-                    List<ItemDTO> items = itemDAO.readAll(this.context.getCurrentCollection().getId());
+                    List<ItemDTO> items = itemDAO.readAllByParent(this.context.getSessionContext().getCurrentCollection().getId());
 
                     addPopUp(
                             addOutputButton,
@@ -109,8 +109,8 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
 
         RecipeDAO recipeDAO = (RecipeDAO) this.context.getDAO(DAOType.RECIPE);
 
-        List<ItemStackDTO> listaInput = recipeDAO.getInputs(id, this.context.getCurrentCollection().getId());
-        List<ItemStackDTO> listaOutput = recipeDAO.getOutputs(id, this.context.getCurrentCollection().getId());
+        List<ItemStackDTO> listaInput = recipeDAO.getInputs(id, this.context.getSessionContext().getCurrentCollection().getId());
+        List<ItemStackDTO> listaOutput = recipeDAO.getOutputs(id, this.context.getSessionContext().getCurrentCollection().getId());
         for (ItemStackDTO dto : listaInput) {
             createRecipeRow(
                     dto.item,
@@ -159,7 +159,7 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
             dao.delete(id.value());
             this.context.getEntriesRepo().tryToRemoveEntry(id);
             this.view.showAlert("Receta eliminada", "La receta con nombre " + dto.name + " ha sido eliminada", Alert.AlertType.INFORMATION);
-            Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha borrado la receta con nombre " + dto.name + " en la coleccion " + this.context.getCurrentCollection().getName());
+            Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha borrado la receta con nombre " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
             goBack();
         }
     }
@@ -183,8 +183,8 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
 
     protected void goBack() {
         this.buffer.publish(new RedirectCommand(
-                this.context.getCoreController().getController(ViewType.SHOW_COLLECTION).getBuffer(),
-                new ShowCollection(this.context.getCurrentCollection())
+                this.context.getSystemContext().getController(ViewType.SHOW_COLLECTION).getBuffer(),
+                new ShowCollection(this.context.getSessionContext().getCurrentCollection())
         ));
     }
 
@@ -207,13 +207,13 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
             } else {
                 RecipeDTO dto = this.context.getRecipeDTOById(this.view.getParentId().value());
                 if (type == RecipeIOType.INPUT) {
-                    recipeDAO.updateInputAmount(view.getParentId().value(), item.id, newAmount, this.context.getCurrentCollection().getId());
+                    recipeDAO.updateInputAmount(view.getParentId().value(), item.id, newAmount, this.context.getSessionContext().getCurrentCollection().getId());
                     Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),
-                            "El usuario " + this.context.getAccount().getUsername() + " ha cambiado la cantidad a " + newAmount + " del input " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getCurrentCollection().getName());
+                            "El usuario " + this.context.getAccount().getUsername() + " ha cambiado la cantidad a " + newAmount + " del input " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
                 } else {
-                    recipeDAO.updateOutputAmount(view.getParentId().value(), item.id, newAmount, this.context.getCurrentCollection().getId());
+                    recipeDAO.updateOutputAmount(view.getParentId().value(), item.id, newAmount, this.context.getSessionContext().getCurrentCollection().getId());
                     Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),
-                            "El usuario " + this.context.getAccount().getUsername() + " ha cambiado la cantidad a " + newAmount + " del output " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getCurrentCollection().getName());
+                            "El usuario " + this.context.getAccount().getUsername() + " ha cambiado la cantidad a " + newAmount + " del output " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
                 }
                 }
 
@@ -229,12 +229,12 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
             RecipeDTO dto = this.context.getRecipeDTOById(this.view.getParentId().value());
             if (type == RecipeIOType.INPUT) {
                 Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),
-                        "El usuario " + this.context.getAccount().getUsername() + " ha creado el input " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getCurrentCollection().getName());
-                recipeDAO.insertSingleInput(view.getParentId().value(), item.id, amountValue, this.context.getCurrentCollection().getId());
+                        "El usuario " + this.context.getAccount().getUsername() + " ha creado el input " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
+                recipeDAO.insertSingleInput(view.getParentId().value(), item.id, amountValue, this.context.getSessionContext().getCurrentCollection().getId());
             } else {
                 Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),
-                        "El usuario " + this.context.getAccount().getUsername() + " ha creado el output " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getCurrentCollection().getName());
-                recipeDAO.insertSingleOutput(view.getParentId().value(), item.id, amountValue, this.context.getCurrentCollection().getId());
+                        "El usuario " + this.context.getAccount().getUsername() + " ha creado el output " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
+                recipeDAO.insertSingleOutput(view.getParentId().value(), item.id, amountValue, this.context.getSessionContext().getCurrentCollection().getId());
             }
         }
 
@@ -246,12 +246,12 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
                 target.getChildren().remove(row);
                 if (type == RecipeIOType.INPUT) {
                     Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),
-                            "El usuario " + this.context.getAccount().getUsername() + " ha eliminado el input " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getCurrentCollection().getName());
-                    recipeDAO.deleteSingleInput(view.getParentId().value(), item.id, this.context.getCurrentCollection().getId());
+                            "El usuario " + this.context.getAccount().getUsername() + " ha eliminado el input " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
+                    recipeDAO.deleteSingleInput(view.getParentId().value(), item.id, this.context.getSessionContext().getCurrentCollection().getId());
                 } else {
                     Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),
-                            "El usuario " + this.context.getAccount().getUsername() + " ha eliminado el output " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getCurrentCollection().getName());
-                    recipeDAO.deleteSingleOutput(view.getParentId().value(), item.id, this.context.getCurrentCollection().getId());
+                            "El usuario " + this.context.getAccount().getUsername() + " ha eliminado el output " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
+                    recipeDAO.deleteSingleOutput(view.getParentId().value(), item.id, this.context.getSessionContext().getCurrentCollection().getId());
                 }
             }
         });

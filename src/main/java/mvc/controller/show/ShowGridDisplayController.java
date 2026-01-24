@@ -1,10 +1,13 @@
 package mvc.controller.show;
-
+ 
 import java.util.List;
 
 import command.ICommand;
 import dataTransportLayer.EventBuffer;
 import dataTransportLayer.GenericDTO;
+import dataTransportLayer.ItemWithCollectionDTO;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import mvc.controller.AbstractController;
 import mvc.view.show.ShowGridDisplayView;
 
@@ -30,7 +33,7 @@ public abstract class ShowGridDisplayController<T extends GenericDTO> extends Ab
         for (T element : getElements()) {
             this.view.addElementToGrid(
                 element,
-                e -> buffer.publish(createCommand(element))
+                this.createEventHandler(element)
             );
         }
     }
@@ -52,6 +55,12 @@ public abstract class ShowGridDisplayController<T extends GenericDTO> extends Ab
 
     /** Comando a lanzar al pulsar el elemento */
     protected abstract ICommand createCommand(T element);
+
+    protected EventHandler<ActionEvent> createEventHandler(T element) {
+        return (e -> { 
+            buffer.publish(createCommand(element));
+        });
+    }
 
     @Override
     public void handleButton() {

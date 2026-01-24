@@ -35,7 +35,7 @@ public class ShowRecipesController extends ShowGridDisplayController<RecipeWithC
     @Override
     protected RedirectCommand createCommand(RecipeWithCollectionDTO dto) {
         return new RedirectCommand(
-                this.context.getCoreController().getController(ViewType.SHOW_RECIPE).getBuffer(),
+                this.context.getSystemContext().getController(ViewType.SHOW_RECIPE).getBuffer(),
                 new ShowRecipe(dto.recipe));
     }
 }

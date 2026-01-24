@@ -1,6 +1,7 @@
 package command.show;
 
 import command.ICommand;
+import identificators.EntryId; 
 import mvc.controller.AbstractController;
 import mvc.controller.show.entry.data.ShowItemDataController;
 
@@ -17,7 +18,8 @@ public class ShowItem implements ICommand {
     @Override
     public void execute(AbstractController controller) {
         ((ShowItemDataController) controller).showItem(this.id);
-        controller.setBackNavigation(backCommand);
+        //controller.getView().setParentId(new EntryId(id));
+        if (backCommand != null) controller.setBackNavigation(backCommand);
         clear();
     }
 

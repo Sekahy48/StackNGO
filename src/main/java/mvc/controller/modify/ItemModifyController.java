@@ -31,7 +31,7 @@ public class ItemModifyController extends AbstractModifyController<ItemModifyVie
               : dto.name;
 
         if (!newName.equals(dto.name)) {
-            if (dao.existsEntryByName(newName, dto.id, this.context.getCurrentCollection().getId())) {
+            if (dao.existsEntryByName(newName, dto.id, this.context.getSessionContext().getCurrentCollection().getId())) {
                 this.view.showAlert("Nombre duplicado","Ya existe un item con ese nombre.", Alert.AlertType.ERROR);
                 return null;
             }

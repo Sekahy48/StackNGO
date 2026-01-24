@@ -116,8 +116,8 @@ public class AccountDAO extends AbstractDAO<AccountDTO, Account> {
         }
     }
 
-    @Override
-    public List<AccountDTO> readAll(int ignoredAccountId) {
+    
+    public List<AccountDTO> readAll() {
         String sqlAccounts = "SELECT id, name, type, password, salt FROM accounts";
         String sqlCollections = "SELECT id FROM collections WHERE account_id = ?";
         List<AccountDTO> out = new ArrayList<>();

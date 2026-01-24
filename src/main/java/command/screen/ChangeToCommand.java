@@ -24,7 +24,7 @@ public class ChangeToCommand extends ChangeScreenCommand{
     @Override
     public void execute(AbstractController controller){
         super.execute(controller);
-        AbstractView addView = controller.getRuntimeContext().getScreenManager().getView(view);
+        AbstractView addView = controller.getRuntimeContext().getSystemContext().getView(view);
         if (dto != null) addView.setParentId(new EntryId(dto.id));
         addView.setParentName(accountName );
     }

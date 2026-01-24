@@ -36,7 +36,7 @@ public class ShowCollectionsController extends ShowGridDisplayController<Collect
     @Override
     protected RedirectCommand createCommand(CollectionDTO dto) {
 
-        return new RedirectCommand(this.context.getCoreController().getController(ViewType.SHOW_COLLECTION).getBuffer(),
+        return new RedirectCommand(this.context.getSystemContext().getController(ViewType.SHOW_COLLECTION).getBuffer(),
                 new ShowCollection(dto));
     }
 }

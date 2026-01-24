@@ -76,7 +76,7 @@ public class LoginController extends AbstractUserController<LoginView> {
             context.setAccount(account);
             buffer.publish(new ChangeToCommand(ViewType.PRIVATE_ZONE, user));
 
-            this.context.getCoreController().setUserNameInPrivateZone();
+            
         }
     }
 }

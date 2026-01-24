@@ -1,13 +1,16 @@
 package mvc.controller.show;
-
+ 
 import java.util.List;
 
 import command.ICommand;
+import command.screen.ChangeToCommand;
 import command.screen.RedirectCommand;
 import command.show.ShowItem;
 import command.show.ShowItems;
 import dataTransportLayer.EventBuffer;
 import dataTransportLayer.ItemWithCollectionDTO;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import mvc.view.ViewType;
 
 /**
@@ -42,9 +45,21 @@ public class ShowItemsController extends ShowGridDisplayController<ItemWithColle
         ICommand forward = new ShowItem(dto.item.id, back);
 
         return new RedirectCommand(
-            context.getCoreController().getController(ViewType.SHOW_ITEM).getBuffer(),
+            context.getSystemContext().getController(ViewType.SHOW_ITEM).getBuffer(),
             forward
         );
+    }
+
+    @Override
+    protected EventHandler<ActionEvent> createEventHandler(ItemWithCollectionDTO element) {
+         
+        return (e -> { 
+
+            buffer.publish(new RedirectCommand(this.context.getSystemContext().getController(ViewType.SHOW_ITEM).getBuffer(), 
+                           new ChangeToCommand(ViewType.SHOW_ITEMS, element.item)));
+            buffer.publish(createCommand(element));
+            context.getSessionContext().setCurrentCollection(context.getCollectionByName(element.collection));
+        });
     }
 
 }

@@ -60,7 +60,7 @@ public class ModifyEntryCommand implements ICommand {
                         (modType == ModType.COLLECTION
                                 ? " ha sido modificada."
                                 : " en la coleccion " +
-                                controller.getRuntimeContext().getCurrentCollection().name +
+                                controller.getRuntimeContext().getSessionContext().getCurrentCollection().name +
                                 " ha sido modificada.");
 
         String alert = modType.getText() + " con nombre " + dto.name + " ha sido modificada.";
@@ -78,9 +78,9 @@ public class ModifyEntryCommand implements ICommand {
 
         EventBuffer buffer;
         switch (modType) {
-            case COLLECTION -> buffer = controller.getRuntimeContext().getSystemContext().getCoreController().getController(ViewType.SHOW_COLLECTION).getBuffer();
-            case ITEM -> buffer = controller.getRuntimeContext().getSystemContext().getCoreController().getController(ViewType.SHOW_ITEM).getBuffer();
-            case RECIPE -> buffer = controller.getRuntimeContext().getSystemContext().getCoreController().getController(ViewType.SHOW_RECIPE).getBuffer();
+            case COLLECTION -> buffer = controller.getRuntimeContext().getSystemContext().getController(ViewType.SHOW_COLLECTION).getBuffer();
+            case ITEM -> buffer = controller.getRuntimeContext().getSystemContext().getController(ViewType.SHOW_ITEM).getBuffer();
+            case RECIPE -> buffer = controller.getRuntimeContext().getSystemContext().getController(ViewType.SHOW_RECIPE).getBuffer();
             default -> throw new IllegalArgumentException("Tipo desconocido: " + modType);
         }        controller.getBuffer().publish(new RedirectCommand(buffer, showCommand));
         controller.getBuffer().publish(new ChangeScreenCommand(typesMap.get(modType)));

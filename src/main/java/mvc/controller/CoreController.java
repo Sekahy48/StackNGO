@@ -21,6 +21,7 @@ import mvc.controller.show.entry.data.ShowRecipeDataController;
 import mvc.controller.user.LoginController;
 import mvc.controller.user.PrivateController;
 import mvc.controller.user.SignUpController;
+import mvc.view.AbstractView;
 import mvc.view.ViewType;
 
 public class CoreController {
@@ -84,24 +85,27 @@ public class CoreController {
 }
 
 
-    private void registerController(ViewType viewType, AbstractController controller) {
+    private <T extends AbstractView> void registerController(ViewType viewType, AbstractController<T> controller) {
         controller.setRuntimeContext(context);
-        controller.attachView(context.getSystemContext().getView(viewType));
+
+        T view = (T) context.getSystemContext().getView(viewType);
+        controller.attachView(view);
+
         controllers.put(viewType, controller);
     }
 
-    public AbstractController getController(ViewType viewType) {
-        return controllers.get(viewType);
+
+    public <T extends AbstractView> AbstractController<T> getController(ViewType controller) {
+        return (AbstractController<T>) controllers.get(controller);
     }
+
 
     public void setContext(RuntimeContext context){
         this.context = context;
     }
 
     
-    public void setUserNameInPrivateZone() {
-        ((PrivateController)this.controllers.get(ViewType.PRIVATE_ZONE)).setUserName();
-    }
+     
 
 
 

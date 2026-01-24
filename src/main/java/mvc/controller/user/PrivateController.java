@@ -35,9 +35,7 @@ public class PrivateController extends AbstractUserController<PrivateView> {
         
     }
 
-    public void setUserName(){
-        view.getUserTitleLabel().setText(view.getParentName());
-    }
+     
     
     @Override
     public void handleButton() {
@@ -69,9 +67,10 @@ public class PrivateController extends AbstractUserController<PrivateView> {
             if (isAdmin) {
                 AccountId a = this.context.getAccount().getId();
                 AccountDAO dao = (AccountDAO) this.context.getDAO(DAOType.ACCOUNT);
+                //TODO revisar esto
                 AccountDTO dto = dao.read(a.value());
                 this.buffer.publish(new RedirectCommand(
-                        this.context.getCoreController().getController(ViewType.SHOW_ACCOUNTS).getBuffer(),
+                        this.context.getSystemContext().getController(ViewType.SHOW_ACCOUNTS).getBuffer(),
                         new ShowAccounts()
                 ));
                 this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_ACCOUNTS));
@@ -101,7 +100,7 @@ public class PrivateController extends AbstractUserController<PrivateView> {
         seeCollectionsButton.setOnAction(
                 e -> {
                     this.buffer.publish(new RedirectCommand(
-                            this.context.getCoreController().getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
+                            this.context.getSystemContext().getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
                             new ShowCollections()
                             )
                     );
@@ -136,5 +135,10 @@ public class PrivateController extends AbstractUserController<PrivateView> {
         } else {
 
         }
+    }
+
+    @Override
+    public void updateAtShow(){
+        view.getUserTitleLabel().setText(view.getParentName());
     }
 }

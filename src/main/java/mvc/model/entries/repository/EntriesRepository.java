@@ -89,7 +89,7 @@ public class EntriesRepository {
     }
 
     private boolean addEntry(Entry entry) {
-        if (repo.containsKey(entry.getId())) return false;
+        //if (repo.containsKey(entry.getId())) return false;
 
         releaseCacheIfNeeded();
         repo.put(entry.getId(), entry);
