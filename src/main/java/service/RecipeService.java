@@ -10,12 +10,9 @@ import dataTransportLayer.RecipeDTO;
 import identificators.EntryId;
 import logger.Logger;
 import mvc.context.DataContext;
-import mvc.model.entries.Item;
 import mvc.model.entries.ItemIdStack;
 import mvc.model.entries.Recipe;
 import mvc.model.inventory.IInventoryElement;
-import mvc.model.inventory.ItemStack;
-import utilities.DataUtils;
 
 public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
 
@@ -94,17 +91,12 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
     //#region Logic
     public boolean canBeExecuted(IInventoryElement inventory, Recipe recipe) {
         if (inventory == null || recipe == null) {
-            Logger.getInstance().error(this.getClass().toString(), 
-                          "Cannot execute method with some of the atributes null");
+            Logger.getInstance().error(this.getClass().toString(),
+                        "Cannot execute method with some of the atributes null");
             return false;
         }
         
-        Map<Integer, Integer> available = new HashMap<>();
-
-        for (IInventoryElement elem : inventory.flattenInventory()) {
-            int id = elem.getItem().getId().value();
-            available.merge(id, elem.getAmount(), Integer::sum);
-        }
+        Map<Integer, Integer> available = computeAvailable(inventory);
 
         for (ItemIdStack ingredient : recipe.getIngredients()) {
             int id = ingredient.getId().value();
@@ -119,11 +111,46 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
         return true;
     }
 
-    public void execute(IInventoryElement inventory, Recipe recipe) {
-        if (this.canBeExecuted(inventory, recipe)) {
-
+    public boolean execute(IInventoryElement inventory, Recipe recipe) {
+        if (inventory == null || recipe == null) {
+            Logger.getInstance().error(this.getClass().toString(),
+                        "Cannot execute method with some of the atributes null");
+            return false;
         }
+
+        Map<Integer, Integer> available = computeAvailable(inventory);
+
+        for (ItemIdStack ingredient : recipe.getIngredients()) {
+            int id = ingredient.getId().value();
+            if (available.getOrDefault(id, 0) < ingredient.getAmount()) {
+                return false;
+            }
+        }
+ 
+        for (ItemIdStack ingredient : recipe.getIngredients()) {
+            inventory.removeItem(ingredient.getId(), ingredient.getAmount());
+        }
+
+        // 3️⃣ añadir resultados
+        for (ItemIdStack result : recipe.getResults()) {
+            inventory.addItem(result.getId(), result.getAmount());
+        }
+
+        return true;
     }
+
+
+    private Map<Integer, Integer> computeAvailable(IInventoryElement inventory) {
+    Map<Integer, Integer> available = new HashMap<>();
+
+    for (IInventoryElement elem : inventory.flattenInventory()) {
+        int id = elem.getItem().getId().value();
+        available.merge(id, elem.getAmount(), Integer::sum);
+    }
+
+    return available;
+}
+
 
 
     //#endregion
