@@ -4,7 +4,6 @@ import command.delete.DeleteItemCommand;
 import command.modify.screen.ModifyItemCommand;
 import command.screen.ChangeScreenCommand;
 import command.screen.RedirectCommand;
-import creational.ImageUtils;
 import dataAccessLayer.DAO.DAOType;
 import dataAccessLayer.DAO.ItemDAO;
 import dataTransportLayer.EventBuffer;
@@ -18,6 +17,7 @@ import logger.LogLevel;
 import logger.Logger;
 import mvc.view.ViewType;
 import mvc.view.show.entry.data.ShowItemDataView;
+import utilities.ImageUtils;
 
 public class ShowItemDataController extends AbstractShowDataController<ShowItemDataView> {
 

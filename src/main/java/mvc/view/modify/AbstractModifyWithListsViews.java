@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import creational.EventPrefabFactory;
-import creational.ImageUtils;
 import creational.UIPrefabsFactory;
 import dataTransportLayer.EntryDTO;
 import dataTransportLayer.GenericDTO;
@@ -24,6 +23,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import utilities.ImageUtils;
 
     public abstract class AbstractModifyWithListsViews extends AbstractModifyView {
 

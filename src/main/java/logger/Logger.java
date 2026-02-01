@@ -1,5 +1,7 @@
 package logger;
 
+import javax.management.RuntimeErrorException;
+
 public class Logger {
 
     private static Logger instance;
@@ -17,7 +19,20 @@ public class Logger {
         this.appender = appender;
     }
 
-    public void log(LogLevel level, String origin, String message) {
+    private void log(LogLevel level, String origin, String message) {
         this.appender.write(new LogEntry(level, origin, message));
+    }
+
+    public void info(String origin, String message) {
+        this.log(LogLevel.INFO, origin, message);
+    }
+
+    public void warning(String origin, String message) {
+        this.log(LogLevel.WARNING, origin, message);
+    }
+
+    public void error(String origin, String message) {
+        this.log(LogLevel.ERROR, origin, message);
+        throw new RuntimeException("\"" + message + "\"" + " in: " + origin);
     }
 }

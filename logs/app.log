@@ -1562,3 +1562,5 @@
 (2026-01-23 14:04:53)	[INFO] class mvc.controller.show.entry.data.ShowItemDataController: El usuario a ha borrado el item con nombre Iron Chestplate en la coleccion TW3
 (2026-01-23 14:05:26)	[INFO] class mvc.controller.add.AddItemController: El usuario a ha creado un item llamado Iron Chestplate en la coleccion Minecraft
 (2026-01-23 14:05:39)	[INFO] class mvc.controller.show.entry.data.ShowRecipeDataController: El usuario a ha creado el output Iron Chestplate en la receta Iron Plate en la coleccion Minecraft
+(2026-01-24 22:15:34)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-01-27 12:48:52)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion

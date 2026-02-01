@@ -6,7 +6,6 @@ import command.screen.ChangeScreenCommand;
 import command.screen.RedirectCommand;
 import command.show.ShowCollection;
 import creational.DTOFactory;
-import creational.ImageUtils;
 import creational.UIPrefabsFactory;
 import dataAccessLayer.DAO.CollectionDAO;
 import dataAccessLayer.DAO.DAOType;
@@ -27,6 +26,7 @@ import mvc.controller.InyectableController;
 import mvc.model.entries.Recipe;
 import mvc.view.ViewType;
 import mvc.view.add.AddRecipeView;
+import utilities.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -7,7 +7,6 @@ import command.modify.screen.ModifyRecipeCommand;
 import command.screen.ChangeScreenCommand;
 import command.screen.RedirectCommand;
 import command.show.ShowCollection;
-import creational.ImageUtils;
 import creational.UIPrefabsFactory;
 import static creational.UIPrefabsFactory.addPopUp;
 import static creational.UIPrefabsFactory.rowExists;
@@ -31,6 +30,7 @@ import logger.Logger;
 import mvc.model.entries.RecipeIOType;
 import mvc.view.ViewType;
 import mvc.view.show.entry.data.ShowRecipeDataView;
+import utilities.ImageUtils;
 
 public class ShowRecipeDataController extends AbstractShowDataController<ShowRecipeDataView> {
 

@@ -1,4 +1,4 @@
-package creational;
+package utilities;
 
 import javafx.scene.image.Image;
 

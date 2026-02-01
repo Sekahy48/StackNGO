@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.function.Consumer;
 
 import creational.DTOFactory;
-import creational.ImageUtils;
 import creational.UIPrefabsFactory; 
 import dataTransportLayer.ItemIdStackDTO;
 import dataTransportLayer.ItemStackDTO;
@@ -26,6 +25,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import mvc.context.RuntimeContext; 
 import mvc.view.AbstractView;
+import utilities.ImageUtils;
 
 public class InventoryView extends AbstractView {
 

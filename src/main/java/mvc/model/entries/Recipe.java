@@ -1,9 +1,7 @@
 package mvc.model.entries;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
-import logger.LogLevel;
+import java.util.ArrayList; 
+ 
 import logger.Logger;
  
 /**
@@ -107,26 +105,26 @@ public class Recipe extends Entry {
      * @return true if realInput matches inner input requirements
      */
     public boolean canBeExecuted(ArrayList<ItemIdStack> realInput){
-    if (realInput == null) { 
-        Logger.getInstance().log(LogLevel.ERROR, this.getClass().toString() + " con id " + this.id.toString(),
-         "El metodo canBeExecuted ha sido ejecutado con el parametro \"realInput\" como nulo.\n");
-        return false;
-    }
-
-    for (ItemIdStack needed : this.input) {
-
-        ItemIdStack found = realInput.stream()
-                .filter(e -> e.getId().equals(needed.getId()))
-                .findFirst()
-                .orElse(null);
-
-        if (found == null || found.getAmount() < needed.getAmount()) {
+        if (realInput == null) { 
+            Logger.getInstance().error(this.getClass().toString() + " con id " + this.id.toString(),
+            "El metodo canBeExecuted ha sido ejecutado con el parametro \"realInput\" como nulo.\n");
             return false;
         }
-    }
 
-    return true;
-}
+        for (ItemIdStack needed : this.input) {
+
+            ItemIdStack found = realInput.stream()
+                    .filter(e -> e.getId().equals(needed.getId()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (found == null || found.getAmount() < needed.getAmount()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 
     
     /**
@@ -139,9 +137,9 @@ public class Recipe extends Entry {
         ArrayList<ItemIdStack> out = null;
         if (this.canBeExecuted(realInput)){
             out = new ArrayList<>(this.output);
-            Logger.getInstance().log(LogLevel.INFO, this.getClass() + " con id " + this.getId().toString(), "La receta se ha ejecutado correctamente.");
+            Logger.getInstance().info( this.getClass() + " con id " + this.getId().toString(), "La receta se ha ejecutado correctamente.");
         }else{
-            Logger.getInstance().log(LogLevel.INFO, this.getClass() + " con id " + this.getId().toString(), "La receta no ha sido ejecutada.");
+            Logger.getInstance().info( this.getClass() + " con id " + this.getId().toString(), "La receta no ha sido ejecutada.");
         }
         
         return out;
@@ -157,7 +155,7 @@ public class Recipe extends Entry {
             this.input.add(new ItemIdStack(item.getId(), amount));
             this.sortInAndOut();
         }else{
-            Logger.getInstance().log(LogLevel.ERROR, this.getClass().toString() + " con id " + this.id.toString(), "Se ha intentado usar un valor nulo para añadir un ingrediente. Abortando intento\n");
+            Logger.getInstance().error( this.getClass().toString() + " con id " + this.id.toString(), "Se ha intentado usar un valor nulo para añadir un ingrediente. Abortando intento\n");
         }
     }
 
@@ -166,7 +164,7 @@ public class Recipe extends Entry {
             this.output.add(new ItemIdStack(item.getId(), amount));
             this.sortInAndOut();
         }else{
-            Logger.getInstance().log(LogLevel.ERROR, this.getClass().toString() + " con id " + this.id.toString(), "Se ha intentado usar un valor nulo para añadir un resultado. Abortando intento\n");
+            Logger.getInstance().error( this.getClass().toString() + " con id " + this.id.toString(), "Se ha intentado usar un valor nulo para añadir un resultado. Abortando intento\n");
         }
     }
 

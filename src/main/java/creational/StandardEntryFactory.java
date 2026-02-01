@@ -14,7 +14,7 @@ import mvc.model.entries.Item;
 import mvc.model.entries.ItemIdStack;
 import mvc.model.entries.Recipe;
 
-public class StandardEntryFactory {
+public class StandardEntryFactory implements IEntriesFactory{
     private EntryBuilder builder = new EntryBuilder();
     
     public Item createItem(ItemDTO dto){

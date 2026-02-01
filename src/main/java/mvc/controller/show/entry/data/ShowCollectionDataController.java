@@ -11,7 +11,6 @@ import command.show.ShowCollection;
 import command.show.ShowCollections;
 import command.show.ShowItem;
 import command.show.ShowRecipe;
-import creational.ImageUtils;
 import creational.UIPrefabsFactory;
 import dataAccessLayer.DAO.CollectionDAO;
 import dataAccessLayer.DAO.DAOType;
@@ -32,6 +31,7 @@ import logger.LogLevel;
 import logger.Logger;
 import mvc.view.ViewType;
 import mvc.view.show.entry.data.ShowCollectionDataView;
+import utilities.ImageUtils;
 
 public class ShowCollectionDataController extends AbstractShowDataController<ShowCollectionDataView> {
 

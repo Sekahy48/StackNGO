@@ -19,15 +19,11 @@ import mvc.model.entries.repository.EntriesRepository;
 
 
 public class DataContext implements Context{
-    private final Map<DAOType, GenericDAO<? extends GenericDTO, ?>> daoCollection;
-    private final StandardEntryFactory entriesFactory;
-    private final AccountFactory accountFactory;
+    private final Map<DAOType, GenericDAO<? extends GenericDTO, ?>> daoCollection; 
     private final EntriesRepository repo;
 
     public DataContext() {
-        this.daoCollection = new HashMap<>();
-        this.entriesFactory = new StandardEntryFactory();
-        this.accountFactory = new AccountFactory();
+        this.daoCollection = new HashMap<>(); 
         this.repo = new EntriesRepository(15, null);
         initDAOs();
     }
@@ -38,25 +34,32 @@ public class DataContext implements Context{
         daoCollection.put(DAOType.ITEM, new ItemDAO());
         daoCollection.put(DAOType.RECIPE, new RecipeDAO());
     }
-
-    //NO DEBERIA TENERSE QUE USAR
-    public GenericDAO<? extends GenericDTO, ?> getDAO(DAOType type) {
+ 
+    private GenericDAO<? extends GenericDTO, ?> getDAO(DAOType type) {
         return daoCollection.get(type);
-    }
-    //NO DEBERIA TENERSE QUE USAR
-    public StandardEntryFactory getEntriesFactory() { 
-        return entriesFactory; 
-    }
-    //NO DEBERIA TENERSE QUE USAR
-    public AccountFactory getAccountFactory() { 
-        return accountFactory; 
+    } 
+    
+    public AccountDAO getAccountDAO() {
+        return (AccountDAO) this.getDAO(DAOType.ACCOUNT);
     }
 
-    //NO DEBERIA TENERSE QUE USAR
+    public CollectionDAO getCollectionDAO() {
+        return (CollectionDAO) this.getDAO(DAOType.COLLECTION);
+    }
+
+    public RecipeDAO getRecipeDAO() {
+        return (RecipeDAO) this.getDAO(DAOType.RECIPE);
+    }
+
+    public ItemDAO getItemDAO() {
+        return (ItemDAO) this.getDAO(DAOType.ITEM);
+    }
+
     public EntriesRepository getEntriesRepo() {
         return repo;
     }
 
+    /*
     //#region Get DTO by id
     public CollectionDTO getCollectionDTOById(int id){
         CollectionDAO dao = (CollectionDAO) this.getDAO(DAOType.COLLECTION);
@@ -245,6 +248,7 @@ public class DataContext implements Context{
     }
 
     //#endregion
+     */
     
 }
 

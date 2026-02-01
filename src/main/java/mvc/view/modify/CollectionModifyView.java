@@ -5,7 +5,6 @@ import java.util.List;
 
 import creational.DTOFactory;
 import creational.EventPrefabFactory;
-import creational.ImageUtils;
 import creational.UIPrefabsFactory;
 import dataTransportLayer.EntryDTO;
 import dataTransportLayer.GenericDTO;
@@ -15,7 +14,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox; 
+import javafx.scene.layout.VBox;
+import utilities.ImageUtils; 
 
 
 public class CollectionModifyView extends AbstractModifyWithListsViews{

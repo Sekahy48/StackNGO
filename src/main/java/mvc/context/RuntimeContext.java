@@ -80,7 +80,7 @@ public class RuntimeContext {
         return this.sessionCtx;
     }
 
-    //TODO eliminar
+    //TODO eliminard
     private void setDAOs(){
         daoCollection.put(DAOType.ACCOUNT, new AccountDAO());
         daoCollection.put(DAOType.COLLECTION, new CollectionDAO());

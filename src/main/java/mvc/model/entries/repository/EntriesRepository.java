@@ -29,7 +29,7 @@ public class EntriesRepository {
         if(limit > 0){
             this.cacheLimit = limit;
         }else{
-            Logger.getInstance().log(LogLevel.ERROR, this.getClass().toString(), "El limite del cache del repositorio no puede ser negativo o nulo");
+            Logger.getInstance().error(this.getClass().toString(), "El limite del cache del repositorio no puede ser negativo o nulo");
         }
     }
 
@@ -37,7 +37,7 @@ public class EntriesRepository {
         if(newStrategy != null){
             this.evictionStrategy = newStrategy;
         }else{
-            Logger.getInstance().log(LogLevel.ERROR, this.getClass().toString(), "El repositorio no puede tener una expulsion de cache nula");
+            Logger.getInstance().error(this.getClass().toString(), "El repositorio no puede tener una expulsion de cache nula");
         }
     }
 
@@ -45,24 +45,62 @@ public class EntriesRepository {
         return repo.get(id);
     }
 
+    //#region Get by id
     public Item getItem(EntryId id){
         if (repo.get(id) instanceof  Item) return (Item) repo.get(id);
-        Logger.getInstance().log(LogLevel.ERROR, this.getClass().toString(), "Entry con id " + id.value() + " no es un item.");
+        Logger.getInstance().error(this.getClass().toString(), "Entry con id " + id.value() + " no es un item.");
         return null;
     }
 
     public Recipe getRecipe(EntryId id){
         if (repo.get(id) instanceof  Recipe) return (Recipe) repo.get(id);
-        Logger.getInstance().log(LogLevel.ERROR, this.getClass().toString(), "Entry con id " + id.value() + " no es una receta.");
+        Logger.getInstance().error(this.getClass().toString(), "Entry con id " + id.value() + " no es una receta.");
         return null;
     }
 
     public Collection getCollection(EntryId id){
         if (repo.get(id) instanceof  Collection) return (Collection) repo.get(id);
-        Logger.getInstance().log(LogLevel.ERROR, this.getClass().toString(), "Entry con id " + id.value() + " no es una coleccion.");
+        Logger.getInstance().error(this.getClass().toString(), "Entry con id " + id.value() + " no es una coleccion.");
+        return null;
+    }
+    //#endregion
+
+    //#region Get by name
+    public Item getItemByName(String name) {
+        for (Entry e : repo.values()) {
+            if (e instanceof Item && e.getName().equals(name)) {
+                return (Item) e;
+            }
+        }
+        Logger.getInstance().error(this.getClass().toString(),
+                "Item with name \"" + name + "\" was not found.");
         return null;
     }
 
+    public Recipe getRecipeByName(String name) {
+        for (Entry e : repo.values()) {
+            if (e instanceof Recipe && e.getName().equals(name)) {
+                return (Recipe) e;
+            }
+        }
+        Logger.getInstance().error(this.getClass().toString(),
+                "Recipe with name \"" + name + "\" was not found.");
+        return null;
+    }
+
+    public Collection getCollectionByName(String name) {
+        for (Entry e : repo.values()) {
+            if (e instanceof Collection && e.getName().equals(name)) {
+                return (Collection) e;
+            }
+        }
+        Logger.getInstance().error(this.getClass().toString(),
+                "Collection with name \"" + name + "\" was not found.");
+        return null;
+    }
+
+    //#endregion
+    
     public boolean contains(EntryId id){
         return this.getEntry(id) != null;
     }
@@ -84,7 +122,7 @@ public class EntriesRepository {
         if (this.repo.containsKey(entry.getId())){
             this.repo.put(entry.getId(), entry);
         }else{
-            Logger.getInstance().log(LogLevel.ERROR, this.getClass().toString(), "Entry con id " + entry.getId() + " no se encuentra cargada");
+            Logger.getInstance().error(this.getClass().toString(), "Entry con id " + entry.getId() + " no se encuentra cargada");
         }
     }
 

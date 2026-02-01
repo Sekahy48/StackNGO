@@ -1,6 +1,5 @@
 package mvc.view.modify;
 
-import creational.ImageUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -15,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import mvc.view.AbstractView;
+import utilities.ImageUtils;
 
 import java.io.File; 
 

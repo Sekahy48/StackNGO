@@ -5,7 +5,7 @@ import identificators.EntryId;
 
 public class ItemIdStack implements Comparable<ItemIdStack>{
     private final EntryId id;
-    private final int amount;
+    private int amount;
 
     public ItemIdStack(int id, int amount) {
         this.id = new EntryId(id);
@@ -22,11 +22,22 @@ public class ItemIdStack implements Comparable<ItemIdStack>{
         this.amount = amount;
     }
 
+    public ItemIdStack(ItemIdStack itemIdStack) {
+        this.id = itemIdStack.getId();
+        this.amount = itemIdStack.getAmount();
+    }
+
     public EntryId getId(){ 
         return this.id; 
     }
     public int getAmount(){ 
         return amount; 
+    }
+
+    public int modifyAmount(int delta) {
+        int out = this.amount + delta;
+        this.amount = Math.max(out, 0);
+        return out < 0 ? Math.abs(out) : 0;
     }
 
     @Override
