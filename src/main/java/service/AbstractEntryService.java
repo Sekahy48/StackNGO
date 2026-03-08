@@ -11,10 +11,10 @@ import mvc.model.entries.Entry;
 /**
  * Define a serie of operations for query/obtain, create, modify and interact with entries 
  */
-public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> {
+public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> implements IService{
     protected final DataContext data;
     protected final IEntriesFactory entriesFactory;
-
+    
     public AbstractEntryService(DataContext data){
         this.data = data;
         this.entriesFactory = new StandardEntryFactory();

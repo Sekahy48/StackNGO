@@ -110,7 +110,7 @@ public class RuntimeContext {
 
      
 
-     
+     /*
     //TODO eliminar
     public CollectionDTO getCollectionById(int id){
         CollectionDAO dao = (CollectionDAO) this.getDAO(DAOType.COLLECTION);
@@ -279,15 +279,7 @@ public class RuntimeContext {
         }
     }
 
-    /*public Recipe getRecipeByIdFromBD(int id){
-        RecipeDAO dao = (RecipeDAO) this.daoCollection.get(DAOType.RECIPE);
-        RecipeDTO dto = dao.read(id);
-        Recipe item = this.entriesFactory.createRecipe(dto);
-        this.repo.addRecipe(item);
-        return item;
-        
-    }
-        ELIMINAR, NO SE USA*/
+     
 
         //TODO eliminar
     public List<ItemStackDTO> getInputs(int id){
@@ -311,15 +303,19 @@ public class RuntimeContext {
     }
 
      
-    //REVISAR
-    public GenericDAO<? extends GenericDTO, ?> getDAO(DAOType type) {
-        return this.daoCollection.get(type);
-    }
+    
 
+    
     //TODO eliminar
     public CollectionDTO getCollectionByName(String collection) {
         CollectionDAO dao = (CollectionDAO) daoCollection.get(DAOType.COLLECTION);
         return dao.readByName(collection);
+    }
+         */
+    
+    //REVISAR
+    public GenericDAO<? extends GenericDTO, ?> getDAO(DAOType type) {
+        return this.daoCollection.get(type);
     }
  
 }

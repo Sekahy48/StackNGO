@@ -80,7 +80,7 @@ public class ShowItemDataController extends AbstractShowDataController<ShowItemD
                 dao.delete(id.value());
                 this.context.getEntriesRepo().tryToRemoveEntry(id);
                 this.view.showAlert("Item eliminado", "El item con nombre " + dto.name + " ha sido eliminado", Alert.AlertType.INFORMATION);
-                Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha borrado el item con nombre " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
+                Logger.getInstance().info(this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha borrado el item con nombre " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
                 goBack();
             }
         }

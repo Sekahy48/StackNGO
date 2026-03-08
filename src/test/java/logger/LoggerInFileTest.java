@@ -39,9 +39,9 @@ public class LoggerInFileTest {
         Logger logger = Logger.getInstance();
         logger.setLogAppender(appender);
 
-        logger.log(LogLevel.INFO, "LoggerTest", "Info");
-        logger.log(LogLevel.WARNING, "LoggerTest", "Warning");
-        logger.log(LogLevel.ERROR, "LoggerTest", "Error");
+        logger.info("LoggerTest", "Info");
+        logger.warning("LoggerTest", "Warning");
+        logger.error("LoggerTest", "Error");
 
         assertTrue(file.exists());
         assertTrue(file.length() > 0);

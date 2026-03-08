@@ -1564,3 +1564,9 @@
 (2026-01-23 14:05:39)	[INFO] class mvc.controller.show.entry.data.ShowRecipeDataController: El usuario a ha creado el output Iron Chestplate en la receta Iron Plate en la coleccion Minecraft
 (2026-01-24 22:15:34)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
 (2026-01-27 12:48:52)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-02-05 03:31:43)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-02-05 03:32:05)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-02-05 03:32:05)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-02-20 21:02:00)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-02-20 21:02:10)	[INFO] class mvc.controller.add.AddCollectionController: El usuario a ha creado una coleccion con nombre sas
+(2026-02-20 21:02:26)	[INFO] class command.modify.ModifyEntryCommand: La coleccion con nombre sas ha sido modificada.

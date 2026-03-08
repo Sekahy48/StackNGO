@@ -6,8 +6,7 @@ import command.user.LoginCommand;
 import dataTransportLayer.EventBuffer;
 import domain.accounts.Account;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import logger.LogLevel;
+import javafx.scene.control.Button; 
 import logger.Logger;
 import mvc.view.ViewType;
 import mvc.view.user.LoginView;
@@ -58,12 +57,12 @@ public class LoginController extends AbstractUserController<LoginView> {
         if  (account == null) {
 
             this.view.showAlert("Cuenta incorrecta", "No existe ninguna cuenta con ese nombre", Alert.AlertType.WARNING);
-            Logger.getInstance().log(LogLevel.ERROR, this.getClass().toString(), "No existe una cuenta con nombre " + user);
+            Logger.getInstance().error(this.getClass().toString(), "No existe una cuenta con nombre " + user);
 
         } else if (!account.verify(password)) {
 
             this.view.showAlert("Contraseña incorrecta", "Esta contraseña es incorrecta", Alert.AlertType.WARNING);
-            Logger.getInstance().log(LogLevel.ERROR, this.getClass().toString(), "Contraseña incorrecta para el usuario " + user);
+            Logger.getInstance().error(this.getClass().toString(), "Contraseña incorrecta para el usuario " + user);
 
         } else if (account.getState() == BLOCKED) {
 
@@ -72,7 +71,7 @@ public class LoginController extends AbstractUserController<LoginView> {
         } else {
 
             this.view.showAlert("Acceso realizado", "Has iniciado sesion correctamente", Alert.AlertType.INFORMATION);
-            Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El usuario " + user + " ha iniciado sesion");
+            Logger.getInstance().info(this.getClass().toString(), "El usuario " + user + " ha iniciado sesion");
             context.setAccount(account);
             buffer.publish(new ChangeToCommand(ViewType.PRIVATE_ZONE, user));
 

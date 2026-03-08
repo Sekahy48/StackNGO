@@ -85,8 +85,7 @@ public class CoreController {
 }
 
 
-    private <T extends AbstractView> void registerController(ViewType viewType, AbstractController<T> controller) {
-        controller.setRuntimeContext(context);
+    private <T extends AbstractView> void registerController(ViewType viewType, AbstractController<T> controller) { 
 
         T view = (T) context.getSystemContext().getView(viewType);
         controller.attachView(view);

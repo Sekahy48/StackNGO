@@ -131,7 +131,7 @@ public class PrivateController extends AbstractUserController<PrivateView> {
             this.buffer.publish(new ChangeScreenCommand(ViewType.LOG_IN));
             this.context.getDAO(DAOType.ACCOUNT).delete(account.getId().value());
             this.view.showAlert("Cuenta eliminada", "Tu cuenta con nombre " + account.getUsername() + " ha sido eliminada", Alert.AlertType.INFORMATION);
-            Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "el usuario " + this.context.getAccount().getUsername() + " ha borrado su cuenta");
+            Logger.getInstance().info(this.getClass().toString(), "el usuario " + this.context.getAccount().getUsername() + " ha borrado su cuenta");
         } else {
 
         }

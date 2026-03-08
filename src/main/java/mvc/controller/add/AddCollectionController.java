@@ -98,7 +98,7 @@ public class AddCollectionController extends AbstractAddController {
                 foreignKeys);
 
         this.view.showAlert("Colleccion creada","Coleccion " + dto.name + " creada correctamente", Alert.AlertType.INFORMATION);
-        Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El usuario " + accountName + " ha creado una coleccion con nombre " + dto.name);
+        Logger.getInstance().info(this.getClass().toString(), "El usuario " + accountName + " ha creado una coleccion con nombre " + dto.name);
 
         this.buffer.publish(new ChangeScreenCommand(ViewType.PRIVATE_ZONE));
     }

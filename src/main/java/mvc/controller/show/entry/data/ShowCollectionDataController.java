@@ -116,7 +116,7 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
             dao.delete(id.value());
             this.context.getEntriesRepo().tryToRemoveEntry(id);
             this.view.showAlert("Coleccion eliminada", "La coleccion con nombre " + dto.name + " ha sido eliminada", Alert.AlertType.INFORMATION);
-            Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha borrado la coleccion con nombre " + dto.name);
+            Logger.getInstance().info(this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha borrado la coleccion con nombre " + dto.name);
             goBack();
         }
     }

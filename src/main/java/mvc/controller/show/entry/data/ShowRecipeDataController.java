@@ -159,7 +159,7 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
             dao.delete(id.value());
             this.context.getEntriesRepo().tryToRemoveEntry(id);
             this.view.showAlert("Receta eliminada", "La receta con nombre " + dto.name + " ha sido eliminada", Alert.AlertType.INFORMATION);
-            Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha borrado la receta con nombre " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
+            Logger.getInstance().info(this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha borrado la receta con nombre " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
             goBack();
         }
     }
@@ -208,11 +208,11 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
                 RecipeDTO dto = this.context.getRecipeDTOById(this.view.getParentId().value());
                 if (type == RecipeIOType.INPUT) {
                     recipeDAO.updateInputAmount(view.getParentId().value(), item.id, newAmount, this.context.getSessionContext().getCurrentCollection().getId());
-                    Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),
+                    Logger.getInstance().info(this.getClass().toString(),
                             "El usuario " + this.context.getAccount().getUsername() + " ha cambiado la cantidad a " + newAmount + " del input " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
                 } else {
                     recipeDAO.updateOutputAmount(view.getParentId().value(), item.id, newAmount, this.context.getSessionContext().getCurrentCollection().getId());
-                    Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),
+                    Logger.getInstance().info(this.getClass().toString(),
                             "El usuario " + this.context.getAccount().getUsername() + " ha cambiado la cantidad a " + newAmount + " del output " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
                 }
                 }
@@ -228,11 +228,11 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
         if (persist) {
             RecipeDTO dto = this.context.getRecipeDTOById(this.view.getParentId().value());
             if (type == RecipeIOType.INPUT) {
-                Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),
+                Logger.getInstance().info(this.getClass().toString(),
                         "El usuario " + this.context.getAccount().getUsername() + " ha creado el input " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
                 recipeDAO.insertSingleInput(view.getParentId().value(), item.id, amountValue, this.context.getSessionContext().getCurrentCollection().getId());
             } else {
-                Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),
+                Logger.getInstance().info(this.getClass().toString(),
                         "El usuario " + this.context.getAccount().getUsername() + " ha creado el output " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
                 recipeDAO.insertSingleOutput(view.getParentId().value(), item.id, amountValue, this.context.getSessionContext().getCurrentCollection().getId());
             }
@@ -245,11 +245,11 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
                 RecipeDTO dto = this.context.getRecipeDTOById(this.view.getParentId().value());
                 target.getChildren().remove(row);
                 if (type == RecipeIOType.INPUT) {
-                    Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),
+                    Logger.getInstance().info(this.getClass().toString(),
                             "El usuario " + this.context.getAccount().getUsername() + " ha eliminado el input " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
                     recipeDAO.deleteSingleInput(view.getParentId().value(), item.id, this.context.getSessionContext().getCurrentCollection().getId());
                 } else {
-                    Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),
+                    Logger.getInstance().info(this.getClass().toString(),
                             "El usuario " + this.context.getAccount().getUsername() + " ha eliminado el output " + item.name + " en la receta " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
                     recipeDAO.deleteSingleOutput(view.getParentId().value(), item.id, this.context.getSessionContext().getCurrentCollection().getId());
                 }

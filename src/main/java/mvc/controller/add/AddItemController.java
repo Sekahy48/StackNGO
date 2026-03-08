@@ -95,7 +95,7 @@ public class AddItemController extends AbstractAddController implements Inyectab
         dao.create(item, foreignKeys);
 
         this.view.showAlert("Item creado", "Item con nombre " + dto.name +  " ha sido creado", Alert.AlertType.INFORMATION);
-        Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha creado un item llamado " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
+        Logger.getInstance().info(this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha creado un item llamado " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
         goBack();
     }
 }

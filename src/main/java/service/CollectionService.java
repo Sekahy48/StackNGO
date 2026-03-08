@@ -16,6 +16,10 @@ public class CollectionService extends AbstractEntryService<CollectionDTO, Colle
         super(data);
     }
 
+    public ServiceType getType() {
+        return ServiceType.COLLECTION;
+    }
+    
     //#region Entry operations
     @Override
     public Collection getEntryById(int id) {

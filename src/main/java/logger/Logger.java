@@ -1,6 +1,5 @@
 package logger;
-
-import javax.management.RuntimeErrorException;
+ 
 
 public class Logger {
 

@@ -139,7 +139,7 @@ public class AddRecipeController extends AbstractAddController implements Inyect
         dao.create(recipe, foreignKeys);
 
         this.view.showAlert("Receta creada", "La receta llamada " + dto.name + " ha sido creada", Alert.AlertType.INFORMATION);
-        Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha creado una receta llamada " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
+        Logger.getInstance().info(this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha creado una receta llamada " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
 
         goBack();
     }

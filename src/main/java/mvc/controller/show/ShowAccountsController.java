@@ -64,7 +64,7 @@ public class ShowAccountsController extends ShowGridDisplayController<AccountDTO
             dao.delete(account.getId().value());
 
             this.view.showAlert("Cuenta eliminada", "La cuenta con nombre " + account.getUsername() + " ha sido eliminada", Alert.AlertType.INFORMATION);
-            Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(),"El administrador " + adminName + " ha borrado la cuenta con nombre " + account.getUsername());
+            Logger.getInstance().info(this.getClass().toString(),"El administrador " + adminName + " ha borrado la cuenta con nombre " + account.getUsername());
 
             this.buffer.publish(new ShowAccounts());
             this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_ACCOUNTS));

@@ -94,14 +94,14 @@ public class SignUpController extends AbstractUserController<SignUpView> {
 
         } else if (context.getAccount(dto.name) != null) {
             this.view.showAlert("Cuenta ya existente", "La cuenta con nombre " + dto.name + " ya existe", Alert.AlertType.WARNING);
-            Logger.getInstance().log(LogLevel.WARNING, this.getClass().toString(), "Intento de creacion de una cuenta existente con nombre " + dto.name);
+            Logger.getInstance().warning(this.getClass().toString(), "Intento de creacion de una cuenta existente con nombre " + dto.name);
 
         } else if (!SecuritySystem.same(dto.password, checkPassword)) {
             this.view.showAlert("Contraseñas incorrectas", "Ambas contraseñas no son iguales", Alert.AlertType.WARNING);
         } else {
 
             this.view.showAlert("Registro correcto", "La cuenta con nombre " + dto.name + " ha sido creada correctamente" , Alert.AlertType.INFORMATION);
-            Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El usuario " + dto.name + " ha creado su cuenta correctamente" );
+            Logger.getInstance().info(this.getClass().toString(), "El usuario " + dto.name + " ha creado su cuenta correctamente" );
 
             AccountDAO accountDAO = (AccountDAO) this.context.getDAO(DAOType.ACCOUNT);
             accountDAO.create(

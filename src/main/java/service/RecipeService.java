@@ -20,6 +20,10 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
         super(data);
     }
 
+    public ServiceType getType() {
+        return ServiceType.RECIPE;
+    }
+
     //#region Entry operations
     @Override
     public Recipe getEntryById(int id) {
@@ -111,7 +115,7 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
         return true;
     }
 
-    public boolean execute(IInventoryElement inventory, Recipe recipe) {
+    public boolean executeRecipe(IInventoryElement inventory, Recipe recipe) {
         if (inventory == null || recipe == null) {
             Logger.getInstance().error(this.getClass().toString(),
                         "Cannot execute method with some of the atributes null");
@@ -127,13 +131,12 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
             }
         }
  
-        for (ItemIdStack ingredient : recipe.getIngredients()) {
-            inventory.removeItem(ingredient.getId(), ingredient.getAmount());
+        for (ItemIdStack ingredient : recipe.getIngredients()) { 
+            inventory.modifyAmount(this.data.getEntriesRepo().getItem(ingredient.getId()), -ingredient.getAmount());
         }
-
-        // 3️⃣ añadir resultados
+ 
         for (ItemIdStack result : recipe.getResults()) {
-            inventory.addItem(result.getId(), result.getAmount());
+            inventory.modifyAmount(this.data.getEntriesRepo().getItem(result.getId()), result.getAmount());
         }
 
         return true;
@@ -141,15 +144,15 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
 
 
     private Map<Integer, Integer> computeAvailable(IInventoryElement inventory) {
-    Map<Integer, Integer> available = new HashMap<>();
+        Map<Integer, Integer> available = new HashMap<>();
 
-    for (IInventoryElement elem : inventory.flattenInventory()) {
-        int id = elem.getItem().getId().value();
-        available.merge(id, elem.getAmount(), Integer::sum);
+        for (IInventoryElement elem : inventory.flattenInventory()) {
+            int id = elem.getItem().getId().value();
+            available.merge(id, elem.getAmount(), Integer::sum);
+        }
+
+        return available;
     }
-
-    return available;
-}
 
 
 

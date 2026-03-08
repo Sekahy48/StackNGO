@@ -1,5 +1,10 @@
 package mvc.controller;
 
+import java.security.Provider.Service;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 import command.BackNavigation;
 import command.ICommand;
 import command.screen.ChangeScreenCommand;
@@ -11,27 +16,34 @@ import javafx.scene.control.Button;
 import logger.LogLevel;
 import logger.Logger;
 import mvc.context.RuntimeContext;
+import mvc.context.SystemContext;
 import mvc.view.AbstractView;
 import mvc.view.ViewType;
 import observer.IObserver;
+import service.IService;
+import service.ServiceType;
 
-public abstract class AbstractController<T extends AbstractView> implements IObserver<EventBuffer> {
+public abstract class AbstractController<T extends AbstractView, E extends IService> implements IObserver<EventBuffer> {
 
     protected EventBuffer buffer;
-    protected RuntimeContext context;
+    protected HashMap<ServiceType, E> services;
     protected T view;
 
-    protected ICommand backCommand;
+    protected ICommand backCommand; 
 
 
     public AbstractController(EventBuffer buffer) {
         this.buffer = buffer;
         buffer.attachObserver(this);
+        this.services = new HashMap<ServiceType, E>(); 
     }
 
-    public void setRuntimeContext(RuntimeContext runtimeContext) {
-        this.context = runtimeContext;
+    public void addService(E service){
+        if (!this.services.isEmpty() && !this.services.values().contains(service)) {
+            services.put(service.getType(), service);
+        }
     }
+ 
 
     public abstract void handleButton();
 
@@ -53,7 +65,7 @@ public abstract class AbstractController<T extends AbstractView> implements IObs
 
                 e -> {
                     this.buffer.publish(new RedirectCommand(
-                                    this.context.getSystemContext().getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
+                                    this.services.get(ServiceType.).getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
                                     new ShowCollections()
                                  
                             )
@@ -65,7 +77,7 @@ public abstract class AbstractController<T extends AbstractView> implements IObs
         itemButton.setOnAction(
                 e -> {
                     this.buffer.publish(new RedirectCommand(
-                                    this.context.getSystemContext().getController(ViewType.SHOW_ITEMS).getBuffer(),
+                                    this.systemContext.getController(ViewType.SHOW_ITEMS).getBuffer(),
                                     new ShowItems()
                                  
                             )
@@ -105,18 +117,14 @@ public abstract class AbstractController<T extends AbstractView> implements IObs
     public EventBuffer getBuffer() {
         return buffer;
     }
-
-    public RuntimeContext getRuntimeContext() {
-        return context;
-    }
+ 
 
     protected void goBack() {
         if (backCommand != null) {
             this.buffer.publish(backCommand);
             this.backCommand = null;
         } else {
-            Logger.getInstance().log(
-                LogLevel.WARNING,
+            Logger.getInstance().info(
                 getClass().toString(),
                 "goBack sin contexto de navegación"
             );

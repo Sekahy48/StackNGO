@@ -5,163 +5,179 @@ import java.util.List;
 import mvc.model.entries.Item;
 
 /**
- * IInventoryElement representa, en el contexto de inventarios, a cualquier objeto que represente un nodo dentro de un inventario
- * bien sea un subinventario o un contenido final / hoja
+ * IInventoryElement represents, in the inventory context, any object that acts as a node
+ * within an inventory tree, either as a sub-inventory or as a final content / leaf.
  */
 public interface IInventoryElement {
-    //#region Utilidades basicas de inventario en global
+
+    //#region Global inventory basic utilities
 
     /**
-     * Añade al inventario actual amount cantidad positiva de item al inventario
-     * De cara a añadirlo se necesita especificar si puede contener otros items o no
-     * Se devuelve el nodo creado en el arbol o el modificado al añadir la cantidad del item, 
-     * en caso de añadir varios nodos inventario de vez, se devuelve el ultimo añadido.
-     * @implNote Si es hoja o no se gestionará en futuras versiones por componentes del item
-     * @param item
-     * @param amount
-     * @param isNotLeaf
-     * @return el nodo añadido
+     * Adds a positive amount of an item to the current inventory.
+     * In order to add it, it is necessary to specify whether the item
+     * can contain other items or not.
+     * The created or modified node in the inventory tree is returned.
+     * If multiple inventory nodes are added at once, the last added node
+     * is returned.
+     *
+     * @implNote Whether the item is a leaf or not will be managed in future
+     * versions by item components.
+     *
+     * @param item       Item to add
+     * @param amount     Positive amount to add
+     * @param isNotLeaf  Indicates whether the added item can contain other items
+     * @return The added or modified inventory node
      */
     public IInventoryElement addItem(Item item, int amount, boolean isNotLeaf);
 
     /**
-     * Añade varios items finales con sus amounts especificadas
-     * @param items
-    */
+     * Adds multiple leaf items with their specified amounts.
+     *
+     * @param items List of item stacks to add
+     */
     public void addSeveralLeafItems(List<ItemStack> items);
 
     /**
-     * Modifica la cantidad de item en el inventario actual una cantidad amount distinta de 0
-     * @param item
-     * @param amount
-     * @return cantidad modificada 
+     * Modifies the amount of an item in the current inventory by a non-zero value.
+     *
+     * @param item   Item to modify
+     * @param amount Amount to add or remove
+     * @return The actual amount modified
      */
     public int modifyAmount(Item item, int amount);
 
     /**
-     * Comprueba si el inventario actual contiene item
-     * @param item
-     * @return si contiene el item
+     * Checks whether the current inventory contains the given item.
+     *
+     * @param item Item to check
+     * @return True if the item is present
      */
     public boolean contains(Item item);
 
     /**
-     * Obtiene la cantidad de item que hay en todo el inventario entre los diferentes nodos que lo contengan
-     * @param item
-     * @return la cantidad de item a lo largo de todo el inventario
+     * Gets the total amount of the given item across the entire inventory,
+     * including all nodes that contain it.
+     *
+     * @param item Item to query
+     * @return Total amount of the item in the inventory
      */
     public int getAmount(Item item);
 
     /**
-     * Elimina cualquier cantidad de item en el inventario
-     * @param item
+     * Removes any amount of the given item from the inventory.
+     *
+     * @param item Item to remove
      */
     public void deleteItem(Item item);
 
     /**
-     * Obtiene el primer nodo que contenga item
-     * @param item
-     * @return el primer nodo que contenga item en caso de encontrarse
+     * Returns the first node that contains the given item.
+     *
+     * @param item Item to search for
+     * @return The first node containing the item, or null if not found
      */
     public IInventoryElement find(Item item);
 
     /**
-     * Devuelve una lista compuesta por todos los nodos encontrados que contengan item
-     * @param item
-     * @return la lista de nodos que contengan item
+     * Returns a list containing all nodes that contain the given item.
+     *
+     * @param item Item to search for
+     * @return List of nodes containing the item
      */
     public List<IInventoryElement> findNodes(Item item);
+
     //#endregion
 
-    //#region Utilidades basicas de inventario en local
-    // (afectan únicamente al inventario inmediato de este nodo del árbol)
+    //#region Local inventory basic utilities
+    // (affect only the immediate inventory of this tree node)
 
     /**
-     * Variante local de {@link #addItem(Item, int, boolean)}.
+     * Local variant of {@link #addItem(Item, int, boolean)}.
      * <p>
-     * Añade el item únicamente entre los hijos directos del inventario
-     * desde el que se invoca el método, sin descender recursivamente
-     * en subinventarios.
+     * Adds the item only among the direct children of the inventory
+     * from which the method is invoked, without recursively descending
+     * into sub-inventories.
      *
-     * @param item      Item a añadir
-     * @param amount    Cantidad a añadir (positiva)
-     * @param isNotLeaf Indica si el item añadido puede contener otros items
+     * @param item      Item to add
+     * @param amount    Amount to add (positive)
+     * @param isNotLeaf Indicates whether the added item can contain other items
      */
     public IInventoryElement addItemHere(Item item, int amount, boolean isNotLeaf);
 
     /**
-     * Variante local de {@link #addSeveralLeafItems(List<ItemStack> items)}.
+     * Local variant of {@link #addSeveralLeafItems(List<ItemStack> items)}.
      * <p>
-     * Añade los items hoja únicamente entre los hijos directos del inventario
-     * desde el que se invoca el método, sin descender recursivamente
-     * en subinventarios.
-     * @param items
-    */
-    public void addSeveralLeafItemsHere(List<ItemStack> items);
-    
-    /**
-     * Variante local de {@link #modifyAmount(Item, int)}.
-     * <p>
-     * Modifica la cantidad del item solo en los nodos hijos directos
-     * del inventario actual, sin propagarse a niveles inferiores.
+     * Adds leaf items only among the direct children of the inventory
+     * from which the method is invoked, without descending recursively
+     * into sub-inventories.
      *
-     * @param item   Item a modificar
-     * @param amount Cantidad a añadir o eliminar
-     * @return Cantidad realmente modificada en este nivel
+     * @param items List of item stacks to add
+     */
+    public void addSeveralLeafItemsHere(List<ItemStack> items);
+
+    /**
+     * Local variant of {@link #modifyAmount(Item, int)}.
+     * <p>
+     * Modifies the item amount only in the direct child nodes
+     * of the current inventory, without propagating to lower levels.
+     *
+     * @param item   Item to modify
+     * @param amount Amount to add or remove
+     * @return Amount actually modified at this level
      */
     public int modifyAmountHere(Item item, int amount);
 
     /**
-     * Variante local de {@link #contains(Item)}.
+     * Local variant of {@link #contains(Item)}.
      * <p>
-     * Comprueba si el inventario actual contiene el item únicamente
-     * entre sus hijos directos.
+     * Checks whether the current inventory contains the item
+     * only among its direct children.
      *
-     * @param item Item a comprobar
-     * @return true si el item está presente en este nivel
+     * @param item Item to check
+     * @return True if the item is present at this level
      */
     public boolean containsHere(Item item);
 
     /**
-     * Variante local de {@link #getAmount(Item)}.
+     * Local variant of {@link #getAmount(Item)}.
      * <p>
-     * Obtiene la cantidad del item existente únicamente en los hijos
-     * directos del inventario actual.
+     * Gets the amount of the item existing only among the
+     * direct children of the current inventory.
      *
-     * @param item Item a consultar
-     * @return Cantidad del item en este nivel del inventario
+     * @param item Item to query
+     * @return Amount of the item at this inventory level
      */
     public int getAmountHere(Item item);
 
     /**
-     * Variante local de {@link #deleteItem(Item)}.
+     * Local variant of {@link #deleteItem(Item)}.
      * <p>
-     * Elimina cualquier cantidad del item únicamente entre los hijos
-     * directos del inventario actual, sin afectar a subinventarios.
+     * Removes any amount of the item only among the direct
+     * children of the current inventory, without affecting sub-inventories.
      *
-     * @param item Item a eliminar
+     * @param item Item to remove
      */
     public void deleteItemHere(Item item);
 
     /**
-     * Variante local de {@link #find(Item)}.
+     * Local variant of {@link #find(Item)}.
      * <p>
-     * Devuelve el primer nodo hijo directo que contenga el item,
-     * sin descender recursivamente en el árbol.
+     * Returns the first direct child node that contains the item,
+     * without recursively descending into the tree.
      *
-     * @param item Item a buscar
-     * @return Nodo encontrado o null si no existe en este nivel
+     * @param item Item to search for
+     * @return Found node or null if it does not exist at this level
      */
     public IInventoryElement findHere(Item item);
 
     /**
-     * Variante local de {@link #findNodes(Item)}.
+     * Local variant of {@link #findNodes(Item)}.
      * <p>
-     * Devuelve todos los nodos hijos directos que contengan el item,
-     * sin incluir resultados de niveles inferiores del árbol.
+     * Returns all direct child nodes that contain the item,
+     * excluding results from lower levels of the tree.
      *
-     * @param item Item a buscar
-     * @return Lista de nodos encontrados en este nivel
+     * @param item Item to search for
+     * @return List of nodes found at this level
      */
     public List<IInventoryElement> findNodesHere(Item item);
 
@@ -169,50 +185,60 @@ public interface IInventoryElement {
 
     //#region Getters, Setters & Utilities
 
-    public void clearInventory();
-    
     /**
-     * Devuelve el item interno
-     * @return el item
+     * Removes all contents from the inventory.
+     */
+    public void clearInventory();
+
+    /**
+     * Returns the internal item.
+     *
+     * @return The item
      */
     public Item getItem();
 
     /**
-     * Devuelve el inventario interno, si lo tiene
-     * @return el inventario interno, si lo tiene
+     * Returns the internal inventory, if present.
+     *
+     * @return The internal inventory, if present
      */
     public List<IInventoryElement> getInventory();
 
     /**
-     * Devuelve true si es hoja / item sin contenido
-     * @return true si es hoja
+     * Returns true if this node is a leaf / item without content.
+     *
+     * @return True if this node is a leaf
      */
     public boolean isLeaf();
 
     /**
-     * Establece la cantidad del item interno a amount
-     * @param amount
+     * Sets the amount of the internal item.
+     *
+     * @param amount New amount
      */
     public void setAmount(int amount);
 
     /**
-     * Devuelve la cantidad del item interno
-     * @return la cantidad del item interno
+     * Returns the amount of the internal item.
+     *
+     * @return Internal item amount
      */
     public int getAmount();
 
     /**
-     * Recorre el arbol en busqueda de nodos con amount == 0 para eliminarlos
-     * del inventario, impia el inventario.
+     * Traverses the inventory tree searching for nodes with amount == 0
+     * and removes them from the inventory, cleaning the tree.
      */
     public void cleanTree();
 
     /**
-    * Devuelve una lista lineal con todos los items contenidos en este inventario
-    * y en todos sus sub-inventarios, en orden de aparición.
-    * Los nodos inventario se omiten, solo se incluyen los items reales (ItemObject)
-    */
-    List<IInventoryElement> flattenInventory(); 
+     * Returns a linear list containing all items stored in this inventory
+     * and all its sub-inventories, in order of appearance.
+     * Inventory nodes are omitted; only real items (ItemObject) are included.
+     *
+     * @return Flattened list of inventory items
+     */
+    List<IInventoryElement> flattenInventory();
 
     //#endregion
 }

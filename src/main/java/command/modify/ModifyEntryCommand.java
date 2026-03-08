@@ -66,7 +66,7 @@ public class ModifyEntryCommand implements ICommand {
         String alert = modType.getText() + " con nombre " + dto.name + " ha sido modificada.";
 
         controller.getView().showAlert("Modificacion", alert, Alert.AlertType.INFORMATION);
-        Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), log);
+        Logger.getInstance().info(this.getClass().toString(), log);
 
         ICommand showCommand;
         switch (modType) {

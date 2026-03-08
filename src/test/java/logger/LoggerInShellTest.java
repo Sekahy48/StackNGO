@@ -44,7 +44,7 @@ public class LoggerInShellTest {
     public void testLogPerSe(){
         System.setOut(originalOut);
         Logger.getInstance().setLogAppender(new ShellLogAppender());
-        Logger.getInstance().log(LogLevel.INFO, this.getClass().toString(), "El log de shell funciona bien");
+        Logger.getInstance().info(this.getClass().toString(), "El log de shell funciona bien");
     
     }
 }

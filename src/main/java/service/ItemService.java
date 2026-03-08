@@ -16,6 +16,10 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
         super(data);
     }
 
+    public ServiceType getType() {
+        return ServiceType.ITEM;
+    }
+
     //#region Entry operations
     @Override
     public Item getEntryById(int id) {
