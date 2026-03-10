@@ -3,8 +3,9 @@ package command.screen;
 import command.ICommand;
 import dataTransportLayer.EventBuffer;
 import mvc.controller.AbstractController;
+import command.AbstractControllerCommand;
 
-public class RedirectCommand implements ICommand {
+public class RedirectCommand extends AbstractControllerCommand {
 
     private ICommand command;
     private EventBuffer eventBuffer;
