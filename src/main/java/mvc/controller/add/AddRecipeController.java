@@ -12,6 +12,7 @@ import dataAccessLayer.DAO.DAOType;
 import dataAccessLayer.DAO.ItemDAO;
 import dataAccessLayer.DAO.RecipeDAO;
 import dataTransportLayer.*;
+import domain.accounts.Account;
 import identificators.EntryId;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -23,9 +24,15 @@ import javafx.stage.Popup;
 import logger.LogLevel;
 import logger.Logger;
 import mvc.controller.InyectableController;
+import mvc.model.entries.Item;
 import mvc.model.entries.Recipe;
 import mvc.view.ViewType;
 import mvc.view.add.AddRecipeView;
+import service.CollectionService;
+import service.ItemService;
+import service.RecipeService;
+import service.ServiceType;
+import service.SessionService;
 import utilities.ImageUtils;
 
 import java.util.ArrayList;
@@ -39,7 +46,7 @@ import java.util.Map;
  * Controller that manages the logic related to {@link AddRecipeView}
  *
  */
-public class AddRecipeController extends AbstractAddController implements InyectableController {
+public class AddRecipeController extends AbstractAddController<RecipeDTO> implements InyectableController {
     protected List<EntryDTO> listWhereAdd;
     public AddRecipeController(EventBuffer buffer) {
         super(buffer);
@@ -76,15 +83,7 @@ public class AddRecipeController extends AbstractAddController implements Inyect
                     ArrayList<ItemIdStackDTO> results = extractItemsFromVBox(view.getResultsList());
 
 
-                    if (name.isEmpty()) {
-                        this.view.showAlert("Nombre vacio", "Una receta debe tener un nombre", Alert.AlertType.ERROR);
-                    } else if (ingredients.isEmpty()) {
-                        this.view.showAlert("Ingredientes vacios", "Una receta debe tener al menos un ingrediente", Alert.AlertType.ERROR);
-                    } else if (results.isEmpty()) {
-                        this.view.showAlert("Resultados vacios", "Una receta debe tener al menos un resultado", Alert.AlertType.ERROR);
-                    } else {
-                        try {
-                            RecipeDTO dto = DTOFactory.recipe(
+                    RecipeDTO dto = DTOFactory.recipe(
                                     ingredients,
                                     results,
                                     name,
@@ -92,13 +91,8 @@ public class AddRecipeController extends AbstractAddController implements Inyect
                                     description,
                                     this.idGenerator.generateId()
                             );
-                            
-                            this.buffer.publish(new AddRecipeCommand(dto));
 
-                        } catch (Exception ex) {
-                            this.view.showAlert("Receta existente", "La receta llamada " + name + " ya ha sido creada previamente", Alert.AlertType.ERROR);
-                        }
-                    }
+                    this.onCreateEvent(dto);
                 }
         );
 
@@ -128,20 +122,30 @@ public class AddRecipeController extends AbstractAddController implements Inyect
     }
 
     @Override
-    public void create(EntryDTO dto) {
+    public void onCreateEvent(RecipeDTO dto) { 
+        if (dto.name.isEmpty()) {
+            this.view.showAlert("Nombre vacio", "Una receta debe tener un nombre", Alert.AlertType.ERROR);
+        } else if (dto.ingredients.isEmpty()) {
+            this.view.showAlert("Ingredientes vacios", "Una receta debe tener al menos un ingrediente", Alert.AlertType.ERROR);
+        } else if (dto.results.isEmpty()) {
+            this.view.showAlert("Resultados vacíos", "Una receta debe tener al menos un resultado", Alert.AlertType.ERROR);
+        }else {
+            RecipeService recipeService = this.getService(ServiceType.RECIPE);
+            SessionService sessionService = this.getService(ServiceType.SESSION);
 
-        RecipeDAO dao = (RecipeDAO) this.context.getDAO(DAOType.RECIPE);
-        int collectionId = this.view.getParentId().value();
-        int[] foreignKeys = {collectionId};
-        Recipe recipe = this.context.getEntriesFactory().createRecipe((RecipeDTO) dto);
-        this.context.getRepo().addRecipe(recipe);
-
-        dao.create(recipe, foreignKeys);
-
-        this.view.showAlert("Receta creada", "La receta llamada " + dto.name + " ha sido creada", Alert.AlertType.INFORMATION);
-        Logger.getInstance().info(this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha creado una receta llamada " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
-
-        goBack();
+            CollectionDTO currentCollectionDTO = sessionService.getCurrentCollectionDTO();
+            Account currentAccount = sessionService.getCurrentAccount();
+            int[] extraData = {currentCollectionDTO.id};
+            Recipe newRecipe = recipeService.saveEntry(dto, extraData);
+            
+            if (newRecipe != null) {
+                this.view.showAlert("Receta creada","Coleccion " + dto.name + " creada correctamente", Alert.AlertType.INFORMATION);
+                Logger.getInstance().info(this.getClass().toString(), "El usuario " + currentAccount.getUsername() + " ha creado una receta con nombre " + dto.name);
+            } else {
+                this.view.showAlert("Receta existente", "La receta llamada " + dto.name + " ya ha sido creada previamente", Alert.AlertType.ERROR);
+                this.goBack();
+            }
+        } 
     }
 
     private void addRow(AddRecipeView view, String resultName, String iconPath, Button button) {
@@ -232,9 +236,14 @@ public class AddRecipeController extends AbstractAddController implements Inyect
             targetList = view.getResultsList();
         }
 
-        EntryId collectionId = new EntryId(view.getParentId().value());
-        ItemDAO itemDAO = (ItemDAO) this.context.getDAO(DAOType.ITEM);
-        List<ItemDTO> listItems = itemDAO.readAllByParent(collectionId.value());
+        //EntryId collectionId = new EntryId(view.getParentId().value());
+        //ItemDAO itemDAO = (ItemDAO) this.context.getDAO(DAOType.ITEM);
+        //List<ItemDTO> listItems = itemDAO.readAllByParent(collectionId.value());
+
+        int collectionId = this.<SessionService>getService(ServiceType.SESSION).getCurrentCollectionDTO().id;
+        ItemService itemService = this.getService(ServiceType.ITEM);
+        List<ItemDTO> listItems = itemService.getAllDTO(collectionId); 
+
         Map<String, String> items = new HashMap<>();
 
         for(ItemDTO itemDTO : listItems){
@@ -276,7 +285,8 @@ public class AddRecipeController extends AbstractAddController implements Inyect
 
     private ArrayList<ItemIdStackDTO> extractItemsFromVBox(VBox box){
         ArrayList<ItemIdStackDTO> list = new ArrayList<>();
-        ItemDAO itemDAO = (ItemDAO) this.context.getDAO(DAOType.ITEM);
+        //ItemDAO itemDAO = (ItemDAO) this.context.getDAO(DAOType.ITEM);
+        ItemService service = this.getService(ServiceType.ITEM);
 
         for (Node row : box.getChildren()) {
             if (row instanceof HBox){
@@ -303,7 +313,7 @@ public class AddRecipeController extends AbstractAddController implements Inyect
                         }
                     }
 
-                    ItemDTO itemDTO = itemDAO.readByName(itemName);
+                    ItemDTO itemDTO = service.getDTOByName(itemName);
                     int itemId = itemDTO.getId();
 
                     list.add(new ItemIdStackDTO(itemId, amount));
