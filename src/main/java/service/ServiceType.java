@@ -5,6 +5,7 @@ public enum ServiceType {
     RECIPE,
     ITEM,
     CONTROLLER,
+    SESSION,
     
     
 }

@@ -6,10 +6,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import dataTransportLayer.ItemDTO;
 import dataTransportLayer.RecipeDTO;
 import identificators.EntryId;
 import logger.Logger;
 import mvc.context.DataContext;
+import mvc.model.entries.Item;
 import mvc.model.entries.ItemIdStack;
 import mvc.model.entries.Recipe;
 import mvc.model.inventory.IInventoryElement;
@@ -90,6 +92,11 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
     @Override
     public Recipe createEntry(RecipeDTO dto) {
         return this.entriesFactory.createRecipe(dto);
+    } 
+
+    @Override
+    public Recipe saveEntry(RecipeDTO dto, int[] extraData) {
+        return null; //TODO
     }
 
     //#region Logic

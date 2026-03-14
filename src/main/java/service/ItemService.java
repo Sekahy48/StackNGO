@@ -87,4 +87,9 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
     public Item createEntry(ItemDTO dto) {
         return this.entriesFactory.createItem(dto);
     }
+
+    @Override
+    public Item saveEntry(ItemDTO dto, int[] extraData) {
+        return null; //TODO
+    }
 }

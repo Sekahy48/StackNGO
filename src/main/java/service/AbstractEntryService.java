@@ -81,10 +81,22 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
     //#endregion
 
     /**
-     * Creates a new entry from a DTO.
+     * Creates a new entry from a DTO and some extra data. Then it persists it in SQL DB and
+     * caches it in the entries repository.
      *
      * @param dto the DTO containing the data needed to create the entry
-     * @return the newly created entity of type E
+     * @param extraData extra data needed for the building of the entity. Is needed for the user of this method
+     * to know what data is needed to be contained inside this parameter.
+     * @return the newly created entry of type E or null if one equivalent
+     * is alredy present in database.
      */ 
+    public abstract E saveEntry(T dto, int[] extraData);
+
+    /**
+     * Just creates an Entry given a DTO and returns it.
+     * @param dto the DTO containing the data needed to create the entry
+     * @return the entry
+     */
     public abstract E createEntry(T dto);
+    //TODO considerar hacer el metodo de arriba prrotected
 }

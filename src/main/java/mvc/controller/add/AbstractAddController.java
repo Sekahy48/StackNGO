@@ -10,11 +10,15 @@ import dataTransportLayer.EntryDTO;
 import dataTransportLayer.EventBuffer;
 import javafx.stage.FileChooser;
 import mvc.controller.AbstractController;
+import mvc.model.entries.Entry;
 import mvc.model.entries.repository.EntryIdGenerator;
 import mvc.view.ViewType;
 import mvc.view.add.AbstractAddView;
+import service.ControllerService;
+import service.ServiceType;
+import service.SessionService;
 
-public abstract class AbstractAddController extends AbstractController<AbstractAddView> {
+public abstract class AbstractAddController<D extends EntryDTO> extends AbstractController<AbstractAddView> {
 
     protected EntryIdGenerator idGenerator;
 
@@ -34,16 +38,20 @@ public abstract class AbstractAddController extends AbstractController<AbstractA
     public abstract void handleButton();
 
     protected void goBack() {
-        CollectionDTO dto = this.context.getSessionContext().getCurrentCollection();
+        CollectionDTO dto = this.<SessionService>getService(ServiceType.SESSION).getCurrentCollectionDTO();
 
         this.buffer.publish(new RedirectCommand(
-                this.context.getSystemContext().getController(ViewType.SHOW_COLLECTION).getBuffer(),
+                this.<ControllerService>getService(ServiceType.CONTROLLER).getControllerBuffer(ViewType.SHOW_COLLECTION),
                 new ShowCollection(dto)
         ));
         this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_COLLECTION));
     }
 
-    public abstract void create(EntryDTO dto);
+    /**
+     * Creates and persists a system entity given a DTO.
+     * @param dto to create the system entity. 
+     */
+    public abstract void onCreateEvent(D dto);
 
     public void chooseImage() {
 

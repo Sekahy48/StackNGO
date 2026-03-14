@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import dataAccessLayer.DAO.CollectionDAO;
 import dataTransportLayer.CollectionDTO;
+import identificators.AccountId;
 import identificators.EntryId;
 import logger.Logger;
 import mvc.context.DataContext;
@@ -82,9 +84,20 @@ public class CollectionService extends AbstractEntryService<CollectionDTO, Colle
         return data.getCollectionDAO().readAllByParent(parentId);
     }
     //#endregion
-
+    
     @Override
     public Collection createEntry(CollectionDTO dto) {
         return this.entriesFactory.createCollection(dto);
+    }
+    @Override
+    public Collection saveEntry(CollectionDTO dto, int[] extraData) {
+        Collection out = null;
+        CollectionDAO dao = this.data.getCollectionDAO();
+        if (dao.read(dto.id) != null) {
+            out = this.createEntry(dto);
+            dao.create(out, extraData);
+            this.data.getEntriesRepo().addCollection(out);
+        }
+        return out;
     }
 }
