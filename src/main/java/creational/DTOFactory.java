@@ -8,6 +8,7 @@ import dataTransportLayer.*;
 import identificators.EntryId;
 import logger.LogLevel;
 import logger.Logger;
+import mvc.model.entries.Recipe;
 import mvc.model.inventory.IInventoryElement; 
 
 public final class DTOFactory {
@@ -53,10 +54,18 @@ public final class DTOFactory {
         return out;
     }
 
-    public static List<EntryDTO> itemsAsEntries(List<ItemWithCollectionDTO> dtos) {
+    public static List<EntryDTO> itemsWithCollectionAsEntries(List<ItemWithCollectionDTO> dtos) {
         ArrayList<EntryDTO> out = new ArrayList<>();
         for (ItemWithCollectionDTO elem : dtos) {
             out.add(elem.item);
+        }
+        return out;
+    }
+
+    public static List<EntryDTO> itemsAsEntries(List<ItemDTO> dtos) {
+        ArrayList<EntryDTO> out = new ArrayList<>();
+        for (ItemDTO elem : dtos) {
+            out.add(elem);
         }
         return out;
     }
@@ -91,10 +100,18 @@ public final class DTOFactory {
         return out;
     }
 
-    public static List<EntryDTO> recipesAsEntries(List<RecipeWithCollectionDTO> dtos) {
+    public static List<EntryDTO> recipesWithCollectionAsEntries(List<RecipeWithCollectionDTO> dtos) {
         ArrayList<EntryDTO> out = new ArrayList<>();
         for (RecipeWithCollectionDTO elem : dtos) {
             out.add(elem.recipe);
+        }
+        return out;
+    }
+
+    public static List<EntryDTO> recipesAsEntries(List<RecipeDTO> dtos) {
+        ArrayList<EntryDTO> out = new ArrayList<>();
+        for (RecipeDTO elem : dtos) {
+            out.add(elem);
         }
         return out;
     }

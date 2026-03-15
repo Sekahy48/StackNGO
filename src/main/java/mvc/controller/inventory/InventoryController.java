@@ -3,6 +3,8 @@ package mvc.controller.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.mysql.cj.Session;
+
 import creational.DTOFactory;
 import creational.UIPrefabsFactory;
 import dataTransportLayer.CollectionDTO;
@@ -25,12 +27,18 @@ import mvc.model.inventory.InventoryObject;
 import mvc.model.inventory.ItemStack;
 import mvc.view.inventory.InventoryPopupView;
 import mvc.view.inventory.InventoryView;
+import service.CollectionService;
+import service.ItemService;
+import service.RecipeService;
+import service.ServiceType;
+import service.SessionService;
 
 public class InventoryController extends AbstractController<InventoryView>{
 
     private IInventoryElement inventory;
+    /*Movidos a SessionContext, accesibles por SessionService
     private CollectionDTO currentCollection;
-    private RecipeDTO currentRecipe; 
+    private RecipeDTO currentRecipe;  */
 
     
 
@@ -50,11 +58,12 @@ public class InventoryController extends AbstractController<InventoryView>{
     @Override
     public void handleButton() {
         commonHandleButton();
-
-        
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        ItemService itemService = this.getService(ServiceType.ITEM);
         this.view.getSelectCollectionButton().setOnAction(e -> {
+            CollectionService collectionService = this.getService(ServiceType.COLLECTION); 
 
-            List<EntryDTO> collectionsDTO = DTOFactory.collectionsAsEntries(context.getCollections());
+            List<EntryDTO> collectionsDTO = DTOFactory.collectionsAsEntries(collectionService.getAllDTO(sessionService.getCurrentAccount().getId().value()));
             
             boolean resetColl = this.view.showAlert(
                 "Seleccionar otra coleccion",
@@ -65,7 +74,7 @@ public class InventoryController extends AbstractController<InventoryView>{
 
             if(resetColl){
                 this.clearInventory();
-                this.currentRecipe = null;
+                sessionService.setCurrentInventoryRecipe(null);
 
                 UIPrefabsFactory.createSelectionPopup(
                     view.getSelectCollectionButton(),
@@ -73,7 +82,7 @@ public class InventoryController extends AbstractController<InventoryView>{
                     collectionsDTO,
                     selected -> {
                         view.getSelectedCollectionLabel().setText(selected.name);
-                        this.currentCollection = context.getCollectionById(selected.id);
+                        sessionService.setCurrentInventoryCollection(collectionService.getDTOById(selected.id));
                     }
             );
             }
@@ -82,7 +91,7 @@ public class InventoryController extends AbstractController<InventoryView>{
 
         this.view.getSelectRecipeButton().setOnAction(e -> {
 
-            if(currentCollection == null){
+            if(sessionService.getCurrentInventoryCollectionDTO() == null){
                 this.view.showAlert(
                     "Ninguna Coleccion Seleccionada",
                     "Por favor selecciona una Coleccion antes de elegir una Receta.",
@@ -90,17 +99,20 @@ public class InventoryController extends AbstractController<InventoryView>{
                 );
                 return;
             }
+            //TODO AHORA buscar si se puede extraer la extraccion de ing y res
+            RecipeService recipeService = this.getService(ServiceType.RECIPE);
 
-            List<EntryDTO> recipeDTO = DTOFactory.recipesAsEntries(context.getRecipesByCollection(new EntryId(currentCollection.id)));
-
+            List<EntryDTO> recipeDTO = DTOFactory.recipesAsEntries(recipeService.getAllDTO(sessionService.getCurrentInventoryCollectionDTO().id)); 
             UIPrefabsFactory.createSelectionPopup(
                     view.getSelectCollectionButton(),
                     view.getSelectCollections(),
                     recipeDTO,
                     selected -> {
                         view.getSelectedRecipeLabel().setText(selected.name); 
-                        this.currentRecipe = context.getRecipeDTOById(selected.id);
-                        this.view.updateRecipeRelatedLists(currentRecipe, context);
+                        RecipeDTO currentRecipeDTO = recipeService.getDTOById(selected.id);
+                        sessionService.setCurrentInventoryRecipe(currentRecipeDTO);
+                        this.view.updateRecipeRelatedLists(itemService.idStackToStackList(currentRecipeDTO.ingredients),
+                                                           itemService.idStackToStackList(currentRecipeDTO.results));
                     }
             );
 
@@ -109,7 +121,7 @@ public class InventoryController extends AbstractController<InventoryView>{
         });
 
         this.view.getExecuteRecipeButton().setOnAction(e -> {
-            if(this.currentRecipe == null){
+            if(sessionService.getCurrentInventoryRecipeDTO() == null){
                 this.view.showAlert(
                     "Ninguna Receta Seleccionada",
                     "Por favor selecciona una Receta antes de ejecutarla.",
@@ -118,12 +130,12 @@ public class InventoryController extends AbstractController<InventoryView>{
                 return;
             }
 
-            //NOTA, cambiar por un relkoad en repo
-            Recipe actRecipe = context.getRecipeById(this.currentRecipe.id);
-            this.context.getEntriesRepo().modifyEntry(actRecipe);
-            
+            //NOTA, si algo da error revisar no vaya a ser que la omision de esto de problemas, a priori veo absurdo el que se haga
+            //Recipe actRecipe = context.getRecipeById(this.currentRecipe.id);
+            //this.context.getEntriesRepo().modifyEntry(actRecipe);
 
-            Recipe recipe = context.getRecipeById(this.currentRecipe.id);
+            RecipeService recipeService = this.getService(ServiceType.RECIPE);
+            Recipe recipe = recipeService.getEntryById(sessionService.getCurrentInventoryRecipeDTO().id);
             ArrayList<ItemIdStack> inventoryItems = new ArrayList<>();
             for(IInventoryElement element : this.inventory.flattenInventory()){
                 if(element.isLeaf())inventoryItems.add(new ItemIdStack(element.getItem().getId(), element.getAmount()));
@@ -144,10 +156,10 @@ public class InventoryController extends AbstractController<InventoryView>{
 
             ArrayList<ItemStack> toModify = new ArrayList<>();
             for(ItemIdStack input : inputs){
-                toModify.add(new ItemStack(context.getItemById(input.getId().value()), -input.getAmount()));
+                toModify.add(new ItemStack(itemService.getEntryById(input.getId().value()), -input.getAmount()));
             }
             for(ItemIdStack result : results){
-                toModify.add(new ItemStack(context.getItemById(result.getId().value()), result.getAmount()));
+                toModify.add(new ItemStack(itemService.getEntryById(result.getId().value()), result.getAmount()));
             }
 
             for(ItemStack mod : toModify){
@@ -164,7 +176,7 @@ public class InventoryController extends AbstractController<InventoryView>{
         });
 
         this.view.getAddItemButton().setOnAction(e -> {
-            if(currentCollection == null){
+            if(sessionService.getCurrentInventoryCollectionDTO() == null){
                 this.view.showAlert(
                     "Ninguna Coleccion Seleccionada",
                     "Por favor selecciona una Coleccion antes de añadir items al inventario.",
@@ -173,7 +185,7 @@ public class InventoryController extends AbstractController<InventoryView>{
                 return;
             }
 
-            List<EntryDTO> itemsDTOs = DTOFactory.itemsAsEntries(context.getItemsByCollection(new EntryId(currentCollection.id)));
+            List<EntryDTO> itemsDTOs = DTOFactory.itemsAsEntries(itemService.getAllDTO(sessionService.getCurrentInventoryCollectionDTO().id));
             UIPrefabsFactory.createSelectionPopup(
                     view.getAddItemButton(),
                     null,
@@ -181,7 +193,7 @@ public class InventoryController extends AbstractController<InventoryView>{
                     selected -> {
                         Integer amount = UIPrefabsFactory.showAmount("Cantidad a añadir",
                             "Indica la cantidad " + selected.name + " que deseas añadir al inventario:");
-                        Item toAdd = context.getItemById(selected.id);
+                        Item toAdd = itemService.getEntryById(selected.id);
                         if(amount == null) return;
                         if(amount <= 0) {this.view.showAlert(
                             "Cantidad no valida",
@@ -206,7 +218,7 @@ public class InventoryController extends AbstractController<InventoryView>{
 
             // Pedimos cantidad
             Integer amount = UIPrefabsFactory.showAmount("Cantidad a eliminar",
-                "Indica la cantidad de " + context.getItemById(id).getName() + " item que deseas eliminar del inventario:\n(Introduzca el valor en positivo)");
+                "Indica la cantidad de " + itemService.getEntryById(id).getName() + " item que deseas eliminar del inventario:\n(Introduzca el valor en positivo)");
 
             if(amount == null) return;
             if(amount <= 0) this.view.showAlert(
@@ -214,19 +226,19 @@ public class InventoryController extends AbstractController<InventoryView>{
                 "La cantidad a eliminar debe ser mayor que 0.",
                 Alert.AlertType.WARNING
             );
-            else this.inventory.modifyAmountHere(context.getItemById(id), amount * -1);
+            else this.inventory.modifyAmountHere(itemService.getEntryById(id), amount * -1);
             this.populateGrid();
         });
 
         this.view.getClearButton().setOnAction(e -> {
             this.clearInventory(); 
-            this.currentCollection = null;
-            this.currentRecipe = null;
+            sessionService.setCurrentInventoryCollection(null);
+            sessionService.setCurrentInventoryRecipe(null);
         });
 
         this.view.getAddContainerItemButton().setOnAction(e -> {
 
-            if(currentCollection == null){
+            if(sessionService.getCurrentInventoryCollectionDTO() == null){
                 this.view.showAlert(
                     "Ninguna Coleccion Seleccionada",
                     "Por favor selecciona una Coleccion antes de añadir items al inventario.",
@@ -235,14 +247,14 @@ public class InventoryController extends AbstractController<InventoryView>{
                 return;
             }
 
-            List<EntryDTO> itemsDTOs = DTOFactory.itemsAsEntries(context.getItemsByCollection(new EntryId(currentCollection.id)));
+            List<EntryDTO> itemsDTOs = DTOFactory.itemsAsEntries(itemService.getAllDTO(sessionService.getCurrentInventoryCollectionDTO().id));
             UIPrefabsFactory.createSelectionPopup(
                     view.getAddItemButton(),
                     null,
                     itemsDTOs,
                     selected -> {
                         
-                        Item toAdd = context.getItemById(selected.id);
+                        Item toAdd = itemService.getEntryById(selected.id);
 
                         if(!inventory.containsHere(toAdd) || inventory.findHere(toAdd).isLeaf()) {
                             this.view.showAlert("Advertencia", "Cuidado, si añades este item como contenedor no podrás" + 
@@ -283,26 +295,28 @@ public class InventoryController extends AbstractController<InventoryView>{
         }
 
     private void handleCellDoubleClick(StackPane cell) {
+        ItemService itemService = this.getService(ServiceType.ITEM);
         Object data = cell.getUserData();
         if (data == null) return;
 
         int itemId = (int) data; // o el tipo que uses
-        ItemDTO dto = context.getItemDTOById(itemId);
+        ItemDTO dto = itemService.getDTOById(itemId);
 
-        // Si no es contenedor, ignoramos
-        if (inventory.findHere(context.getItemById(itemId)).isLeaf()) { 
-            return;
+        // Si es contenedor, accedemos
+        if (!inventory.findHere(itemService.getEntryById(itemId)).isLeaf()) { 
+            openContainerInventory(dto);
         }
 
-        // Si es contenedor, abrimos popup con su inventario
-        openContainerInventory(dto); // <--- aquí va
+        // Si no, ignoramos
     }
 
 
     private void openContainerInventory(ItemDTO containerItem) {
+        ItemService itemService = this.getService(ServiceType.ITEM);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
 
         IInventoryElement elem =
-            inventory.findHere(context.getItemById(containerItem.id));
+            inventory.findHere(itemService.getEntryById(containerItem.id));
 
         Stage popup = new Stage();
         popup.initModality(Modality.APPLICATION_MODAL);
@@ -311,16 +325,39 @@ public class InventoryController extends AbstractController<InventoryView>{
         InventoryPopupController controller =
             new InventoryPopupController(elem, buffer);
 
-        controller.attachView(view);
-        controller.setRuntimeContext(context);
-        controller.setCurrentRecipe(this.currentRecipe);
-        controller.setCurrentCollection(this.currentCollection);
-        controller.getView().updateRecipeRelatedLists(currentRecipe, context);
+        controller.attachView(view); 
+        controller.addService(sessionService);
+        //TODO añadir mas servicios si hace falta (lo hara), de momento añador solo el de sesion pq es equivalente a lo que habia antes en la arq vieja
+        //controller.setCurrentRecipe(this.currentRecipe);
+        //controller.setCurrentCollection(this.currentCollection);
+
+        //Considerar que esta invocación se realice en el InventoryPopUpController y no aqui. 
+        RecipeDTO currentRecipeDTO = this.<SessionService>getService(ServiceType.SESSION).getCurrentInventoryRecipeDTO();
+        controller.getView().updateRecipeRelatedLists(itemService.idStackToStackList(currentRecipeDTO.ingredients),
+                                                           itemService.idStackToStackList(currentRecipeDTO.results));
         popup.setScene(new Scene(view.getRoot(), 400, 400));
         popup.show();
 
         
     }
+
+    /*
+    List<ItemStackDTO> ing = new ArrayList<>();
+    List<ItemStackDTO> res = new ArrayList<>();
+
+    for (ItemIdStackDTO elem : recipeDTO.ingredients) {
+        ing.add(DTOFactory.itemStack(
+            service.getDTOById(elem.id),
+            elem.amount
+        ));
+    }
+
+    for (ItemIdStackDTO elem : recipeDTO.results) {
+        res.add(DTOFactory.itemStack(
+            service.getDTOById(elem.id),
+            elem.amount
+        ));
+    }    */
 
 
 }

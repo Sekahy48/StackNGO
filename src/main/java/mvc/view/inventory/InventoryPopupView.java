@@ -25,6 +25,7 @@ import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import mvc.context.RuntimeContext;
 import mvc.view.AbstractView;
+import service.ItemService;
 import utilities.ImageUtils;
 
 public class InventoryPopupView extends AbstractView {
@@ -179,29 +180,13 @@ public class InventoryPopupView extends AbstractView {
         }
     }
 
-    public void updateRecipeRelatedLists(RecipeDTO recipeDTO, RuntimeContext context) {
+    //NOTA, por si hay problemas tras o a mitad del refactor, en esta clase solo se ha cambiado que en vez de recibir un viejo RUntimeContext se pasa el ser
+    public void updateRecipeRelatedLists(List<ItemStackDTO> ing, List<ItemStackDTO> res) {
 
         
         this.ingredients.getChildren().clear();
         this.results.getChildren().clear();
 
-        List<ItemStackDTO> ing = new ArrayList<>();
-        List<ItemStackDTO> res = new ArrayList<>();
-
-        for (ItemIdStackDTO elem : recipeDTO.ingredients) {
-            ing.add(DTOFactory.itemStack(
-                context.getItemDTOById(elem.id),
-                elem.amount
-            ));
-        }
-
-        for (ItemIdStackDTO elem : recipeDTO.results) {
-            res.add(DTOFactory.itemStack(
-                context.getItemDTOById(elem.id),
-                elem.amount
-            ));
-        }
-        
         UIPrefabsFactory.addSeveralItemStackRows(ing, ingredients);
         UIPrefabsFactory.addSeveralItemStackRows(res, results);
 

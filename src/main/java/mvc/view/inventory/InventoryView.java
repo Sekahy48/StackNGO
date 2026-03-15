@@ -292,29 +292,12 @@ public class InventoryView extends AbstractView {
         rebuildInventoryGrid(Math.max(1, (int) (inventoryScroll.getViewportBounds().getWidth() / CELL_SIZE))); 
     }
 
-    public void updateRecipeRelatedLists(RecipeDTO recipeDTO, RuntimeContext context) {
+    public void updateRecipeRelatedLists(List<ItemStackDTO> ing, List<ItemStackDTO> res) {
 
         
         this.ingredients.getChildren().clear();
         this.results.getChildren().clear();
 
-        List<ItemStackDTO> ing = new ArrayList<>();
-        List<ItemStackDTO> res = new ArrayList<>();
-
-        for (ItemIdStackDTO elem : recipeDTO.ingredients) {
-            ing.add(DTOFactory.itemStack(
-                context.getItemDTOById(elem.id),
-                elem.amount
-            ));
-        }
-
-        for (ItemIdStackDTO elem : recipeDTO.results) {
-            res.add(DTOFactory.itemStack(
-                context.getItemDTOById(elem.id),
-                elem.amount
-            ));
-        }
-        
         UIPrefabsFactory.addSeveralItemStackRows(ing, ingredients);
         UIPrefabsFactory.addSeveralItemStackRows(res, results);
 

@@ -20,13 +20,14 @@ import mvc.context.SystemContext;
 import mvc.view.AbstractView;
 import mvc.view.ViewType;
 import observer.IObserver;
+import service.ControllerService;
 import service.IService;
 import service.ServiceType;
 
-public abstract class AbstractController<T extends AbstractView, E extends IService> implements IObserver<EventBuffer> {
+public abstract class AbstractController<T extends AbstractView> implements IObserver<EventBuffer> {
 
     protected EventBuffer buffer;
-    protected HashMap<ServiceType, E> services;
+    protected HashMap<ServiceType, IService> services;
     protected T view;
 
     protected ICommand backCommand; 
@@ -35,15 +36,19 @@ public abstract class AbstractController<T extends AbstractView, E extends IServ
     public AbstractController(EventBuffer buffer) {
         this.buffer = buffer;
         buffer.attachObserver(this);
-        this.services = new HashMap<ServiceType, E>(); 
+        this.services = new HashMap<ServiceType, IService>(); 
     }
 
-    public void addService(E service){
+    public void addService(IService service){
         if (!this.services.isEmpty() && !this.services.values().contains(service)) {
             services.put(service.getType(), service);
         }
     }
  
+    @SuppressWarnings("unchecked")
+    protected <S extends IService> S getService(ServiceType type) {
+        return (S) this.services.get(type);
+    }
 
     public abstract void handleButton();
 
@@ -65,7 +70,7 @@ public abstract class AbstractController<T extends AbstractView, E extends IServ
 
                 e -> {
                     this.buffer.publish(new RedirectCommand(
-                                    this.services.get(ServiceType.).getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
+                                    (this.<ControllerService>getService(ServiceType.CONTROLLER)).getControllerBuffer(ViewType.SHOW_COLLECTIONS),
                                     new ShowCollections()
                                  
                             )
@@ -77,7 +82,7 @@ public abstract class AbstractController<T extends AbstractView, E extends IServ
         itemButton.setOnAction(
                 e -> {
                     this.buffer.publish(new RedirectCommand(
-                                    this.systemContext.getController(ViewType.SHOW_ITEMS).getBuffer(),
+                                    (this.<ControllerService>getService(ServiceType.CONTROLLER)).getControllerBuffer(ViewType.SHOW_ITEMS),
                                     new ShowItems()
                                  
                             )
