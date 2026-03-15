@@ -6,7 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+import creational.DTOFactory;
 import dataTransportLayer.ItemDTO;
+import dataTransportLayer.ItemIdStackDTO;
+import dataTransportLayer.ItemStackDTO;
 import dataTransportLayer.RecipeDTO;
 import identificators.EntryId;
 import logger.Logger;
@@ -98,6 +101,8 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
     public Recipe saveEntry(RecipeDTO dto, int[] extraData) {
         return null; //TODO
     }
+ 
+ 
 
     //#region Logic
     public boolean canBeExecuted(IInventoryElement inventory, Recipe recipe) {

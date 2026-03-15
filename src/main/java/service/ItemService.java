@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import creational.DTOFactory;
 import dataTransportLayer.ItemDTO;
+import dataTransportLayer.ItemIdStackDTO;
+import dataTransportLayer.ItemStackDTO;
 import identificators.EntryId;
 import logger.Logger;
 import mvc.context.DataContext;
@@ -91,5 +94,16 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
     @Override
     public Item saveEntry(ItemDTO dto, int[] extraData) {
         return null; //TODO
+    }
+
+    public List<ItemStackDTO> idStackToStackList(List<ItemIdStackDTO> idStacks) {
+        List<ItemStackDTO> stacks = new ArrayList<>(); 
+        ItemDTO itemDTO = null;
+        for (ItemIdStackDTO elem : idStacks) { 
+            itemDTO = this.getDTOById(elem.id);
+            stacks.add(DTOFactory.itemStack(itemDTO, elem.amount));
+        }
+
+        return stacks;
     }
 }
