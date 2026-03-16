@@ -326,13 +326,10 @@ public class InventoryController extends AbstractController<InventoryView>{
             new InventoryPopupController(elem, buffer);
 
         controller.attachView(view); 
-        controller.addService(sessionService);
-        //TODO añadir mas servicios si hace falta (lo hara), de momento añador solo el de sesion pq es equivalente a lo que habia antes en la arq vieja
-        //controller.setCurrentRecipe(this.currentRecipe);
-        //controller.setCurrentCollection(this.currentCollection);
+        controller.addService(sessionService); 
 
         //Considerar que esta invocación se realice en el InventoryPopUpController y no aqui. 
-        RecipeDTO currentRecipeDTO = this.<SessionService>getService(ServiceType.SESSION).getCurrentInventoryRecipeDTO();
+        RecipeDTO currentRecipeDTO = sessionService.getCurrentInventoryRecipeDTO();
         controller.getView().updateRecipeRelatedLists(itemService.idStackToStackList(currentRecipeDTO.ingredients),
                                                            itemService.idStackToStackList(currentRecipeDTO.results));
         popup.setScene(new Scene(view.getRoot(), 400, 400));

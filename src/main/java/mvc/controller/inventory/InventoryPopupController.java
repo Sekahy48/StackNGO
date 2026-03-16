@@ -23,6 +23,10 @@ import mvc.model.entries.Recipe;
 import mvc.model.inventory.IInventoryElement;
 import mvc.model.inventory.ItemStack;
 import mvc.view.inventory.InventoryPopupView;
+import service.ItemService;
+import service.RecipeService;
+import service.SessionService;
+import service.ServiceType;
 
 public class InventoryPopupController
         extends AbstractController<InventoryPopupView> {
@@ -47,8 +51,11 @@ public class InventoryPopupController
         populateGrid();
     }
 
+    @Override
     public void handleButton() {
-
+        ItemService itemService = this.getService(ServiceType.ITEM);
+        RecipeService recipeService = this.getService(ServiceType.RECIPE);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
         view.getAddItemButton().setOnAction(e -> {
             if(currentCollection == null){
                 this.view.showAlert(
@@ -59,7 +66,7 @@ public class InventoryPopupController
                 return;
             }
 
-            List<EntryDTO> itemsDTOs = DTOFactory.itemsAsEntries(context.getItemsByCollection(new EntryId(currentCollection.id)));
+            List<EntryDTO> itemsDTOs = DTOFactory.itemsAsEntries(itemService.getAllDTO(currentCollection.id));
             UIPrefabsFactory.createSelectionPopup(
                     view.getAddItemButton(),
                     null,
@@ -67,7 +74,7 @@ public class InventoryPopupController
                     selected -> {
                         Integer amount = UIPrefabsFactory.showAmount("Cantidad a añadir",
                             "Indica la cantidad " + selected.name + " que deseas añadir al inventario:");
-                        Item toAdd = context.getItemById(selected.id);
+                        Item toAdd = itemService.getEntryById(selected.id);
                         if(amount == null) return;
                         if(amount <= 0) this.view.showAlert(
                             "Cantidad no valida",
@@ -88,7 +95,7 @@ public class InventoryPopupController
 
             // Pedimos cantidad
             Integer amount = UIPrefabsFactory.showAmount("Cantidad a eliminar",
-                "Indica la cantidad de " + context.getItemById(id).getName() + " item que deseas eliminar del inventario:\n(Introduzca el valor en positivo)");
+                "Indica la cantidad de " + itemService.getEntryById(id).getName() + " item que deseas eliminar del inventario:\n(Introduzca el valor en positivo)");
 
             if(amount == null) return;
             if(amount <= 0) this.view.showAlert(
@@ -96,7 +103,7 @@ public class InventoryPopupController
                 "La cantidad a eliminar debe ser mayor que 0.",
                 Alert.AlertType.WARNING
             );
-            else this.inventory.modifyAmountHere(context.getItemById(id), amount * -1);
+            else this.inventory.modifyAmountHere(itemService.getEntryById(id), amount * -1);
             this.populateGrid();
         });
 
@@ -110,14 +117,14 @@ public class InventoryPopupController
                 return;
             }
 
-            List<EntryDTO> itemsDTOs = DTOFactory.itemsAsEntries(context.getItemsByCollection(new EntryId(currentCollection.id)));
+            List<EntryDTO> itemsDTOs = DTOFactory.itemsAsEntries(itemService.getAllDTO(currentCollection.id));
             UIPrefabsFactory.createSelectionPopup(
                     view.getAddItemButton(),
                     null,
                     itemsDTOs,
                     selected -> {
                         
-                        Item toAdd = context.getItemById(selected.id);
+                        Item toAdd = itemService.getEntryById(selected.id);
 
                         if(!inventory.containsHere(toAdd) || inventory.findHere(toAdd).isLeaf()) {
                             this.view.showAlert("Advertencia", "Cuidado, si añades este item como contenedor no podrás" + 
@@ -150,7 +157,7 @@ public class InventoryPopupController
                 return;
             }
 
-            Recipe recipe = context.getRecipeById(this.currentRecipe.id);
+            Recipe recipe = recipeService.getEntryById(sessionService.getCurrentInventoryRecipeDTO().id);
             ArrayList<ItemIdStack> inventoryItems = new ArrayList<>();
             for(IInventoryElement element : this.inventory.flattenInventory()){ 
                 inventoryItems.add(new ItemIdStack(element.getItem().getId(), element.getAmount()));
@@ -171,10 +178,10 @@ public class InventoryPopupController
 
             ArrayList<ItemStack> toModify = new ArrayList<>();
             for(ItemIdStack input : inputs){
-                toModify.add(new ItemStack(context.getItemById(input.getId().value()), -input.getAmount()));
+                toModify.add(new ItemStack(itemService.getEntryById(input.getId().value()), -input.getAmount()));
             }
             for(ItemIdStack result : results){
-                toModify.add(new ItemStack(context.getItemById(result.getId().value()), result.getAmount()));
+                toModify.add(new ItemStack(itemService.getEntryById(result.getId().value()), result.getAmount()));
             }
 
             for(ItemStack mod : toModify){
@@ -217,7 +224,7 @@ public class InventoryPopupController
         if (cell.getUserData() == null) return;
 
         int id = (int) cell.getUserData();
-        Item item = context.getItemById(id);
+        Item item = this.<ItemService>getService(ServiceType.ITEM).getEntryById(id);
 
         IInventoryElement elem = inventory.findHere(item);
         if (elem.isLeaf()) return;
@@ -226,7 +233,7 @@ public class InventoryPopupController
     }
 
     private void openPopup(IInventoryElement container) {
-
+        SessionService sessionService = this.getService(ServiceType.SESSION);
         Stage popup = new Stage();
         popup.initModality(Modality.APPLICATION_MODAL);
         popup.setTitle(container.getItem().getName());
@@ -235,21 +242,13 @@ public class InventoryPopupController
         InventoryPopupController controller =
             new InventoryPopupController(container, buffer);
 
-        controller.attachView(view);
-        controller.setRuntimeContext(context);
-        controller.setCurrentRecipe(this.currentRecipe);
-        controller.setCurrentCollection(this.currentCollection);
+        controller.attachView(view);  
+        controller.addService(sessionService);
+
+        RecipeDTO currentRecipeDTO = sessionService.getCurrentInventoryRecipeDTO();
         controller.getView().updateRecipeRelatedLists(currentRecipe, context);
 
         popup.setScene(new Scene(view.getRoot(), 400, 400));
         popup.show();
-    }
-
-    public void setCurrentRecipe(RecipeDTO recipe){
-        this.currentRecipe = recipe;
-    }
-
-    public void setCurrentCollection(CollectionDTO collection){
-        this.currentCollection = collection;
-    }
+    } 
 }
