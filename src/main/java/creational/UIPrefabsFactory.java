@@ -125,12 +125,10 @@ public class UIPrefabsFactory {
      * Crea un popup genérico para seleccionar un elemento y añadirlo a un VBox.
      * 
      * @param triggerButton Botón que dispara el popup
-     * @param targetList VBox donde se añade la fila
      * @param items Lista de strings a mostrar en el popup
      * @param onSelect Callback que se ejecuta al seleccionar un item
      */
     public static void createSelectionPopup(Button triggerButton,
-                                            VBox targetList,
                                             List<EntryDTO> items,
                                             Consumer<EntryDTO> onSelect) {
 
