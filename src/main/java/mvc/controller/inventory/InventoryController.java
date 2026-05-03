@@ -74,7 +74,6 @@ public class InventoryController extends AbstractController<InventoryView>{
 
                 UIPrefabsFactory.createSelectionPopup(
                     view.getSelectCollectionButton(),
-                    view.getSelectCollections(),
                     collectionsDTO,
                     selected -> {
                         view.getSelectedCollectionLabel().setText(selected.name);
@@ -101,7 +100,6 @@ public class InventoryController extends AbstractController<InventoryView>{
             List<EntryDTO> recipeDTO = DTOFactory.recipesAsEntries(recipeService.getAllDTO(sessionService.getCurrentInventoryCollectionDTO().id)); 
             UIPrefabsFactory.createSelectionPopup(
                     view.getSelectCollectionButton(),
-                    view.getSelectCollections(),
                     recipeDTO,
                     selected -> {
                         view.getSelectedRecipeLabel().setText(selected.name); 
@@ -184,7 +182,6 @@ public class InventoryController extends AbstractController<InventoryView>{
             List<EntryDTO> itemsDTOs = DTOFactory.itemsAsEntries(itemService.getAllDTO(sessionService.getCurrentInventoryCollectionDTO().id));
             UIPrefabsFactory.createSelectionPopup(
                     view.getAddItemButton(),
-                    null,
                     itemsDTOs,
                     selected -> {
                         Integer amount = UIPrefabsFactory.showAmount("Cantidad a añadir",
@@ -246,7 +243,6 @@ public class InventoryController extends AbstractController<InventoryView>{
             List<EntryDTO> itemsDTOs = DTOFactory.itemsAsEntries(itemService.getAllDTO(sessionService.getCurrentInventoryCollectionDTO().id));
             UIPrefabsFactory.createSelectionPopup(
                     view.getAddItemButton(),
-                    null,
                     itemsDTOs,
                     selected -> {
                         

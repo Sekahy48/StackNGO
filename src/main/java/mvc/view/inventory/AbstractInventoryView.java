@@ -1,29 +1,83 @@
 package mvc.view.inventory;
 
-import java.util.List;
+import java.util.function.Consumer;
+ 
 import creational.UIPrefabsFactory; 
-import dataTransportLayer.ItemStackDTO;
+import dataTransportLayer.ItemStackDTO; 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button; 
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration; 
+import mvc.view.AbstractView; 
 import utilities.ImageUtils;
+ 
+import java.util.List;
 
-public class InventoryView extends AbstractInventoryView {
+/**
+ * Abstract base for inventory views.
+ * Contains: inventory grid, recipe IO panel, add/remove/container item buttons, execute recipe button, clear button.
+ * Subclasses add collection/recipe selection (InventoryView) or nothing extra (InventoryPopupView).
+ */
+public abstract class AbstractInventoryView extends AbstractView {
+
+    protected static final int CELL_SIZE = 64;
+    protected static final int INITIAL_ROWS = 6;
+
+    // Piezas
+    protected BorderPane contentContainer;
+    protected HBox recipeIOBox;
+    protected VBox recipeButtons;
+    // Inventario
+    protected ScrollPane inventoryScroll;
+    protected GridPane inventoryGrid;
+    protected Label inventoryLabel;
 
     // Contexto
-    private Button selectCollectionButton;
-    private Button selectRecipeButton;
+    protected Label selectedCollectionLabel;
+    protected Label selectedRecipeLabel;
+    protected Button executeRecipeButton;
 
+    // Visualización y edición de ingredientes y resultados
+    protected VBox ingredientsBox;
+    protected VBox resultsBox;
+    protected Button addItemButton;
+    protected Button removeItemButton;
+    protected Button addContainerItemButton;
+    protected VBox ingredients;
+    protected VBox results; 
+
+    // Botón limpiar inventario
+    protected Button clearButton; 
+    
+    // Eventos
+    protected Runnable onGridResized;
+
+    protected java.util.function.Consumer<StackPane> onCellDoubleClicked;
+
+    //#region Setters
+    public void setOnGridResized(Runnable r) {
+        this.onGridResized = r;
+    }
+
+    public void setOnCellDoubleClicked(Consumer<StackPane> action) {
+        this.onCellDoubleClicked = action;
+    }
+
+    //#endregion
 
     @Override
     protected void build() {
-        super.build();
-        /* 
+
         BorderPane mainPane = new BorderPane();
         VBox.setVgrow(mainPane, Priority.ALWAYS);
 
@@ -45,7 +99,7 @@ public class InventoryView extends AbstractInventoryView {
             if (newVal == null) return;
             int columns = Math.max(1, (int) (newVal.getWidth() / CELL_SIZE));
             rebuildInventoryGrid(columns);
-            onGridResized.run();
+            if (onGridResized != null) onGridResized.run();
         });
 
         inventoryLabel = new Label("INVENTARIO");
@@ -67,21 +121,25 @@ public class InventoryView extends AbstractInventoryView {
         selectedCollectionLabel = new Label("Colección: Ninguna");
         selectedCollectionLabel.setMaxWidth(Double.MAX_VALUE);
         selectedCollectionLabel.setStyle("-fx-border-color: black; -fx-padding: 5;");
- */
+
+        /* Lo elimino pq en la clase padre no se decide si se puede seleccionar o no coleccion
         selectCollectionButton = new Button("Seleccionar colección");
         selectCollectionButton.setMaxWidth(Double.MAX_VALUE);
+         */
 
-      /*   selectedRecipeLabel = new Label("Receta: Ninguna");
+        selectedRecipeLabel = new Label("Receta: Ninguna");
         selectedRecipeLabel.setMaxWidth(Double.MAX_VALUE);
         selectedRecipeLabel.setStyle("-fx-border-color: black; -fx-padding: 5;");
- */
+
+        /* Lo elimino pq en la clase padre no se decide si se puede seleccionar o no receta
         selectRecipeButton = new Button("Seleccionar receta");
         selectRecipeButton.setMaxWidth(Double.MAX_VALUE);
+        */
 
-     /*    executeRecipeButton = new Button("Ejecutar receta");
+        executeRecipeButton = new Button("Ejecutar receta");
         executeRecipeButton.setMaxWidth(Double.MAX_VALUE);
- */
-       /*  // ---- Ingredientes ----
+
+        // ---- Ingredientes ----
         Label ingredientsLabel = new Label("Ingredientes");
         ingredients = new VBox(5);
         ingredientsBox = UIPrefabsFactory.createScrollableModifableListNoButton(ingredientsLabel, ingredients);
@@ -100,19 +158,17 @@ public class InventoryView extends AbstractInventoryView {
         resultsScroll.setFitToWidth(true);
         resultsScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
-        HBox recipeIOBox = new HBox(10, ingredientsScroll, resultsScroll);
+        recipeIOBox = new HBox(10, ingredientsScroll, resultsScroll);
         HBox.setHgrow(ingredientsScroll, Priority.ALWAYS);
         HBox.setHgrow(resultsScroll, Priority.ALWAYS);
 
         // ---- Botones inferiores ----
         addItemButton = new Button("Añadir ítems");
         removeItemButton = new Button("Eliminar ítems");
+        addContainerItemButton = new Button("Añadir ítem contenedor");
 
         addItemButton.setMaxWidth(Double.MAX_VALUE);
         removeItemButton.setMaxWidth(Double.MAX_VALUE);
-
-        // --- BOTÓN NUEVO ---
-        addContainerItemButton = new Button("Añadir ítem contenedor");
         addContainerItemButton.setMaxWidth(Double.MAX_VALUE);
 
         // Caja con los tres botones
@@ -120,36 +176,25 @@ public class InventoryView extends AbstractInventoryView {
         HBox.setHgrow(addItemButton, Priority.ALWAYS);
         HBox.setHgrow(removeItemButton, Priority.ALWAYS);
 
-        VBox recipeButtons = new VBox(10, topButtons, addContainerItemButton);
+        recipeButtons = new VBox(10, topButtons, addContainerItemButton);
         VBox.setVgrow(topButtons, Priority.NEVER);
         addContainerItemButton.setMaxWidth(Double.MAX_VALUE);
- */
 
 
-        /* VBox rightPanel = new VBox(
-                10,
-                selectedCollectionLabel,
-                selectCollectionButton,
-                selectedRecipeLabel,
-                selectRecipeButton,
-                executeRecipeButton,
-                recipeIOBox,
-                recipeButtons
-        ); */
 
-       /*  rightPanel.setPrefWidth(300);
-        mainPane.setRight(rightPanel); */
+        VBox rightPanel = this.buildRightPanel();
+        mainPane.setRight(rightPanel);
 
         // ======================
         // ABAJO: LIMPIAR INVENTARIO
         // ======================
 
-      /*   clearButton = new Button("Limpiar inventario");
+        clearButton = new Button("Limpiar inventario");
 
         HBox bottomBar = new HBox(clearButton);
         bottomBar.setAlignment(Pos.CENTER_LEFT);
         bottomBar.setPadding(new Insets(10));
- */
+
         // ======================
         // POPUPS
         // ======================
@@ -160,17 +205,17 @@ public class InventoryView extends AbstractInventoryView {
         // ======================
         // Contenedor único para mainPane + bottomBar
         // Contenedor de contenido para el SplitPane
-        /* BorderPane contentContainer = new BorderPane();
+        this.contentContainer = new BorderPane();
         contentContainer.setCenter(mainPane);
-        contentContainer.setBottom(bottomBar); */
+        contentContainer.setBottom(bottomBar);
 
         // Aquí NO hay VBox extra
-        this.initSidebar(contentContainer);
+        // Quito la sidebar this.initSidebar(contentContainer);
 
         // Root
-        /* this.root = new VBox();
+        this.root = new VBox();
         this.root.getChildren().add(splitPane);
-        VBox.setVgrow(splitPane, Priority.ALWAYS);  */
+        VBox.setVgrow(splitPane, Priority.ALWAYS); 
 
     }
 
@@ -227,6 +272,9 @@ public class InventoryView extends AbstractInventoryView {
     
     }
 
+    /**
+     * Método con la finalidad de limpiar el inventario entero, reseteando toda su información (colección y receta actuales, contenido de la rejilla, etc).
+     */
     public void clearInventory() {
         rebuildInventoryGrid(Math.max(1, (int) (inventoryScroll.getViewportBounds().getWidth() / CELL_SIZE)));
         this.selectedRecipeLabel.setText("Receta: Ninguna");
@@ -235,13 +283,20 @@ public class InventoryView extends AbstractInventoryView {
         this.results.getChildren().clear(); 
     }
 
+    /**
+     * Método que SOLO vacia la rejilla del inventario.
+     */
     public void clearGridInventory() {
         rebuildInventoryGrid(Math.max(1, (int) (inventoryScroll.getViewportBounds().getWidth() / CELL_SIZE))); 
     }
 
+    /**
+     * Método que actualiza la lista de ingeredientes y resultados de la receta vigente.
+     * @param ing ingredientes de la receta actual.
+     * @param res resultados de ejecutar la receta actual.
+     */
     public void updateRecipeRelatedLists(List<ItemStackDTO> ing, List<ItemStackDTO> res) {
 
-        
         this.ingredients.getChildren().clear();
         this.results.getChildren().clear();
 
@@ -250,6 +305,10 @@ public class InventoryView extends AbstractInventoryView {
 
     }
 
+    /**
+     * Añade un ítem a la rejilla del inventario.
+     * @param dto del ítem a añadir.
+     */
     public void addElementToGrid(ItemStackDTO dto) {
         for (javafx.scene.Node node : inventoryGrid.getChildren()) {
             if (node instanceof StackPane cell) {
@@ -297,18 +356,22 @@ public class InventoryView extends AbstractInventoryView {
 
         
     }
-
-    
-    @Override
+ 
     protected VBox buildRightPanel() {
-        VBox rightPanel = super.buildRightPanel();
-        // Insertar botones después de sus labels respectivos
-        rightPanel.getChildren().add(1, selectCollectionButton); // después de selectedCollectionLabel
-        rightPanel.getChildren().add(3, selectRecipeButton);     // después de selectedRecipeLabel
+        VBox rightPanel = new VBox(
+                10,
+                selectedCollectionLabel, 
+                selectedRecipeLabel, 
+                executeRecipeButton,
+                recipeIOBox,
+                recipeButtons
+        );
+        rightPanel.setPrefWidth(300);
         return rightPanel;
     }
 
-/*     //#region Getters
+
+    //#region Getters
     // ======================
     // GETTERS
     // ======================
@@ -316,16 +379,8 @@ public class InventoryView extends AbstractInventoryView {
         return selectedCollectionLabel;
     }
 
-    public Button getSelectCollectionButton() {
-        return selectCollectionButton;
-    }
-
     public Label getSelectedRecipeLabel() {
         return selectedRecipeLabel;
-    }
-
-    public Button getSelectRecipeButton() {
-        return selectRecipeButton;
     }
 
     public Button getExecuteRecipeButton() {
@@ -363,5 +418,5 @@ public class InventoryView extends AbstractInventoryView {
     public Button getAddContainerItemButton() {
         return addContainerItemButton;
     }
-    //#endregion */
+    //#endregion
 }
