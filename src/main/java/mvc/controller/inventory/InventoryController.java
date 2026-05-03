@@ -3,16 +3,12 @@ package mvc.controller.inventory;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.mysql.cj.Session;
-
 import creational.DTOFactory;
 import creational.UIPrefabsFactory;
-import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.EntryDTO;
 import dataTransportLayer.EventBuffer;
 import dataTransportLayer.ItemDTO; 
 import dataTransportLayer.RecipeDTO;
-import identificators.EntryId;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane; 
@@ -328,7 +324,6 @@ public class InventoryController extends AbstractController<InventoryView>{
         controller.attachView(view); 
         controller.addService(sessionService); 
 
-        //Considerar que esta invocación se realice en el InventoryPopUpController y no aqui. 
         RecipeDTO currentRecipeDTO = sessionService.getCurrentInventoryRecipeDTO();
         controller.getView().updateRecipeRelatedLists(itemService.idStackToStackList(currentRecipeDTO.ingredients),
                                                            itemService.idStackToStackList(currentRecipeDTO.results));
