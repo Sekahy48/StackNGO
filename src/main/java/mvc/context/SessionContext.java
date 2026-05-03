@@ -3,6 +3,7 @@ package mvc.context;
 import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.RecipeDTO;
 import domain.accounts.Account;
+import mvc.model.inventory.IInventoryElement;
 
 public class SessionContext implements Context{
     private Account currentAccount;
@@ -10,7 +11,8 @@ public class SessionContext implements Context{
 
     private CollectionDTO currentInventoryCollection;
     private RecipeDTO currentInventoryRecipe;
-
+    private IInventoryElement currentInventory;
+    
     public Account getCurrentAccount() { 
         return currentAccount; 
     }
@@ -41,5 +43,13 @@ public class SessionContext implements Context{
 
     public void setCurrentInventoryRecipe(RecipeDTO recipe) { 
         this.currentInventoryRecipe = recipe; 
+    }
+
+    public IInventoryElement getCurrentInventory() {
+        return currentInventory;
+    }
+
+    public void resetCurrentInventory() {
+        throw new UnsupportedOperationException("Metodo sin completar", null);
     }
 }

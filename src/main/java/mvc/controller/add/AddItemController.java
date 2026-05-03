@@ -2,28 +2,22 @@ package mvc.controller.add;
 
 import java.util.List;
 
-import command.add.item.AddItemCommand;
 import command.add.item.AddItemImageCommand;
-import command.screen.ChangeScreenCommand;
 import creational.DTOFactory;
-import dataAccessLayer.DAO.DAOType;
-import dataAccessLayer.DAO.ItemDAO;
-import dataTransportLayer.*;
+import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.EntryDTO;
+import dataTransportLayer.EventBuffer;
+import dataTransportLayer.ItemDTO;
 import domain.accounts.Account;
-import identificators.GenericId;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import logger.LogLevel;
 import logger.Logger;
 import mvc.controller.InyectableController;
 import mvc.model.entries.Item;
-import mvc.view.ViewType;
 import mvc.view.add.AddItemView;
-import service.CollectionService;
 import service.ItemService;
 import service.ServiceType;
 import service.SessionService;
-import service.IService; 
 
 /**
  *
@@ -90,6 +84,7 @@ public class AddItemController extends AbstractAddController<ItemDTO> implements
             ItemService itemService = this.getService(ServiceType.ITEM);
             SessionService sessionService = this.getService(ServiceType.SESSION);
 
+            // TODO mirar si se pueden simplificar cosas como la extraccion del id de la coleccion vigente sin tanta variable intermedia
             CollectionDTO currentCollectionDTO = sessionService.getCurrentCollectionDTO();
             Account currentAccount = sessionService.getCurrentAccount();
             int[] extraData = {currentCollectionDTO.id};

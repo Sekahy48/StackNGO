@@ -32,11 +32,6 @@ import service.SessionService;
 public class InventoryController extends AbstractController<InventoryView>{
 
     private IInventoryElement inventory;
-    /*Movidos a SessionContext, accesibles por SessionService
-    private CollectionDTO currentCollection;
-    private RecipeDTO currentRecipe;  */
-
-    
 
     public InventoryController(EventBuffer buffer) {
         super(buffer);

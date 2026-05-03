@@ -1,8 +1,9 @@
 package mvc.view.inventory;
 
+import java.util.List;
 import java.util.function.Consumer;
- 
-import creational.UIPrefabsFactory; 
+
+import creational.UIPrefabsFactory;
 import dataTransportLayer.ItemStackDTO; 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -17,11 +18,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.util.Duration; 
+import javafx.util.Duration;
 import mvc.view.AbstractView; 
 import utilities.ImageUtils;
- 
-import java.util.List;
 
 /**
  * Abstract base for inventory views.
@@ -75,6 +74,7 @@ public abstract class AbstractInventoryView extends AbstractView {
 
     //#endregion
 
+    //#region Metodos operativos
     @Override
     protected void build() {
 
@@ -219,6 +219,11 @@ public abstract class AbstractInventoryView extends AbstractView {
 
     }
 
+    /**
+     * Metodo interno que redibuja la grid del inventario y asigna funcionalidad a sus botones con cierto
+     * numero de columnas a priori.
+     * @param columns número de columnas con las que dibujar.
+     * Hace que cada celda de la rejilla del inventario pueda ser seleccionada (un click) o accionada (doble click).     */
     private void rebuildInventoryGrid(int columns) {
         inventoryGrid.getChildren().clear();
 
@@ -257,10 +262,9 @@ public abstract class AbstractInventoryView extends AbstractView {
                 """);
 
                 // === NUEVO: DOBLE CLICK ===
-                if (e.getClickCount() == 2) {
-                    if (onCellDoubleClicked != null) {
-                        onCellDoubleClicked.accept(cell);
-                    }
+                if (e.getClickCount() == 2 && onCellDoubleClicked != null) {
+                    onCellDoubleClicked.accept(cell);
+                    
                 }
             });
 
@@ -285,6 +289,7 @@ public abstract class AbstractInventoryView extends AbstractView {
 
     /**
      * Método que SOLO vacia la rejilla del inventario.
+     * Llama internamente al metodo que redibuja la rejilla pero con unos parámetros predefinidos.
      */
     public void clearGridInventory() {
         rebuildInventoryGrid(Math.max(1, (int) (inventoryScroll.getViewportBounds().getWidth() / CELL_SIZE))); 
@@ -356,7 +361,11 @@ public abstract class AbstractInventoryView extends AbstractView {
 
         
     }
- 
+    
+    /**
+     * Monta el panel derecho de la vista, el panel referente a receta y coleccion.
+     * @return
+     */
     protected VBox buildRightPanel() {
         VBox rightPanel = new VBox(
                 10,
@@ -369,7 +378,7 @@ public abstract class AbstractInventoryView extends AbstractView {
         rightPanel.setPrefWidth(300);
         return rightPanel;
     }
-
+    //#endregion
 
     //#region Getters
     // ======================
