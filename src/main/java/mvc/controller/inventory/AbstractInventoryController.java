@@ -19,12 +19,10 @@ import mvc.model.entries.Item;
 import mvc.model.entries.ItemIdStack;
 import mvc.model.entries.Recipe;
 import mvc.model.inventory.IInventoryElement;
-import mvc.model.inventory.InventoryObject;
 import mvc.model.inventory.ItemStack;
 import mvc.view.inventory.AbstractInventoryView;
 import mvc.view.inventory.InventoryPopupView;
-import mvc.view.inventory.InventoryView;
-import service.CollectionService;
+import service.InventoryService;
 import service.ItemService;
 import service.RecipeService;
 import service.ServiceType;
@@ -35,7 +33,7 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
     public AbstractInventoryController(EventBuffer buffer) {
         super(buffer);
         // Ahora esto vive en el contexto
-        // this.inventory = new InventoryObject(null);
+        // this.getCurrentInventory() = new InventoryObject(null);
     }
 
     @Override
@@ -127,7 +125,7 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
             RecipeService recipeService = this.getService(ServiceType.RECIPE);
             Recipe recipe = recipeService.getEntryById(sessionService.getCurrentInventoryRecipeDTO().id);
             ArrayList<ItemIdStack> inventoryItems = new ArrayList<>();
-            for(IInventoryElement element : this.inventory.flattenInventory()){
+            for(IInventoryElement element : this.getCurrentInventory().flattenInventory()){
                 if(element.isLeaf())inventoryItems.add(new ItemIdStack(element.getItem().getId(), element.getAmount()));
             }
             boolean canExecute = recipe.canBeExecuted(inventoryItems);
@@ -153,12 +151,12 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
             }
 
             for(ItemStack mod : toModify){
-                if(this.inventory.containsHere(mod.getItem())){
-                    this.inventory.modifyAmountHere(mod.getItem(), mod.getAmount());
+                if(this.getCurrentInventory().containsHere(mod.getItem())){
+                    this.getCurrentInventory().modifyAmountHere(mod.getItem(), mod.getAmount());
                 } else if (mod.getAmount() > 0){
-                    this.inventory.addItemHere(mod.getItem(), mod.getAmount(), false);
-                } else if (this.inventory.contains(mod.getItem()) && mod.getAmount() < 0){
-                    this.inventory.modifyAmount(mod.getItem(), mod.getAmount());
+                    this.getCurrentInventory().addItemHere(mod.getItem(), mod.getAmount(), false);
+                } else if (this.getCurrentInventory().contains(mod.getItem()) && mod.getAmount() < 0){
+                    this.getCurrentInventory().modifyAmount(mod.getItem(), mod.getAmount());
                 }
             }
 
@@ -190,7 +188,7 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
                             Alert.AlertType.WARNING
                         );
                         } else{
-                        this.inventory.addItemHere(toAdd, amount, false);
+                        this.getCurrentInventory().addItemHere(toAdd, amount, false);
                         }
                         this.populateGrid();
                     });
@@ -215,7 +213,7 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
                 "La cantidad a eliminar debe ser mayor que 0.",
                 Alert.AlertType.WARNING
             );
-            else this.inventory.modifyAmountHere(itemService.getEntryById(id), amount * -1);
+            else this.getCurrentInventory().modifyAmountHere(itemService.getEntryById(id), amount * -1);
             this.populateGrid();
         });
 
@@ -244,7 +242,7 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
                         
                         Item toAdd = itemService.getEntryById(selected.id);
 
-                        if(!inventory.containsHere(toAdd) || inventory.findHere(toAdd).isLeaf()) {
+                        if(this.<InventoryService>getService(ServiceType.INVENTORY).containsAsContainer(toAdd)) {
                             this.view.showAlert("Advertencia", "Cuidado, si añades este item como contenedor no podrás" + 
                             " utilizarlo como item normal, por tanto no podras ejecutar las recetas que lo involucren. " + 
                             "Si te arrepientes cancela en la selección de cantidad o elimina todos los items todos los items-contenedor " + 
@@ -260,7 +258,7 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
                             "La cantidad a añadir debe ser mayor que 0.",
                             Alert.AlertType.WARNING
                         );
-                        this.inventory.addItemHere(toAdd, amount, true);
+                        this.getCurrentInventory().addItemHere(toAdd, amount, true);
                         this.populateGrid();
                     });
 
@@ -269,7 +267,7 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
  
     public void populateGrid(){ 
         this.view.clearGridInventory();
-        List<IInventoryElement> inv = inventory.getInventory();
+        List<IInventoryElement> inv = this.getCurrentInventory().getInventory();
         for (IInventoryElement obj : inv) {
             ItemDTO itemDTO = DTOFactory.item(obj.getItem().getName(), obj.getItem().getImagePath(), obj.getItem().getDescription(), obj.getItem().getId().value());
             this.view.addElementToGrid(DTOFactory.itemStack(itemDTO, obj.getAmount()));
@@ -277,8 +275,8 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
         
     }
 
-    private void clearInventory(){
-            this.inventory = new InventoryObject(null);
+    protected void clearInventory(){
+            this.getInventoryService().clearCurrentInventory();
             this.view.clearInventory();
         }
 
@@ -291,7 +289,7 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
         ItemDTO dto = itemService.getDTOById(itemId);
 
         // Si es contenedor, accedemos
-        if (!inventory.findHere(itemService.getEntryById(itemId)).isLeaf()) { 
+        if (!this.getCurrentInventory().findHere(itemService.getEntryById(itemId)).isLeaf()) { 
             openContainerInventory(dto);
         }
 
@@ -304,7 +302,7 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
         SessionService sessionService = this.getService(ServiceType.SESSION);
 
         IInventoryElement elem =
-            inventory.findHere(itemService.getEntryById(containerItem.id));
+            this.getCurrentInventory().findHere(itemService.getEntryById(containerItem.id));
 
         Stage popup = new Stage();
         popup.initModality(Modality.APPLICATION_MODAL);
@@ -324,5 +322,15 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
 
         
     }
+
+    protected IInventoryElement getCurrentInventory() {
+        return this.getInventoryService().getCurrentInventory();
+    }
+
+    protected InventoryService getInventoryService() {
+        return this.<InventoryService>getService(ServiceType.INVENTORY);
+    }
+
+    
 
 }

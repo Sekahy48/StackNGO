@@ -1,5 +1,7 @@
 package mvc.context;
 
+import java.util.Deque;
+
 import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.RecipeDTO;
 import domain.accounts.Account;
@@ -11,7 +13,7 @@ public class SessionContext implements Context{
 
     private CollectionDTO currentInventoryCollection;
     private RecipeDTO currentInventoryRecipe;
-    private IInventoryElement currentInventory;
+    private Deque<IInventoryElement> inventoryStack;
     
     public Account getCurrentAccount() { 
         return currentAccount; 
@@ -45,8 +47,8 @@ public class SessionContext implements Context{
         this.currentInventoryRecipe = recipe; 
     }
 
-    public IInventoryElement getCurrentInventory() {
-        return currentInventory;
+    public Deque<IInventoryElement> getInventoryStack() {
+        return inventoryStack;
     }
 
     public void resetCurrentInventory() {
