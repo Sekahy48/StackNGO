@@ -28,7 +28,7 @@ import service.RecipeService;
 import service.ServiceType;
 import service.SessionService;
 
-public class AbstractInventoryController extends AbstractController<AbstractInventoryView>{
+public class AbstractInventoryController<T extends AbstractInventoryView> extends AbstractController<T>{
 
     public AbstractInventoryController(EventBuffer buffer) {
         super(buffer);
@@ -37,7 +37,7 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
     }
 
     @Override
-    public void attachView(AbstractInventoryView view) {
+    public void attachView(T view) {
         this.view = view;
         this.view.setOnGridResized(() -> this.populateGrid());
         this.view.setOnCellDoubleClicked(cell -> handleCellDoubleClick(cell));
@@ -264,7 +264,10 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
 
         });
     }
- 
+    
+    /**
+     * Method that fils the view's grid with the items contained by the current inventory.
+     */
     public void populateGrid(){ 
         this.view.clearGridInventory();
         List<IInventoryElement> inv = this.getCurrentInventory().getInventory();
@@ -275,52 +278,72 @@ public class AbstractInventoryController extends AbstractController<AbstractInve
         
     }
 
+    /**
+     * Method that empties the current inventory content, not the whole inventory or upwards nodes in the hierarchy.
+     */
     protected void clearInventory(){
             this.getInventoryService().clearCurrentInventory();
             this.view.clearInventory();
         }
-
-    private void handleCellDoubleClick(StackPane cell) {
+    
+    /**
+     * Method that tries to open a inventory popup view based on the clicked cell's item information. If it isn't a container item it does nothing.
+     * Expected to be used as a button-asigned handler.
+     * @param cell double-clicked with the item-related information (an integer itemId).
+     */
+    protected void handleCellDoubleClick(StackPane cell) {
         ItemService itemService = this.getService(ServiceType.ITEM);
         Object data = cell.getUserData();
         if (data == null) return;
 
-        int itemId = (int) data; // o el tipo que uses
+        int itemId = (int) data; 
         ItemDTO dto = itemService.getDTOById(itemId);
 
         // Si es contenedor, accedemos
-        if (!this.getCurrentInventory().findHere(itemService.getEntryById(itemId)).isLeaf()) { 
-            openContainerInventory(dto);
-        }
-
-        // Si no, ignoramos
+        if (!this.getInventoryService().containsAsContainer(itemService.getEntryById(itemId))) openContainerInventory(dto);
     }
 
-
+    /**
+     * Method that opens a popup view related to the inventory structure of a concrete item contained by the current inventory.
+     * @param containerItem root target of the new inventory view.
+     */
     private void openContainerInventory(ItemDTO containerItem) {
+        // Resolve services.
         ItemService itemService = this.getService(ServiceType.ITEM);
         SessionService sessionService = this.getService(ServiceType.SESSION);
+        InventoryService inventoryService = this.getService(ServiceType.INVENTORY);
 
+        // Search the corresponding inventory node and set it as the new current inventory.
         IInventoryElement elem =
             this.getCurrentInventory().findHere(itemService.getEntryById(containerItem.id));
 
-        Stage popup = new Stage();
-        popup.initModality(Modality.APPLICATION_MODAL);
+        inventoryService.pushCurrentInventory(elem);
 
+        // Create popup's view and controler.
         InventoryPopupView view = new InventoryPopupView();
-        InventoryPopupController controller =
-            new InventoryPopupController(elem, buffer);
+        InventoryPopupController controller = new InventoryPopupController(buffer);
 
+        // Transfer services.
+        controller.addService(sessionService);
+        controller.addService(itemService);
+        controller.addService(inventoryService);
         controller.attachView(view); 
         controller.addService(sessionService); 
 
+        // Update popup view.
         RecipeDTO currentRecipeDTO = sessionService.getCurrentInventoryRecipeDTO();
         controller.getView().updateRecipeRelatedLists(itemService.idStackToStackList(currentRecipeDTO.ingredients),
                                                            itemService.idStackToStackList(currentRecipeDTO.results));
+        
+        // Create and configurate the visual popup element.
+        Stage popup = new Stage();
+        popup.setTitle(containerItem.name);
+        popup.initModality(Modality.APPLICATION_MODAL);
         popup.setScene(new Scene(view.getRoot(), 400, 400));
+        // Event for the closing of the view.
+        popup.setOnHidden(e -> inventoryService.returnToParentInventory());
         popup.show();
 
-        
     }
 
     protected IInventoryElement getCurrentInventory() {

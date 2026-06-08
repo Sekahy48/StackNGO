@@ -29,7 +29,7 @@ import service.RecipeService;
 import service.ServiceType;
 import service.SessionService;
 
-public class InventoryController extends AbstractController<InventoryView>{
+public class InventoryController extends AbstractInventoryController<InventoryView>{
 
     private IInventoryElement inventory;
 

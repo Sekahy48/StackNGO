@@ -35,9 +35,8 @@ public class InventoryPopupController
     private RecipeDTO currentRecipe;
     private CollectionDTO currentCollection;
 
-    public InventoryPopupController(IInventoryElement inventory, EventBuffer buffer) {
+    public InventoryPopupController(EventBuffer buffer) {
         super(buffer);
-        this.inventory = inventory;
     }
 
     @Override
@@ -69,7 +68,6 @@ public class InventoryPopupController
             List<EntryDTO> itemsDTOs = DTOFactory.itemsAsEntries(itemService.getAllDTO(currentCollection.id));
             UIPrefabsFactory.createSelectionPopup(
                     view.getAddItemButton(),
-                    null,
                     itemsDTOs,
                     selected -> {
                         Integer amount = UIPrefabsFactory.showAmount("Cantidad a añadir",
@@ -120,7 +118,6 @@ public class InventoryPopupController
             List<EntryDTO> itemsDTOs = DTOFactory.itemsAsEntries(itemService.getAllDTO(currentCollection.id));
             UIPrefabsFactory.createSelectionPopup(
                     view.getAddItemButton(),
-                    null,
                     itemsDTOs,
                     selected -> {
                         

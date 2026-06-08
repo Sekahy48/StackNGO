@@ -25,7 +25,7 @@ public class InventoryService implements IService{
         this.getCurrentInventory().clearInventory();
     }
 
-    public void setCurrentInventory(IInventoryElement newInventory) {
+    public void pushCurrentInventory(IInventoryElement newInventory) {
         this.context.getInventoryStack().push(newInventory);
     }
     
