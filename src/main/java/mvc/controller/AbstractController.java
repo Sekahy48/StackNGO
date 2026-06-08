@@ -52,6 +52,10 @@ public abstract class AbstractController<T extends AbstractView> implements IObs
 
     public abstract void handleButton();
 
+    /**
+     * Method that sets handlers for the buttons of the sidebar common to most of the main views.
+     * Buttons: user space, collections list, items list, inventory playgorund.
+     */
     protected void commonHandleButton() {
 
         AbstractView view = this.getView();
