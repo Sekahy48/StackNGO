@@ -10,9 +10,7 @@ import mvc.model.entries.Entry;
  * View that shows what the user sees when adding a new {@code Item} to their account
  *
  */
-public class AddItemView extends AbstractAddView {
-
-    private Button addButton;
+public class AddItemView extends AbstractAddView { 
 
     /**
      *

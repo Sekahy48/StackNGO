@@ -6,9 +6,9 @@ import java.util.List;
 import creational.DTOFactory;
 import creational.UIPrefabsFactory;
 import dataTransportLayer.EntryDTO;
-import dataTransportLayer.EventBuffer;
 import dataTransportLayer.ItemDTO;
 import dataTransportLayer.RecipeDTO;
+import event.EventBus;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane;
@@ -30,10 +30,6 @@ import service.SessionService;
 
 public class AbstractInventoryController<T extends AbstractInventoryView> extends AbstractController<T>{
 
-    public AbstractInventoryController(EventBuffer buffer) {
-        super(buffer);
-    }
-
     @Override
     public void attachView(T view) {
         this.view = view;
@@ -43,7 +39,7 @@ public class AbstractInventoryController<T extends AbstractInventoryView> extend
     }
 
     @Override
-    public void handleButton() {
+    public void handleButtons() {
         commonHandleButton();
         SessionService sessionService = this.getService(ServiceType.SESSION);
         ItemService itemService = this.getService(ServiceType.ITEM);
@@ -257,7 +253,7 @@ public class AbstractInventoryController<T extends AbstractInventoryView> extend
 
         // Create popup's view and controler.
         InventoryPopupView view = new InventoryPopupView();
-        InventoryPopupController controller = new InventoryPopupController(buffer);
+        InventoryPopupController controller = new InventoryPopupController();
 
         // Transfer services.
         controller.addService(itemService);
@@ -290,5 +286,8 @@ public class AbstractInventoryController<T extends AbstractInventoryView> extend
     }
 
     
+    public void onReturnEvent() {
+        throw new UnsupportedOperationException("Not supported."); 
+    }
 
 }

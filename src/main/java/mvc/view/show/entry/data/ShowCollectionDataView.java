@@ -26,8 +26,7 @@ public class ShowCollectionDataView extends AbstractShowDataView {
     private VBox recipes;
 
     private ImageView plusIconR, plusIconI;
-    private HBox actionButtonHBox;
-    private Button goBackButton;
+    private HBox actionButtonHBox; 
 
     public Button getGoBackButton() { return this.goBackButton; }
 
@@ -38,7 +37,8 @@ public class ShowCollectionDataView extends AbstractShowDataView {
 
     @Override
     protected void build() {
-
+        super.build();
+        
         this.root = new BorderPane();
         this.root.setPadding(new Insets(15));
 
@@ -93,7 +93,7 @@ public class ShowCollectionDataView extends AbstractShowDataView {
         VBox.setVgrow(descriptionArea, Priority.ALWAYS);
 
         // --- BOTONES ---
-        ImageView goBackIcon = new ImageView(new Image("images/volver.png"));
+        
         goBackIcon.setFitHeight(32);
         goBackIcon.setFitWidth(32);
         goBackButton = new Button();

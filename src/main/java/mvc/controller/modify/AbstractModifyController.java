@@ -1,21 +1,14 @@
 package mvc.controller.modify;
 
 import java.io.File;
-
-import command.modify.ModifyEntryCommand;
-import dataTransportLayer.EntryDTO;
-import dataTransportLayer.EventBuffer;
+ 
+import dataTransportLayer.EntryDTO; 
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import mvc.controller.AbstractController; 
 import mvc.view.modify.AbstractModifyView;
 
-public abstract class AbstractModifyController<T extends AbstractModifyView> extends AbstractController<T>{
-    protected ModType modifyType;
-
-    public AbstractModifyController(EventBuffer buffer) {
-        super(buffer); 
-    }
+public abstract class AbstractModifyController<T extends AbstractModifyView<E>, E extends EntryDTO> extends AbstractController<T>{ 
     
     @Override
     public void attachView(T view) {
@@ -24,14 +17,14 @@ public abstract class AbstractModifyController<T extends AbstractModifyView> ext
     }
 
     @Override
-    public void handleButton(){
+    public void handleButtons(){
+
         this.view.getConfirmButton().setOnAction(
             e -> {
-                EntryDTO dto = this.composeDTO();
+                E dto = this.composeDTO();
 
                 if (dto != null) {
-                    buffer.publish(new ModifyEntryCommand(dto, modifyType));
-                    this.clear();
+                    this.onUpdateEvent(dto); 
                 }
             }
         );
@@ -58,13 +51,13 @@ public abstract class AbstractModifyController<T extends AbstractModifyView> ext
 
     }
 
-    public void setModType(ModType type){
-        this.modifyType = type;
-    }
+    protected abstract E composeDTO();
+    
+    protected abstract void onUpdateEvent(E dto);
+ 
 
-    protected abstract  EntryDTO composeDTO();
-
-    protected void clear(){
+    @Override
+    public void updateAtShow() {
         this.view.clear();
     }
 }

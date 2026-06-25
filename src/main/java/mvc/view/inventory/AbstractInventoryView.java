@@ -338,7 +338,7 @@ public abstract class AbstractInventoryView extends AbstractView {
                     Tooltip.install(cell, tooltip);
 
                     // Imagen grande del item
-                    ImageView icon = new ImageView(ImageUtils.getImage(dto.item.iconPath));
+                    ImageView icon = new ImageView(ImageUtils.getImage(dto.item.imagePath));
                     icon.setFitWidth(CELL_SIZE - 10);
                     icon.setFitHeight(CELL_SIZE - 10);
                     icon.setPreserveRatio(true);

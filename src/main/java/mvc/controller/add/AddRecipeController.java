@@ -1,19 +1,11 @@
 package mvc.controller.add;
-
-import command.add.recipe.AddRecipeCommand;
-import command.add.recipe.AddRecipeImageCommand;
-import command.screen.ChangeScreenCommand;
-import command.screen.RedirectCommand;
-import command.show.ShowCollection;
+ 
 import creational.DTOFactory;
 import creational.UIPrefabsFactory;
-import dataAccessLayer.DAO.CollectionDAO;
-import dataAccessLayer.DAO.DAOType;
-import dataAccessLayer.DAO.ItemDAO;
-import dataAccessLayer.DAO.RecipeDAO;
 import dataTransportLayer.*;
 import domain.accounts.Account;
-import identificators.EntryId;
+import event.EventBus;
+import event.NavigateEvent;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -21,14 +13,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
-import logger.LogLevel;
 import logger.Logger;
 import mvc.controller.InyectableController;
-import mvc.model.entries.Item;
 import mvc.model.entries.Recipe;
 import mvc.view.ViewType;
 import mvc.view.add.AddRecipeView;
-import service.CollectionService;
 import service.ItemService;
 import service.RecipeService;
 import service.ServiceType;
@@ -47,10 +36,7 @@ import java.util.Map;
  *
  */
 public class AddRecipeController extends AbstractAddController<RecipeDTO> implements InyectableController {
-    protected List<EntryDTO> listWhereAdd;
-    public AddRecipeController(EventBuffer buffer) {
-        super(buffer);
-    }
+    protected List<EntryDTO> listWhereAdd; 
 
     @Override
     public void setListWhereAdd(List<EntryDTO> list){
@@ -58,14 +44,14 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO> implem
     }
 
     @Override
-    public void handleButton() {
+    public void handleButtons() {
 
         commonHandleButton();
+        super.handleButtons();
 
         AddRecipeView view = (AddRecipeView) this.getView();
 
-        Button addButton = view.getAddButton();
-        Button imageButton = view.getImageButton();
+        Button addButton = view.getAddButton(); 
         Button addIngredientButton = view.getAddIngredientButton();
         Button addResultButton = view.getAddResultButton();
         Button goBackButton = view.getGoBackButton();
@@ -95,17 +81,9 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO> implem
                     this.onCreateEvent(dto);
                 }
         );
-
-        imageButton.setOnAction(
-                e -> {
-                    this.buffer.publish(new AddRecipeImageCommand());
-                }
-        );
-
+ 
         goBackButton.setOnAction(
-                e -> {
-                    goBack();
-                }
+                e -> {this.onReturnEvent();}
         );
 
         addIngredientButton.setOnAction(
@@ -121,6 +99,10 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO> implem
         );
     }
 
+    public void onReturnEvent() {
+        EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTION));
+    }
+    
     @Override
     public void onCreateEvent(RecipeDTO dto) { 
         if (dto.name.isEmpty()) {
@@ -141,9 +123,9 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO> implem
             if (newRecipe != null) {
                 this.view.showAlert("Receta creada","Coleccion " + dto.name + " creada correctamente", Alert.AlertType.INFORMATION);
                 Logger.getInstance().info(this.getClass().toString(), "El usuario " + currentAccount.getUsername() + " ha creado una receta con nombre " + dto.name);
+                this.onReturnEvent();
             } else {
                 this.view.showAlert("Receta existente", "La receta llamada " + dto.name + " ya ha sido creada previamente", Alert.AlertType.ERROR);
-                this.goBack();
             }
         } 
     }
@@ -248,7 +230,7 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO> implem
 
         for(ItemDTO itemDTO : listItems){
             list.getItems().add(itemDTO.getName());
-            items.put(itemDTO.getName(), itemDTO.getIconPath());
+            items.put(itemDTO.getName(), itemDTO.getImagePath());
         }
 
         ScrollPane scroll = new ScrollPane(list);

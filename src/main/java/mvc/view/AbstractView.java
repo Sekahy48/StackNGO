@@ -3,7 +3,7 @@ package mvc.view;
 import java.util.Optional;
 
 import creational.UIPrefabsFactory;
-import dataTransportLayer.EventBuffer;
+import event.EventBus;
 import identificators.GenericId;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -22,7 +22,7 @@ import javafx.scene.layout.VBox;
 public abstract class AbstractView {
 
     protected VBox root;
-    protected EventBuffer buffer;
+    protected EventBus buffer;
     protected GenericId parentId;
     protected String parentName;
  
@@ -34,7 +34,7 @@ public abstract class AbstractView {
 
     /**
      *
-     * Constructor that receives an {@link EventBuffer} where events are placed
+     * Constructor that receives an {@link EventBus} where events are placed
      *
      */
     public AbstractView() {
@@ -109,7 +109,18 @@ public abstract class AbstractView {
     }
 
     protected void initSidebar(Node content){
-        UIPrefabsFactory.initSideBar(this.sideBar, this.inventoryButton, this.userButton, this.itemButton, this.collectionButton, this.splitPane, content);
-        root.getChildren().add(splitPane);
+        if (!root.getChildren().contains(splitPane)) {
+            UIPrefabsFactory.initSideBar(
+                this.sideBar,
+                this.inventoryButton,
+                this.userButton,
+                this.itemButton,
+                this.collectionButton,
+                this.splitPane,
+                content
+            );
+
+            root.getChildren().add(splitPane);
+        }
     }
 }

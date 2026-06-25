@@ -26,8 +26,7 @@ public class ShowRecipeDataView extends AbstractShowEntryView {
     private VBox outputs;
 
     private ImageView plusIconI, plusIconO;
-    private HBox actionButtonHBox;
-    private Button goBackButton;
+    private HBox actionButtonHBox; 
     private Button addOutputButton, addInputButton;
 
     public ShowRecipeDataView() {
@@ -36,6 +35,8 @@ public class ShowRecipeDataView extends AbstractShowEntryView {
 
     @Override
     protected void build() {
+        super.build();
+        
         this.root = new BorderPane();
         this.root.setPadding(new Insets(15));
 
@@ -90,7 +91,6 @@ public class ShowRecipeDataView extends AbstractShowEntryView {
         VBox.setVgrow(descriptionArea, Priority.ALWAYS);
 
         // --- BOTONES ---
-        ImageView goBackIcon = new ImageView(new Image("images/volver.png"));
         goBackIcon.setFitHeight(32);
         goBackIcon.setFitWidth(32);
         goBackButton = new Button();

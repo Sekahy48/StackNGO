@@ -3,6 +3,7 @@ package mvc.context;
 import java.util.Deque;
 
 import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.ItemDTO;
 import dataTransportLayer.RecipeDTO;
 import domain.accounts.Account;
 import mvc.model.inventory.IInventoryElement;
@@ -10,6 +11,8 @@ import mvc.model.inventory.IInventoryElement;
 public class SessionContext implements Context{
     private Account currentAccount;
     private CollectionDTO currentCollection;
+    private ItemDTO currentItem;
+    private RecipeDTO currentRecipeDTO;
 
     private CollectionDTO currentInventoryCollection;
     private RecipeDTO currentInventoryRecipe;
@@ -53,5 +56,21 @@ public class SessionContext implements Context{
 
     public void resetCurrentInventory() {
         throw new UnsupportedOperationException("Metodo sin completar", null);
+    }
+
+    public ItemDTO getCurrentItem() {
+        return currentItem;
+    }
+
+    public void setCurrentItem(ItemDTO currentItem) {
+        this.currentItem = currentItem;
+    }
+
+    public RecipeDTO getCurrentRecipeDTO() {
+        return currentRecipeDTO;
+    }
+
+    public void setCurrentRecipeDTO(RecipeDTO currentRecipeDTO) {
+        this.currentRecipeDTO = currentRecipeDTO;
     }
 }

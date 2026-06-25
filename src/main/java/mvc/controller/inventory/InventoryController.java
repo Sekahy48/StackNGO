@@ -4,8 +4,7 @@ import java.util.List;
 import creational.DTOFactory;
 import creational.UIPrefabsFactory;
 import dataTransportLayer.EntryDTO;
-import dataTransportLayer.EventBuffer;
-import dataTransportLayer.RecipeDTO;
+import dataTransportLayer.RecipeDTO; 
 import javafx.scene.control.Alert;
 import mvc.view.inventory.InventoryView;
 import service.CollectionService;
@@ -14,16 +13,11 @@ import service.RecipeService;
 import service.ServiceType;
 import service.SessionService;
 
-public class InventoryController extends AbstractInventoryController<InventoryView>{
-
-    public InventoryController(EventBuffer buffer) {
-        super(buffer);
-    }
-     
+public class InventoryController extends AbstractInventoryController<InventoryView>{ 
 
     @Override
-    public void handleButton() {
-        super.handleButton();
+    public void handleButtons() {
+        super.handleButtons();
 
         SessionService sessionService = this.getService(ServiceType.SESSION);
         ItemService itemService = this.getService(ServiceType.ITEM);

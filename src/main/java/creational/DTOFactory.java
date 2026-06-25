@@ -2,14 +2,17 @@ package creational;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import dataTransportLayer.*; 
-import identificators.EntryId;
-import logger.LogLevel;
-import logger.Logger;
-import mvc.model.entries.Recipe;
-import mvc.model.inventory.IInventoryElement; 
+import dataTransportLayer.AccountDTO;
+import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.EntryDTO;
+import dataTransportLayer.GenericDTO;
+import dataTransportLayer.ItemDTO;
+import dataTransportLayer.ItemIdStackDTO; 
+import dataTransportLayer.ItemStackDTO;
+import dataTransportLayer.ItemWithCollectionDTO;
+import dataTransportLayer.RecipeDTO;
+import dataTransportLayer.RecipeWithCollectionDTO;
 
 public final class DTOFactory {
 
@@ -62,6 +65,14 @@ public final class DTOFactory {
         return out;
     }
 
+    public static List<ItemWithCollectionDTO> itemsToWithCollection(List<ItemDTO> dtos, String collectionName) {
+        ArrayList<ItemWithCollectionDTO> out = new ArrayList<>();
+        for (ItemDTO elem : dtos) {
+            out.add(new ItemWithCollectionDTO(elem, collectionName));
+        }
+        return out;
+    }
+
     public static List<EntryDTO> itemsAsEntries(List<ItemDTO> dtos) {
         ArrayList<EntryDTO> out = new ArrayList<>();
         for (ItemDTO elem : dtos) {
@@ -104,6 +115,14 @@ public final class DTOFactory {
         ArrayList<EntryDTO> out = new ArrayList<>();
         for (RecipeWithCollectionDTO elem : dtos) {
             out.add(elem.recipe);
+        }
+        return out;
+    }
+
+    public static List<RecipeWithCollectionDTO> recipesToWithCollection(List<RecipeDTO> dtos, String collectionName) {
+        ArrayList<RecipeWithCollectionDTO> out = new ArrayList<>();
+        for (RecipeDTO elem : dtos) {
+            out.add(new RecipeWithCollectionDTO(elem, collectionName));
         }
         return out;
     }

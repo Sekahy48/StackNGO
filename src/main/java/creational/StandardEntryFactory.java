@@ -69,7 +69,7 @@ public class StandardEntryFactory implements IEntriesFactory{
 
     public void createEntry(EntryDTO dto){
         builder.setName(dto.name);
-        builder.setIconPath(dto.iconPath);
+        builder.setIconPath(dto.imagePath);
         builder.setDescription(dto.description);
         builder.setId(dto.id);
     }

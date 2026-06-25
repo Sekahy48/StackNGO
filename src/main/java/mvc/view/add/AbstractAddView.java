@@ -1,6 +1,5 @@
 package mvc.view.add;
-
-import creational.UIPrefabsFactory;
+ 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -18,6 +17,7 @@ public abstract class AbstractAddView extends AbstractView {
     protected Label fileNameLabel;
     protected Button imageButton;
     protected Button goBackButton;
+    protected Button addButton;
     protected Label nameLabel;
     protected Label iconLabel;
     protected Label descriptionLabel;
@@ -59,4 +59,10 @@ public abstract class AbstractAddView extends AbstractView {
     }
 
     protected abstract void buildSpecificFields();
+
+    public void clearFields() {
+        nameField.clear();
+        descriptionArea.clear();
+        fileNameLabel.setText("");
+    }
 }

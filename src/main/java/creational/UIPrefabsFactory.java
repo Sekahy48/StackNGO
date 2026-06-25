@@ -159,8 +159,8 @@ public class UIPrefabsFactory {
                 } else {
                     label.setText(item.name);
                     imageView.setImage(
-                        item.iconPath != null && !item.iconPath.isEmpty()
-                            ? ImageUtils.getImage(item.iconPath)
+                        item.imagePath != null && !item.imagePath.isEmpty()
+                            ? ImageUtils.getImage(item.imagePath)
                             : null
                     );
                     setGraphic(container);
@@ -298,7 +298,7 @@ public class UIPrefabsFactory {
         for (ItemStackDTO dto : dtos){
             
             String itemName = dto.item.getName();
-            String iconPath = dto.item.getIconPath();
+            String iconPath = dto.item.getImagePath();
             int amount = dto.amount;
 
             Image image = ImageUtils.getImage(iconPath);

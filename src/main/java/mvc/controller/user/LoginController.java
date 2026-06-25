@@ -1,15 +1,18 @@
 package mvc.controller.user;
-
-import command.screen.ChangeScreenCommand;
-import command.screen.ChangeToCommand;
-import command.user.LoginCommand;
-import dataTransportLayer.EventBuffer;
+ 
 import domain.accounts.Account;
+import event.EventBus;
+import event.NavigateEvent;
+import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button; 
 import logger.Logger;
 import mvc.view.ViewType;
 import mvc.view.user.LoginView;
+import service.AccountService;
+import service.ServiceType;
+import service.SessionService;
+
 import static security.State.BLOCKED;
 
 /**
@@ -19,11 +22,6 @@ import static security.State.BLOCKED;
  */
 public class LoginController extends AbstractUserController<LoginView> {
 
-
-    public LoginController(EventBuffer buffer) {
-        super(buffer);
-    }
-
     @Override
     public void attachView(LoginView view) {
         this.view = view;
@@ -31,29 +29,30 @@ public class LoginController extends AbstractUserController<LoginView> {
     }
 
     @Override
-    public void handleButton() {
+    public void handleButtons() {
 
         Button confirmButton = view.getConfirmButton();
-        Button signUpButton = view.getSignUpBtn();
-
-
+        Button signUpButton = view.getSignUpBtn(); 
 
         confirmButton.setOnAction(
                 e -> {
                     String user = view.getUsername().getText().trim();
-                    String password = view.getPassword().getText().trim();
-                    buffer.publish(new LoginCommand(user, password));
+                    String password = view.getPassword().getText().trim(); 
+                    login(user, password);
                 }
         );
         signUpButton.setOnAction(
                 e -> {
-                    buffer.publish(new ChangeScreenCommand(ViewType.SIGN_UP));
+                    EventBus.getInstance().publish(new NavigateEvent(ViewType.SIGN_UP));
                 }
         );
     }
 
     public void login(String user, String password) {
-        Account account = context.getAccount(user);
+        AccountService accountService = this.getService(ServiceType.ACCOUNT);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        
+        Account account = accountService.getAccount(user);
         if  (account == null) {
 
             this.view.showAlert("Cuenta incorrecta", "No existe ninguna cuenta con ese nombre", Alert.AlertType.WARNING);
@@ -61,7 +60,7 @@ public class LoginController extends AbstractUserController<LoginView> {
 
         } else if (!account.verify(password)) {
 
-            this.view.showAlert("Contraseña incorrecta", "Esta contraseña es incorrecta", Alert.AlertType.WARNING);
+            this.view.showAlert("Contraseña incorrecta", "La contraseña es incorrecta", Alert.AlertType.WARNING);
             Logger.getInstance().error(this.getClass().toString(), "Contraseña incorrecta para el usuario " + user);
 
         } else if (account.getState() == BLOCKED) {
@@ -70,12 +69,22 @@ public class LoginController extends AbstractUserController<LoginView> {
 
         } else {
 
-            this.view.showAlert("Acceso realizado", "Has iniciado sesion correctamente", Alert.AlertType.INFORMATION);
+            this.view.showAlert("Acceso permitido", "Has iniciado sesion correctamente", Alert.AlertType.INFORMATION);
             Logger.getInstance().info(this.getClass().toString(), "El usuario " + user + " ha iniciado sesion");
-            context.setAccount(account);
-            buffer.publish(new ChangeToCommand(ViewType.PRIVATE_ZONE, user));
+            sessionService.setCurrentAccount(account);
+            EventBus.getInstance().publish(new NavigateEvent(ViewType.PRIVATE_ZONE));
 
             
         }
+    }
+
+    @Override
+    public void onReturnEvent() {
+        Platform.exit();
+    }
+
+    @Override
+    public void updateAtShow() {
+        this.view.clearFields();
     }
 }

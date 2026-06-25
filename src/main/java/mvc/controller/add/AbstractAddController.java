@@ -1,30 +1,18 @@
 package mvc.controller.add;
 
 import java.io.File;
-
-import command.screen.ChangeScreenCommand;
-import command.screen.RedirectCommand;
-import command.show.ShowCollection;
-import dataTransportLayer.CollectionDTO;
-import dataTransportLayer.EntryDTO;
-import dataTransportLayer.EventBuffer;
+ 
+import dataTransportLayer.EntryDTO; 
 import javafx.stage.FileChooser;
 import mvc.controller.AbstractController;
-import mvc.model.entries.Entry;
 import mvc.model.entries.repository.EntryIdGenerator;
-import mvc.view.ViewType;
 import mvc.view.add.AbstractAddView;
-import service.ControllerService;
-import service.ServiceType;
-import service.SessionService;
 
 public abstract class AbstractAddController<D extends EntryDTO> extends AbstractController<AbstractAddView> {
 
     protected EntryIdGenerator idGenerator;
 
-    public AbstractAddController(EventBuffer buffer) {
-
-        super(buffer);
+    public AbstractAddController() { 
         this.idGenerator = EntryIdGenerator.getInstance();
     }
 
@@ -35,17 +23,10 @@ public abstract class AbstractAddController<D extends EntryDTO> extends Abstract
     }
 
     @Override
-    public abstract void handleButton();
-
-    protected void goBack() {
-        CollectionDTO dto = this.<SessionService>getService(ServiceType.SESSION).getCurrentCollectionDTO();
-
-        this.buffer.publish(new RedirectCommand(
-                this.<ControllerService>getService(ServiceType.CONTROLLER).getControllerBuffer(ViewType.SHOW_COLLECTION),
-                new ShowCollection(dto)
-        ));
-        this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_COLLECTION));
+    public void handleButtons() {
+        this.view.getImageButton().setOnAction(e -> chooseImage());
     }
+    
 
     /**
      * Creates and persists a system entity given a DTO.
@@ -54,7 +35,7 @@ public abstract class AbstractAddController<D extends EntryDTO> extends Abstract
     public abstract void onCreateEvent(D dto);
 
     public void chooseImage() {
-
+        
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(
                 new FileChooser.ExtensionFilter("Imagenes", "*.jpg", "*.png", "*.jpeg", "*.gif")
@@ -65,5 +46,10 @@ public abstract class AbstractAddController<D extends EntryDTO> extends Abstract
         if (file != null) {
             view.setImage(file);
         }
+    }
+
+    @Override 
+    public void updateAtShow() {
+        this.getView().clearFields();
     }
 }

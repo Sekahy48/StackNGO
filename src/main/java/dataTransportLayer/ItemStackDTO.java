@@ -10,12 +10,17 @@ public class ItemStackDTO implements GenericDTO{
     }
 
     @Override
-    public String getIconPath() {
+    public String getImagePath() {
         return null;
     }
 
     @Override
     public String getName() {
         return null;
+    }
+
+    @Override
+    public int getIdValue() {
+       return item.id; 
     }
 }

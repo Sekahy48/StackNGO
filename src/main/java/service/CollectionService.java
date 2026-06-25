@@ -2,15 +2,14 @@ package service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import dataAccessLayer.DAO.CollectionDAO;
 import dataTransportLayer.CollectionDTO;
-import identificators.AccountId;
 import identificators.EntryId;
 import logger.Logger;
 import mvc.context.DataContext;
 import mvc.model.entries.Collection;
+import mvc.model.entries.repository.EntriesRepository;
 
 public class CollectionService extends AbstractEntryService<CollectionDTO, Collection> {
 
@@ -54,6 +53,13 @@ public class CollectionService extends AbstractEntryService<CollectionDTO, Colle
         }
         return out;
     }
+
+    @Override
+    public boolean removeEntry(int id) {
+        this.untrackEntryById(id);
+        return this.data.getCollectionDAO().delete(id);
+    } 
+
     //#endregion
 
     //#region DTO operations
@@ -62,8 +68,7 @@ public class CollectionService extends AbstractEntryService<CollectionDTO, Colle
         CollectionDTO out = data.getCollectionDAO().read(id);
         if (out == null) {
             String error = "Collection with id " + id + " not found in database.";
-            Logger.getInstance().warning(this.getClass().toString(), error);
-            throw new NoSuchElementException(error);
+            Logger.getInstance().warning(this.getClass().toString(), error); 
         }
         return out;
     }
@@ -73,8 +78,7 @@ public class CollectionService extends AbstractEntryService<CollectionDTO, Colle
         CollectionDTO out = data.getCollectionDAO().readByName(name);
         if (out == null) {
             String error = "Collection with name " + name + " not found in database.";
-            Logger.getInstance().warning(this.getClass().toString(), error);
-            throw new NoSuchElementException(error);
+            Logger.getInstance().warning(this.getClass().toString(), error); 
         }
         return out;
     }
@@ -89,15 +93,36 @@ public class CollectionService extends AbstractEntryService<CollectionDTO, Colle
     public Collection createEntry(CollectionDTO dto) {
         return this.entriesFactory.createCollection(dto);
     }
+    
     @Override
     public Collection saveEntry(CollectionDTO dto, int[] extraData) {
         Collection out = null;
         CollectionDAO dao = this.data.getCollectionDAO();
-        if (dao.read(dto.id) != null) {
-            out = this.createEntry(dto);
+        out = this.createEntry(dto);
+        CollectionDTO existingDTO = dao.read(dto.id);
+    
+        if (existingDTO != null) {
+            dao.update(out, existingDTO.id);
+        } else {
             dao.create(out, extraData);
-            this.data.getEntriesRepo().addCollection(out);
         }
+        
+        EntriesRepository repo = this.data.getEntriesRepo();
+        if (repo.contains(new EntryId(dto.id))) {
+            repo.modifyEntry(out);
+        } else {
+            repo.addCollection(out);
+        } 
         return out;
+    }
+
+    @Override
+    public Collection saveFromImport(CollectionDTO dto, int[] extraData) {
+        CollectionDAO dao = this.data.getCollectionDAO();
+        CollectionDTO existingDTO = dao.readByName(dto.name);
+        if (existingDTO != null) {
+            dto.id = existingDTO.id;
+        }
+        return saveEntry(dto, extraData);
     }
 }

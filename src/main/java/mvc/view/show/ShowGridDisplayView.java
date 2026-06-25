@@ -1,31 +1,23 @@
 package mvc.view.show;
 
-import dataTransportLayer.EventBuffer;
 import dataTransportLayer.GenericDTO;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.StackPane; 
 import mvc.view.AbstractView;
 
 import java.io.File;
-
-import creational.UIPrefabsFactory;
+ 
 
 public abstract class ShowGridDisplayView<T extends GenericDTO> extends AbstractView {
     protected GridPane contentGrid;
@@ -70,7 +62,7 @@ public abstract class ShowGridDisplayView<T extends GenericDTO> extends Abstract
     }
 
     protected Button createElementCard(T dto){
-        return this.createGenericElementCard(dto.getIconPath(), dto.getName());
+        return this.createGenericElementCard(dto.getImagePath(), dto.getName());
     }
     /**
      * Metodo privado que construye una de las celdas/boton de la grid de esta vista

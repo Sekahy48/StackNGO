@@ -1,7 +1,4 @@
-package dataTransportLayer;
-
-import logger.LogLevel;
-import logger.Logger;
+package dataTransportLayer; 
 
 import java.util.List;
 
@@ -42,12 +39,17 @@ public class AccountDTO implements GenericDTO {
     }
 
     @Override
-    public String getIconPath() {
+    public String getImagePath() {
         return null;
     }
 
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public int getIdValue() {
+       return this.id; 
     }
 }

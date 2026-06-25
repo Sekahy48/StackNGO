@@ -7,6 +7,8 @@ public enum ServiceType {
     CONTROLLER,
     SESSION,
     INVENTORY,
+    ACCOUNT,
+    SYSTEM,
     
     
 }

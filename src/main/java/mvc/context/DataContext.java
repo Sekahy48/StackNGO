@@ -1,20 +1,9 @@
 package mvc.context;
- 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import creational.StandardEntryFactory;
-import creational.AccountFactory;
-import creational.DTOFactory;
+  
+import java.util.HashMap; 
+import java.util.Map; 
 import dataAccessLayer.DAO.*; 
-import dataTransportLayer.*;
-import domain.accounts.Account;
-import identificators.EntryId;
-import mvc.model.entries.Collection;
-import mvc.model.entries.Item;
-import mvc.model.entries.Recipe;
+import dataTransportLayer.*; 
 import mvc.model.entries.repository.EntriesRepository; 
 
 
@@ -53,6 +42,10 @@ public class DataContext implements Context{
 
     public ItemDAO getItemDAO() {
         return (ItemDAO) this.getDAO(DAOType.ITEM);
+    }
+
+    public AccountDAO getAccountDAOById(int id) {
+        return (AccountDAO) this.getDAO(DAOType.ACCOUNT);
     }
 
     public EntriesRepository getEntriesRepo() {

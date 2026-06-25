@@ -14,18 +14,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import mvc.view.AbstractView;
-import utilities.ImageUtils;
-
-import java.io.File; 
+import utilities.ImageUtils; 
 
 import dataTransportLayer.EntryDTO;
 import identificators.EntryId;
 
-public class AbstractModifyView extends AbstractView {
+public class AbstractModifyView<T extends EntryDTO> extends AbstractView {
 
    // ===== CAMPOS COMUNES (FX) =====
    protected EntryId entryId;
-   protected EntryDTO dto;
+   protected T dto;
    protected Label currentNameLabel;
    protected TextField newNameField;
 
@@ -125,12 +123,12 @@ public class AbstractModifyView extends AbstractView {
    }
 
    // ===== MÉTODO DE RELLENO =====
-   public void modifyFields(EntryDTO dto) {
+   public void modifyFields(T dto) {
       this.entryId = new EntryId(dto.id);
       this.dto = dto;
       this.currentNameLabel.setText(dto.name);
       this.currentDescArea.setText(dto.description); 
-      Image icon = ImageUtils.getImage(dto.iconPath);
+      Image icon = ImageUtils.getImage(dto.imagePath);
       this.currentIconView.setImage(icon);
 
       this.suggestIconBtn.setGraphic(null);
@@ -166,7 +164,7 @@ public class AbstractModifyView extends AbstractView {
       return entryId;
    }
 
-   public EntryDTO getEntryDTO(){
+   public T getEntryDTO(){
       return this.dto;
    }
  

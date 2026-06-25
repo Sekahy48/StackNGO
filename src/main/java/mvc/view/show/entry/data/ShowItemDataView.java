@@ -14,9 +14,7 @@ public class ShowItemDataView extends AbstractShowEntryView {
     private VBox centralPanel, rightPanel;
     private ImageView plusIconR, plusIconI;
     private HBox actionButtonHBox;
-
-    private Button goBackButton;
-    private ImageView goBackIcon;
+ 
 
     public ShowItemDataView() {
         super();
@@ -31,10 +29,12 @@ public class ShowItemDataView extends AbstractShowEntryView {
 
     @Override
     protected void build() {
+        super.build();
+        
         this.root = new BorderPane();
         this.root.setPadding(new Insets(15));
 
-        this.goBackIcon = new ImageView(new Image("images/volver.png"));
+        //this.goBackIcon = new ImageView(new Image("images/volver.png"));
         this.goBackIcon.setFitHeight(32);
         this.goBackIcon.setFitWidth(32);
 

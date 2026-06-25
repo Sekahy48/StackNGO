@@ -9,9 +9,7 @@ import javafx.scene.layout.HBox;
  * View that shows what the user sees when adding a new {@code Collection} to their account
  *
  */
-public class AddCollectionView extends AbstractAddView {
-
-    private Button addButton;
+public class AddCollectionView extends AbstractAddView { 
 
     /**
      *

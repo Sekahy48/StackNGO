@@ -2,6 +2,7 @@ package service;
   
 
 import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.ItemDTO;
 import dataTransportLayer.RecipeDTO;
 import domain.accounts.Account;
 import mvc.context.SessionContext;
@@ -35,6 +36,16 @@ public class SessionService implements IService{
         return this.context.getCurrentInventoryRecipe();
     }
 
+    public ItemDTO getCurrentItem() {
+        return this.context.getCurrentItem();
+    }
+
+
+    public RecipeDTO getCurrentRecipeDTO() {
+        return this.context.getCurrentRecipeDTO();
+    }
+
+
 
     public void setCurrentCollection(CollectionDTO collection) {
         this.context.setCurrentCollection(collection);
@@ -44,6 +55,10 @@ public class SessionService implements IService{
         this.context.setCurrentAccount(account);
     }
 
+    public void untrackCurrentAccount(){
+        this.setCurrentAccount(null);
+    }
+
     public void setCurrentInventoryCollection(CollectionDTO collection) {
         this.context.setCurrentInventoryCollection(collection);
     }
@@ -51,5 +66,14 @@ public class SessionService implements IService{
     public void setCurrentInventoryRecipe(RecipeDTO recipe) {
         this.context.setCurrentInventoryRecipe(recipe);
     }
+
+    public void setCurrentRecipe(RecipeDTO currentRecipeDTO) {
+        this.context.setCurrentRecipeDTO(currentRecipeDTO);
+    }
+
+    public void setCurrentItem(ItemDTO currentItem) {
+        this.context.setCurrentItem(currentItem);
+    } 
+
     
 }

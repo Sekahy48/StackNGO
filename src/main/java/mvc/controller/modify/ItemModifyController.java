@@ -2,36 +2,31 @@ package mvc.controller.modify;
 
 import java.util.Objects;
 
-import creational.DTOFactory;
-import dataAccessLayer.DAO.ItemDAO;
+import creational.DTOFactory; 
 import dataTransportLayer.EntryDTO;
-import dataTransportLayer.EventBuffer;
+import dataTransportLayer.ItemDTO;
+import event.EventBus;
+import event.NavigateEvent;
 import javafx.scene.control.Alert;
-import logger.LogLevel;
 import logger.Logger;
-import mvc.view.modify.ItemModifyView;
+import mvc.view.ViewType;
+import mvc.view.modify.ItemModifyView; 
+import service.ItemService;
+import service.ServiceType;
+import service.SessionService;
 
-public class ItemModifyController extends AbstractModifyController<ItemModifyView>{
-
-    private ItemDAO dao;
-
-    public ItemModifyController(EventBuffer buffer) {
-        super(buffer); 
-        this.modifyType = ModType.ITEM;
-        this.dao = new ItemDAO();
-    }
-
+public class ItemModifyController extends AbstractModifyController<ItemModifyView, ItemDTO>{
+ 
     @Override
-    protected EntryDTO composeDTO() { 
-        
+    protected ItemDTO  composeDTO() { 
+        ItemService itemService = this.getService(ServiceType.ITEM);
+
         EntryDTO dto = this.view.getEntryDTO();
 
-        String newName = !Objects.isNull(this.view.getNewName()) && !this.view.getNewName().isEmpty()
-              ? this.view.getNewName() 
-              : dto.name;
+        String newName = !this.view.getNewName().isBlank() ? this.view.getNewName() : dto.name;
 
         if (!newName.equals(dto.name)) {
-            if (dao.existsEntryByName(newName, dto.id, this.context.getSessionContext().getCurrentCollection().getId())) {
+            if (itemService.containsEntryByName(newName)) {
                 this.view.showAlert("Nombre duplicado","Ya existe un item con ese nombre.", Alert.AlertType.ERROR);
                 return null;
             }
@@ -39,7 +34,7 @@ public class ItemModifyController extends AbstractModifyController<ItemModifyVie
 
         String iconPath = !Objects.isNull(this.view.getNewImagePath()) && !this.view.getNewImagePath().isEmpty()
                         ? this.view.getNewImagePath() 
-                        : dto.iconPath;
+                        : dto.imagePath;
 
         String description = !Objects.isNull(this.view.getNewDescription()) && !this.view.getNewDescription().isEmpty()
                             ? this.view.getNewDescription()
@@ -48,6 +43,29 @@ public class ItemModifyController extends AbstractModifyController<ItemModifyVie
         return DTOFactory.item(newName, iconPath, description, dto.id);
 
             
+    }
+
+    @Override
+    protected void onUpdateEvent(ItemDTO dto) {
+        ItemService itemService = this.getService(ServiceType.ITEM);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        itemService.saveEntry(dto, new int[]{sessionService.getCurrentCollectionDTO().id});
+        
+        ItemDTO oldDto = this.view.getEntryDTO();
+        String alert = "El item llamado " + oldDto.name + " ha sido modificado.";
+        if (oldDto.name != dto.name) alert = "El item antes llamado " + oldDto.name + " ha sido modificado pasandose a llamar " + dto.name + ".";
+
+        Logger.getInstance().info(
+            this.getClass().toString(),
+            alert
+        );
+        
+        this.onReturnEvent();
+    }
+
+    @Override
+    public void onReturnEvent() { 
+        EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_ITEM));
     }
 
 }

@@ -23,8 +23,8 @@ public class SystemContext implements Context{
         return this.coreController.getController(controller);
     }
 
-    public void show(ViewType view){
-        this.getController(view).updateAtShow();
-        this.screenManager.show(view);
+    public ScreenManager getScreenManager(){
+        return this.screenManager;
     }
+
 }

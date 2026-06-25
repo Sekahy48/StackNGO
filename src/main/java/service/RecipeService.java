@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
-import creational.DTOFactory;
-import dataTransportLayer.ItemDTO;
-import dataTransportLayer.ItemIdStackDTO;
+import dataAccessLayer.DAO.CollectionDAO;
+import dataAccessLayer.DAO.ItemDAO;
+import dataAccessLayer.DAO.RecipeDAO;
+import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.ItemStackDTO;
 import dataTransportLayer.RecipeDTO;
 import identificators.EntryId;
@@ -17,6 +17,7 @@ import mvc.context.DataContext;
 import mvc.model.entries.Item;
 import mvc.model.entries.ItemIdStack;
 import mvc.model.entries.Recipe;
+import mvc.model.entries.repository.EntriesRepository;
 import mvc.model.inventory.IInventoryElement;
 
 public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
@@ -61,6 +62,13 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
         }
         return out;
     }
+
+    @Override
+    public boolean removeEntry(int id) {
+        this.untrackEntryById(id);
+        return this.data.getRecipeDAO().delete(id);
+    }
+
     //#endregion
 
     //#region DTO operations
@@ -69,8 +77,7 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
         RecipeDTO out = data.getRecipeDAO().read(id);
         if (out == null) {
             String error = "Recipe with id " + id + " not found in database.";
-            Logger.getInstance().warning(this.getClass().toString(), error);
-            throw new NoSuchElementException(error);
+            Logger.getInstance().warning(this.getClass().toString(), error); 
         }
         return out;
     }
@@ -80,8 +87,7 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
         RecipeDTO out = data.getRecipeDAO().readByName(name);
         if (out == null) {
             String error = "Recipe with name " + name + " not found in database.";
-            Logger.getInstance().warning(this.getClass().toString(), error);
-            throw new NoSuchElementException(error);
+            Logger.getInstance().warning(this.getClass().toString(), error); 
         }
         return out;
     }
@@ -99,9 +105,34 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
 
     @Override
     public Recipe saveEntry(RecipeDTO dto, int[] extraData) {
-        return null; //TODO
+        Recipe out = null;
+        RecipeDAO dao = this.data.getRecipeDAO();
+        out = this.createEntry(dto);
+        RecipeDTO existingDTO = dao.read(dto.id);
+        if (existingDTO != null) {
+            dao.update(out, existingDTO.id);
+        } else {
+            dao.create(out, extraData);
+        }
+        
+        EntriesRepository repo = this.data.getEntriesRepo();
+        if (repo.contains(new EntryId(dto.id))) {
+            repo.modifyEntry(out);
+        } else {
+            repo.addRecipe(out);
+        } 
+        return out;
     }
- 
+    
+    @Override
+    public Recipe saveFromImport(RecipeDTO dto, int[] extraData) {
+        RecipeDAO dao = this.data.getRecipeDAO();
+        RecipeDTO existingDTO = dao.readByName(dto.name);
+        if (existingDTO != null) {
+            dto.id = existingDTO.id;
+        }
+        return saveEntry(dto, extraData);
+    }
  
 
     //#region Logic
@@ -166,6 +197,38 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
         return available;
     }
 
+    public List<ItemStackDTO> getRecipeInputs(Integer recipeId) {
+        return this.data.getRecipeDAO().getInputs(recipeId);
+    }
+
+    public List<ItemStackDTO> getRecipeOutputs(Integer recipeId) {
+        return this.data.getRecipeDAO().getOutputs(recipeId);
+    }
+    
+
+    public void updateInputAmount(int recipeId, int itemId, int amount) {
+        this.data.getRecipeDAO().updateInputAmount(recipeId, itemId, amount);
+    }
+
+    public void updateOutputAmount(int recipeId, int itemId, int amount) {
+        this.data.getRecipeDAO().updateOutputAmount(recipeId, itemId, amount);
+    }
+
+    public void insertSingleInput(int recipeId, int itemId, int amount) {
+        this.data.getRecipeDAO().insertSingleInput(recipeId, itemId, amount);
+    }
+
+    public void insertSingleOutput(int recipeId, int itemId, int amount) {
+        this.data.getRecipeDAO().insertSingleOutput(recipeId, itemId, amount);
+    }
+
+    public void deleteSingleInput(int recipeId, int itemId) { 
+        this.data.getRecipeDAO().deleteSingleInput(recipeId, itemId);
+    }
+
+    public void deleteSingleOutput(int recipeId, int itemId) { 
+        this.data.getRecipeDAO().deleteSingleOutput(recipeId, itemId);
+    }
 
 
     //#endregion

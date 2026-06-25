@@ -17,7 +17,7 @@ public class ShowItemsView extends ShowGridDisplayView<ItemWithCollectionDTO> {
 
     @Override
     protected Button createElementCard(ItemWithCollectionDTO dto){
-        return this.createItemCard(dto.getIconPath(), dto.getName(), dto.collection);
+        return this.createItemCard(dto.getImagePath(), dto.getName(), dto.collection);
     }
     /**
  * Crea una "card" con imagen, título inferior y nombre de colección superior.

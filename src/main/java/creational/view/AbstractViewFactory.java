@@ -1,6 +1,6 @@
 package creational.view;
 
-import dataTransportLayer.EventBuffer;
+import event.EventBus;
 import javafx.scene.Parent;
 import mvc.view.AbstractView;
 import mvc.view.ViewType;

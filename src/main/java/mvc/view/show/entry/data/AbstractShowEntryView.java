@@ -1,8 +1,7 @@
 package mvc.view.show.entry.data;
 
 import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.image.Image;
+import javafx.scene.control.Label; 
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -15,7 +14,7 @@ public class AbstractShowEntryView extends AbstractShowDataView {
 
     @Override
     protected void build() {
-
+        super.build();
     }
 
     @Override

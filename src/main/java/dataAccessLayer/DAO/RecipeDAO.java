@@ -77,15 +77,11 @@ public class RecipeDAO extends AbstractEntryDAO<RecipeDTO, Recipe> {
         return out;
     }
 
-    public List<ItemStackDTO> getInputs(int recipeId, int collectionId) {
+    public List<ItemStackDTO> getInputs(int recipeId) {
         List<ItemStackDTO> inputs = new ArrayList<>();
-        String sql = "SELECT * FROM recipe_inputs WHERE recipes_id = ? AND collection_id = ?";
-
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
+        String sql = "SELECT * FROM recipe_inputs WHERE recipes_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, recipeId);
-            stmt.setInt(2, collectionId);
-
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 ItemDAO itemDAO = new ItemDAO();
@@ -98,17 +94,12 @@ public class RecipeDAO extends AbstractEntryDAO<RecipeDTO, Recipe> {
         return inputs;
     }
 
-    public List<ItemStackDTO> getOutputs(int recipeId, int collectionId) {
+    public List<ItemStackDTO> getOutputs(int recipeId) {
         List<ItemStackDTO> outputs = new ArrayList<>();
-        String sql = "SELECT * FROM recipe_outputs WHERE recipes_id = ? AND collection_id = ?";
-
-        try {
-            PreparedStatement stmt = connection.prepareStatement(sql);
+        String sql = "SELECT * FROM recipe_outputs WHERE recipes_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, recipeId);
-            stmt.setInt(2, collectionId);
-
             ResultSet rs = stmt.executeQuery();
-
             while (rs.next()) {
                 ItemDAO itemDAO = new ItemDAO();
                 ItemDTO dto = itemDAO.read(rs.getInt("items_id"));
@@ -128,19 +119,13 @@ public class RecipeDAO extends AbstractEntryDAO<RecipeDTO, Recipe> {
             stmt.setString(2, entry.getName());
             stmt.setString(3, entry.getImagePath());
             stmt.setString(4, entry.getDescription());
-            stmt.setInt(5, foreignKeys[0]); // collection_id
+            stmt.setInt(5, foreignKeys[0]);
 
             boolean recipe = stmt.executeUpdate() > 0;
+            if (!recipe) return false;
 
-            if (!recipe) {
-                return false;
-            }
-
-            // Metemos los ingredientes en la base de datos
-            insertInputs(entry, foreignKeys[0]);
-
-            // Metemos los resultados en la base de datos
-            insertOutputs(entry, foreignKeys[0]);
+            insertInputs(entry);
+            insertOutputs(entry);
 
             return true;
         } catch (SQLException e) {
@@ -148,102 +133,88 @@ public class RecipeDAO extends AbstractEntryDAO<RecipeDTO, Recipe> {
         }
     }
 
-    private void insertInputs(Recipe entry, int collectionId) {
-        String sql = "INSERT INTO recipe_inputs (recipes_id, items_id, quantity, collection_id) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            for (ItemIdStack stack : entry.getIngredients()){
-                insertSingleInput(entry.getId().value(), stack.getId().value(), stack.getAmount(), collectionId);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    /**
+     * Method that inserts all the inputs linked to a recipe.
+     * @param entry
+     */
+    private void insertInputs(Recipe recipe) {
+    for (ItemIdStack stack : recipe.getIngredients()) {
+        insertSingleInput(recipe.getId().value(), stack.getId().value(), stack.getAmount());
     }
+}
 
-    public void insertSingleInput(int recipeId, int itemId, int amount, int collectionId) {
-        String sql = "INSERT INTO recipe_inputs (recipes_id, items_id, quantity, collection_id) VALUES (?, ?, ?, ?)";
+    public void insertSingleInput(int recipeId, int itemId, int amount) {
+        String sql = "INSERT INTO recipe_inputs (recipes_id, items_id, quantity) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, recipeId);
             stmt.setInt(2, itemId);
             stmt.setInt(3, amount);
-            stmt.setInt(4, collectionId);
             stmt.executeUpdate();
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void deleteSingleInput(int recipeId, int itemId, int collectionId) {
-        String sql = "DELETE FROM recipe_inputs WHERE recipes_id = ? AND items_id = ? AND collection_id = ?";
+    public void deleteSingleInput(int recipeId, int itemId) {
+        String sql = "DELETE FROM recipe_inputs WHERE recipes_id = ? AND items_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, recipeId);
             stmt.setInt(2, itemId);
-            stmt.setInt(3, collectionId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void updateInputAmount(int recipeId, int itemId, int amount, int collectionId) {
-        String sql = "UPDATE recipe_inputs SET quantity = ? WHERE recipes_id = ? AND items_id = ? AND collection_id = ?";
+    public void updateInputAmount(int recipeId, int itemId, int amount) {
+        String sql = "UPDATE recipe_inputs SET quantity = ? WHERE recipes_id = ? AND items_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, amount);
             stmt.setInt(2, recipeId);
             stmt.setInt(3, itemId);
-            stmt.setInt(4, collectionId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-
-
-    private void insertOutputs(Recipe entry, int collectionId) {
-        String sql = "INSERT INTO recipe_outputs (recipes_id, items_id, quantity, collection_id) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            for (ItemIdStack stack : entry.getResults()){
-                insertSingleOutput(entry.getId().value(), stack.getId().value(), stack.getAmount(), collectionId);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+    private void insertOutputs(Recipe entry) {
+        for (ItemIdStack stack : entry.getResults()) {
+            insertSingleOutput(entry.getId().value(), stack.getId().value(), stack.getAmount());
         }
     }
 
-    public void insertSingleOutput(int recipeId, int itemId, int amount, int collectionId) {
-        String sql = "INSERT INTO recipe_outputs (recipes_id, items_id, quantity, collection_id) VALUES (?, ?, ?, ?)";
+    public void insertSingleOutput(int recipeId, int itemId, int amount) {
+        String sql = "INSERT INTO recipe_outputs (recipes_id, items_id, quantity) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, recipeId);
             stmt.setInt(2, itemId);
             stmt.setInt(3, amount);
-            stmt.setInt(4, collectionId);
             stmt.executeUpdate();
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void deleteSingleOutput(int recipeId, int itemId, int collectionId) {
-        String sql = "DELETE FROM recipe_outputs WHERE recipes_id = ? AND items_id = ? AND  collection_id = ?";
+    public void deleteSingleOutput(int recipeId, int itemId) {
+        String sql = "DELETE FROM recipe_outputs WHERE recipes_id = ? AND items_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, recipeId);
             stmt.setInt(2, itemId);
-            stmt.setInt(3, collectionId);
+            //stmt.setInt(3, collectionId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public void updateOutputAmount(int recipeId, int itemId, int amount, int collectionId) {
-        String sql = "UPDATE recipe_outputs SET quantity = ? WHERE recipes_id = ? AND items_id = ? AND collection_id = ?";
+    public void updateOutputAmount(int recipeId, int itemId, int amount) {
+        String sql = "UPDATE recipe_outputs SET quantity = ? WHERE recipes_id = ? AND items_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, amount);
             stmt.setInt(2, recipeId);
             stmt.setInt(3, itemId);
-            stmt.setInt(4, collectionId);
+            //stmt.setInt(4, collectionId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);

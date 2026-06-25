@@ -1,5 +1,3 @@
-import creational.view.AbstractViewFactory;
-import creational.view.ViewFactory;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -8,8 +6,7 @@ import mvc.context.DataContext;
 import mvc.context.RuntimeContext;
 import mvc.context.SessionContext;
 import mvc.context.SystemContext;
-import mvc.controller.CoreController;
-import mvc.controller.ViewContext;
+import mvc.controller.CoreController; 
 import mvc.view.ScreenManager;
 import mvc.view.ViewType;
 

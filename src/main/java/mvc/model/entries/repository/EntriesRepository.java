@@ -134,8 +134,10 @@ public class EntriesRepository {
         return true;
     }
 
-    public void tryToRemoveEntry(EntryId id){
-        if (this.repo.containsKey(id)) this.repo.remove(id);
+    public boolean tryToRemoveEntry(EntryId id){
+        boolean contains = this.repo.containsKey(id);
+        if (contains) this.repo.remove(id);
+        return contains;
     }
 
     private void releaseCacheIfNeeded() {

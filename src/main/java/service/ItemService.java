@@ -1,10 +1,12 @@
 package service;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.List; 
 
 import creational.DTOFactory;
+import dataAccessLayer.DAO.CollectionDAO;
+import dataAccessLayer.DAO.ItemDAO;
+import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.ItemDTO;
 import dataTransportLayer.ItemIdStackDTO;
 import dataTransportLayer.ItemStackDTO;
@@ -12,6 +14,7 @@ import identificators.EntryId;
 import logger.Logger;
 import mvc.context.DataContext;
 import mvc.model.entries.Item;
+import mvc.model.entries.repository.EntriesRepository;
 
 public class ItemService extends AbstractEntryService<ItemDTO, Item> {
 
@@ -55,6 +58,13 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
         }
         return out;
     }
+
+    @Override
+    public boolean removeEntry(int id) {
+        this.untrackEntryById(id);
+        return this.data.getItemDAO().delete(id);
+    }
+ 
     //#endregion
 
     //#region DTO operations
@@ -63,8 +73,7 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
         ItemDTO out = data.getItemDAO().read(id);
         if (out == null) {
             String error = "Item with id " + id + " not found in database.";
-            Logger.getInstance().warning(this.getClass().toString(), error);
-            throw new NoSuchElementException(error);
+            Logger.getInstance().warning(this.getClass().toString(), error); 
         }
         return out;
     }
@@ -74,8 +83,7 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
         ItemDTO out = data.getItemDAO().readByName(name);
         if (out == null) {
             String error = "Item with name " + name + " not found in database.";
-            Logger.getInstance().warning(this.getClass().toString(), error);
-            throw new NoSuchElementException(error);
+            Logger.getInstance().warning(this.getClass().toString(), error); 
         }
         return out;
     }
@@ -93,17 +101,47 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
 
     @Override
     public Item saveEntry(ItemDTO dto, int[] extraData) {
-        return null; //TODO
+        Item out = null;
+        ItemDAO dao = this.data.getItemDAO();
+        out = this.createEntry(dto);
+        ItemDTO existingDTO = dao.read(dto.id);
+        if (existingDTO != null) {
+            dao.update(out, existingDTO.id);
+        } else {
+            dao.create(out, extraData);
+        }
+        
+        EntriesRepository repo = this.data.getEntriesRepo();
+        if (repo.contains(new EntryId(dto.id))) {
+            repo.modifyEntry(out);
+        } else {
+            repo.addItem(out);
+        } 
+        return out;
+    }
+
+    @Override
+    public Item saveFromImport(ItemDTO dto, int[] extraData) {
+        ItemDAO dao = this.data.getItemDAO();
+        ItemDTO existingDTO = dao.readByName(dto.name);
+        if (existingDTO != null) {
+            dto.id = existingDTO.id;
+        }
+        return saveEntry(dto, extraData);
     }
 
     public List<ItemStackDTO> idStackToStackList(List<ItemIdStackDTO> idStacks) {
         List<ItemStackDTO> stacks = new ArrayList<>(); 
-        ItemDTO itemDTO = null;
+        ItemDTO itemDTO;
         for (ItemIdStackDTO elem : idStacks) { 
             itemDTO = this.getDTOById(elem.id);
             stacks.add(DTOFactory.itemStack(itemDTO, elem.amount));
         }
 
         return stacks;
+    }
+
+    public boolean isContainedInARecipe(int id) {
+        return this.data.getItemDAO().isInRecipe(id) != -1;
     }
 }

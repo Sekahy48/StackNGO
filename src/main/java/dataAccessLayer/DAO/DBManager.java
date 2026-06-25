@@ -87,31 +87,39 @@ public class DBManager {
                     ");"
             );
 
-            // Recipe inputs
+            /* // Recipe inputs
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS recipe_inputs(" +
-                    "quantity INT," +
-                    "collection_id INT NOT NULL, " +
+                    "quantity INT," + 
                     "recipes_id INT NOT NULL, " +
                     "items_id INT NOT NULL, " +
                     "PRIMARY KEY (recipes_id, items_id), " +
                     "FOREIGN KEY (recipes_id)  REFERENCES recipes(id) ON DELETE CASCADE," +
-                    "FOREIGN KEY (items_id)  REFERENCES items(id) ON DELETE CASCADE," +
-                    "UNIQUE KEY unique_input_per_recipe (items_id, recipes_id)" +
+                    "FOREIGN KEY (items_id)  REFERENCES items(id) ON DELETE CASCADE," + 
                     ");"
             );
 
             // Recipe outputs
             stmt.executeUpdate("CREATE TABLE IF NOT EXISTS recipe_outputs(" +
-                    "quantity INT," +
-                    "collection_id INT NOT NULL, " +
+                    "quantity INT," + 
                     "recipes_id INT NOT NULL, " +
                     "items_id INT NOT NULL, " +
                     "PRIMARY KEY (recipes_id, items_id), " +
                     "FOREIGN KEY (recipes_id)  REFERENCES recipes(id) ON DELETE CASCADE," +
-                    "FOREIGN KEY (items_id)  REFERENCES items(id) ON DELETE CASCADE," +
-                    "UNIQUE KEY unique_output_per_recipe (items_id, recipes_id)" +
+                    "FOREIGN KEY (items_id)  REFERENCES items(id) ON DELETE CASCADE," + 
                     ");"
-            );
+            ); */
+
+            // io_type: INPUT o OUTPUT
+            stmt.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS recipe_io ( " +
+                "recipes_id INT NOT NULL, " +
+                "items_id INT NOT NULL, " +
+                "quantity INT NOT NULL, " +
+                "io_type VARCHAR(6) NOT NULL, " +
+                "PRIMARY KEY (recipes_id, items_id, io_type), " +
+                "FOREIGN KEY (recipes_id) REFERENCES recipes(id) ON DELETE CASCADE, " +
+                "FOREIGN KEY (items_id) REFERENCES items(id) ON DELETE CASCADE " +
+                ");");
 
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);

@@ -3,24 +3,22 @@ package mvc.controller.modify;
 import java.util.ArrayList;
 import java.util.List;
 
-import creational.DTOFactory;
-import dataAccessLayer.DAO.CollectionDAO;
+import creational.DTOFactory; 
 import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.EntryDTO;
-import dataTransportLayer.EventBuffer;
+import event.EventBus;
+import event.NavigateEvent;
 import javafx.scene.control.Alert;
+import logger.Logger;
 import mvc.controller.InyectableController;
+import mvc.view.ViewType;
 import mvc.view.modify.CollectionModifyView;
+import service.CollectionService;
+import service.ServiceType;
+import service.SessionService;
 
-public class CollectionModifyController extends AbstractModifyController<CollectionModifyView> implements InyectableController{
-    private List<EntryDTO> list;
-    private CollectionDAO dao;
-
-    public CollectionModifyController(EventBuffer buffer) {
-        super(buffer); 
-        this.modifyType = ModType.COLLECTION;
-        this.dao = new CollectionDAO();
-    }
+public class CollectionModifyController extends AbstractModifyController<CollectionModifyView, CollectionDTO> implements InyectableController{
+    private List<EntryDTO> list; 
     
     @Override
     public void setListWhereAdd(List<EntryDTO> list){
@@ -28,7 +26,9 @@ public class CollectionModifyController extends AbstractModifyController<Collect
     }
 
     @Override
-    protected EntryDTO composeDTO() { 
+    protected CollectionDTO composeDTO() { 
+        CollectionService collectionService = this.getService(ServiceType.COLLECTION);
+
         ArrayList<Integer> items = new ArrayList<>(), 
                            recipes = new ArrayList<>();
         ArrayList<EntryDTO> viewItems = new ArrayList<>(),
@@ -47,16 +47,15 @@ public class CollectionModifyController extends AbstractModifyController<Collect
         }
         
         CollectionDTO dto = (CollectionDTO) this.view.getEntryDTO();
-        String newName = !this.view.getNewName().isEmpty() ? this.view.getNewName() : dto.name;
+        String newName = !this.view.getNewName().isBlank() ? this.view.getNewName() : dto.name;
 
-        if (!newName.equals(dto.name)) {
-            if (dao.existsCollectionByName(newName, dto.id, this.context.getAccount().getId().value())){
+        if (!newName.equals(dto.name)) { 
+            if (collectionService.containsEntryByName(newName)){
                 this.view.showAlert("Nombre duplicado","Ya existe una coleccion con ese nombre", Alert.AlertType.ERROR);
-
                 return null;
             }
         }
-        String imagePath = this.view.getNewImagePath() != null ? this.view.getNewImagePath() : dto.iconPath;
+        String imagePath = this.view.getNewImagePath() != null ? this.view.getNewImagePath() : dto.imagePath;
 
         return DTOFactory.collection(
                 !items.isEmpty() ? items : dto.items,
@@ -69,4 +68,24 @@ public class CollectionModifyController extends AbstractModifyController<Collect
 
     }
 
+    public void onUpdateEvent(CollectionDTO dto) {
+        CollectionService collectionService = this.getService(ServiceType.COLLECTION);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        collectionService.saveEntry(dto, new int[]{sessionService.getCurrentAccount().getId().value()});
+        
+        CollectionDTO oldDto = this.view.getEntryDTO();
+        String alert = "La colección llamada " + oldDto.name + " ha sido modificada.";
+        if (oldDto.name != dto.name) alert = "La coleccion antes llamada " + oldDto.name + " ha sido modificada pasandose a llamar " + dto.name + ".";
+
+        Logger.getInstance().info(
+            this.getClass().toString(),
+            alert
+        );
+        
+        this.onReturnEvent();
+    }
+
+    public void onReturnEvent() {
+        EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTION));
+    }
 }

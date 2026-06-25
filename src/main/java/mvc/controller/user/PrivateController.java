@@ -1,33 +1,36 @@
 package mvc.controller.user;
-
-import command.screen.ChangeScreenCommand;
-import command.screen.RedirectCommand;
-import command.show.ShowAccounts;
-import command.show.ShowCollections;
-import command.user.DeleteAccountCommand;
-import dataAccessLayer.DAO.AccountDAO;
-import dataAccessLayer.DAO.DAOType;
+ 
 import dataTransportLayer.AccountDTO;
-import dataTransportLayer.EventBuffer;
 import domain.accounts.Account;
+import event.EventBus;
+import event.NavigateEvent;
+
 import static domain.accounts.AccountType.ADMIN;
-import identificators.AccountId;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
-import logger.LogLevel;
 import logger.Logger;
 import mvc.utils.DataExporter;
 import mvc.utils.DataImporter;
 import mvc.view.ViewType;
 import mvc.view.user.PrivateView;
+import service.AccountService;
+import service.ServiceType;
+import service.SessionService;
 
 public class PrivateController extends AbstractUserController<PrivateView> {
 
-    public PrivateController(EventBuffer buffer) {
-        super(buffer);
+    private DataExporter exporter;
+    private DataImporter importer; 
+
+    public void setExporter(DataExporter exporter) {
+        this.exporter = exporter;
     }
 
+    public void setImporter(DataImporter importer) {
+        this.importer = importer;
+    }
+    
     @Override
     public void attachView(PrivateView view) {
         this.view = view;
@@ -35,11 +38,10 @@ public class PrivateController extends AbstractUserController<PrivateView> {
         
     }
 
-     
-    
     @Override
-    public void handleButton() {
-
+    public void handleButtons() {
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        AccountService accountService = this.getService(ServiceType.ACCOUNT); 
         commonHandleButton();
 
         PrivateView view = this.getView();
@@ -51,68 +53,48 @@ public class PrivateController extends AbstractUserController<PrivateView> {
         Button adminButton = view.getAdminButton();
         Button exportCollectionsButton = view.getExportCollectionsButton();
         Button importCollectionsButton = view.getImportCollectionsButton();
-        DataImporter importer = new DataImporter(this.context);
-        DataExporter exporter = new DataExporter(this.context);
-
         exportCollectionsButton.setOnAction(event -> {
-            exporter.exportUserData();
+            this.exporter.exportUserData();
         });
 
         importCollectionsButton.setOnAction(event -> {
-            importer.importUserData();
+            this.importer.importUserData();
         });
 
-        adminButton.setOnAction(event -> {
-            boolean isAdmin = context.getAccount().getType() == ADMIN;
-            if (isAdmin) {
-                AccountId a = this.context.getAccount().getId();
-                AccountDAO dao = (AccountDAO) this.context.getDAO(DAOType.ACCOUNT);
-                //TODO revisar esto
-                AccountDTO dto = dao.read(a.value());
-                this.buffer.publish(new RedirectCommand(
-                        this.context.getSystemContext().getController(ViewType.SHOW_ACCOUNTS).getBuffer(),
-                        new ShowAccounts()
-                ));
-                this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_ACCOUNTS));
-            } else {
-                this.view.showAlert("Accion no permitida", "Funcionalidad exclusiva para administradores", Alert.AlertType.ERROR);
-            }
+        adminButton.setOnAction(
+            event -> {
+                Account currentAccount = sessionService.getCurrentAccount();
+                boolean isAdmin = currentAccount.getType() == ADMIN;
+                if (isAdmin) {
+                    EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_ACCOUNTS));
+                } else {
+                    this.view.showAlert("Accion no permitida", "Funcionalidad exclusiva para administradores", Alert.AlertType.ERROR);
+                }
 
-        });
+            });
 
-        addButton.setOnAction(
-
-            e -> {
-                this.buffer.publish(new ChangeScreenCommand(ViewType.ADD_COLLECTION));
-            }
-
-        );
+        addButton.setOnAction(e -> { EventBus.getInstance().publish(ViewType.ADD_COLLECTION);});
 
         delete.setOnAction(
-                e -> {
+            e -> { 
 
-                        Account account = this.context.getAccount();
-                        this.buffer.publish(new DeleteAccountCommand(account));
+                Account account = sessionService.getCurrentAccount();
+                AccountDTO dto = accountService.getAccountDTOById(account.getId().value());
+                this.delete(dto);
 
-                }
+            }
         );
 
         seeCollectionsButton.setOnAction(
-                e -> {
-                    this.buffer.publish(new RedirectCommand(
-                            this.context.getSystemContext().getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
-                            new ShowCollections()
-                            )
-                    );
-                    this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_COLLECTIONS));
-                }
+            e -> { EventBus.getInstance().publish(ViewType.SHOW_COLLECTIONS); }
         );
 
         logout.setOnAction(
-                e -> {
-                    this.buffer.publish(new ChangeScreenCommand(ViewType.LOG_IN));
-                }
-        );
+            e -> {
+                EventBus.getInstance().publish(ViewType.LOG_IN);
+                sessionService.untrackCurrentAccount();
+            }
+        ); 
 
         /*themeButton.setOnAction(
             e -> {
@@ -121,24 +103,30 @@ public class PrivateController extends AbstractUserController<PrivateView> {
         );*/
     }
 
-    public void delete(Account account) {
+    public void delete(AccountDTO account) {
+        AccountService accountService = this.getService(ServiceType.ACCOUNT);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+
         boolean confirmed = view.showAlert(
                 "Confirmar eliminacion",
                 "Seguro que quieres borrar esta cuenta?",
                 Alert.AlertType.CONFIRMATION
         );
         if (confirmed) {
-            this.buffer.publish(new ChangeScreenCommand(ViewType.LOG_IN));
-            this.context.getDAO(DAOType.ACCOUNT).delete(account.getId().value());
-            this.view.showAlert("Cuenta eliminada", "Tu cuenta con nombre " + account.getUsername() + " ha sido eliminada", Alert.AlertType.INFORMATION);
-            Logger.getInstance().info(this.getClass().toString(), "el usuario " + this.context.getAccount().getUsername() + " ha borrado su cuenta");
-        } else {
-
+            EventBus.getInstance().publish(new NavigateEvent(ViewType.LOG_IN));
+            accountService.deleteAccount(account.id); 
+            this.view.showAlert("Cuenta eliminada", "Tu cuenta con nombre " + account.name + " ha sido eliminada", Alert.AlertType.INFORMATION);
+            Logger.getInstance().info(this.getClass().toString(), "el usuario " + sessionService.getCurrentAccount().getUsername() + " ha borrado su cuenta");
         }
     }
 
     @Override
     public void updateAtShow(){
         view.getUserTitleLabel().setText(view.getParentName());
+    }
+
+    @Override
+    public void onReturnEvent() {
+        throw new UnsupportedOperationException("Unimplemented method 'onReturnEvent'");
     }
 }

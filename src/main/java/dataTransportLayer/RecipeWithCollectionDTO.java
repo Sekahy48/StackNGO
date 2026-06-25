@@ -10,12 +10,17 @@ public class RecipeWithCollectionDTO implements GenericDTO{
     }
 
     @Override
-    public String getIconPath() {
-        return recipe.getIconPath();
+    public String getImagePath() {
+        return recipe.getImagePath();
     }
 
     @Override
     public String getName() {
         return recipe.getName();
+    }
+
+    @Override
+    public int getIdValue() {
+       return recipe.id; 
     }
 }
