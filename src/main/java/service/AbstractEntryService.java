@@ -1,13 +1,18 @@
 package service;
-
+ 
+import java.util.ArrayList;
 import java.util.List;
 
 import creational.IEntriesFactory;
 import creational.StandardEntryFactory;
+import dataAccessLayer.DAO.AbstractEntryDAO;
+import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.EntryDTO;
 import identificators.EntryId;
+import logger.Logger;
 import mvc.context.DataContext;
 import mvc.model.entries.Entry;
+import mvc.model.entries.repository.EntriesRepository;
 /**
  * Define a serie of operations for query/obtain, create, modify and interact with entries 
  */
@@ -28,7 +33,15 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * @param id the entry identifier
      * @return the entry of type E 
      */
-    public abstract E getEntryById(int id);
+    public E getEntryById(int id) {
+        E out = getConcreteEntry(id);
+        if (out == null) {
+            T dto = getDTOById(id);
+            out = createEntry(dto);
+            addConcreteEntry(out);
+        }
+        return out;
+    }
 
     /**
      * Retrieves an entry by its name.
@@ -36,7 +49,15 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * @param name the entry name
      * @return the entry of type E
      */
-    public abstract E getEntryByName(String name);
+    public E  getEntryByName(String name) {
+        E out = getConcreteEntryByName(name);
+        if (out == null) {
+            T dto = getDTOByName(name);
+            out = createEntry(dto);
+            addConcreteEntry(out);
+        }
+        return out;
+    }
 
     /**
      * Returns TRUE if there is any entry with the specified name in the context of the concrete service.
@@ -45,7 +66,7 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * @return true if found
      */
     public boolean containsEntryByName(String name) {
-        return getEntryByName(name) != null;
+        return getDAO().readByName(name) != null;
     }
 
     /**
@@ -54,9 +75,27 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * @param parentId the parent entity identifier
      * @return a list of entries of type E
      */
-    public abstract List<E> getAllEntry(int parentId);
+    public List<E> getAllEntry(int parentId) {
+        List<T> dtos = getAllDTO(parentId);
+        List<E> out = new ArrayList<>();
+        for (T dto : dtos) {
+            E col = getConcreteEntry(dto.id);
+            if (col == null) col = createEntry(dto);
+            out.add(col);
+            addConcreteEntry(col);
+        }
+        return out;
+    }
 
-    public abstract boolean removeEntry(int id);
+    /**
+     * Removes an entry from the entries repo and DB.
+     * @param id
+     * @return
+     */
+    public boolean removeEntry(int id) {
+        this.untrackEntryById(id);
+        return getDAO().delete(id);
+    } 
 
     public boolean untrackEntryById(int id) {
         return this.data.getEntriesRepo().tryToRemoveEntry(new EntryId(id));
@@ -73,7 +112,14 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * @param id the identifier of the entry
      * @return the DTO of type T 
      */
-    public abstract T getDTOById(int id);
+    public T getDTOById(int id)  {
+        T out = this.getDAO().read(id);
+        if (out == null) {
+            String error = "Entry with id " + id + " not found in database.";
+            Logger.getInstance().warning(this.getClass().getSimpleName(), error); 
+        }
+        return out;
+    }
 
     /**
      * Retrieves the DTO associated with an entry by its name.
@@ -81,7 +127,14 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * @param name the name of the entry
      * @return the DTO of type T 
      */
-    public abstract T getDTOByName(String name);
+    public T getDTOByName(String name) {
+        T out = getDAO().readByName(name);
+        if (out == null) {
+            String error = "Entry with name " + name + " not found in database.";
+            Logger.getInstance().warning(this.getClass().toString(), error); 
+        }
+        return out;
+    }
 
     /**
      * Retrieves all DTOs of entries contained by a parent entity with the given ID.
@@ -89,8 +142,18 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * @param parentId the ID of the parent entity
      * @return a list of DTOs of type T
      */
-    public abstract List<T> getAllDTO(int parentId);
+    public List<T> getAllDTO(int parentId) {
+        return getDAO().readAllByParent(parentId);
+    }
     //#endregion
+
+    /**
+     * Retrieves all DTOs of entries existing at all.
+     * @return a list of DTOs of type T
+     */
+    public List<T> getAllDTO() {
+        return getDAO().readAll();
+    }
 
     /**
      * Creates or updates a new entry from a DTO and some extra data. Then it persists it in SQL DB and
@@ -102,7 +165,24 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * @return the newly created entry of type E or the updated one if one equivalent
      * is alredy present in database.
      */ 
-    public abstract E saveEntry(T dto, int[] extraData);
+    public E saveEntry(T dto, int[] extraData) {
+        E out = null; 
+        out = this.createEntry(dto);
+        T existingDTO = getDAO().read(dto.id);
+        if (existingDTO != null) {
+            getDAO().update(out, existingDTO.id);
+        } else {
+            getDAO().create(out, extraData);
+        }
+        
+        EntriesRepository repo = this.data.getEntriesRepo();
+        if (repo.contains(new EntryId(dto.id))) {
+            repo.modifyEntry(out);
+        } else {
+            addConcreteEntry(out);
+        } 
+        return out;
+    }
 
     /**
      * Adapted version of {@link #saveEntry(EntryDTO, int[])} for the case of importing data from a JSON file.
@@ -113,13 +193,23 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * @return the newly created entry of type E or the updated one if one equivalent
      * is alredy present in database.
      */ 
-    public abstract E saveFromImport(T dto, int[] extraData);
-
+    public E saveFromImport(T dto, int[] extraData) {
+        T existingDTO = getDAO().readByName(dto.name);
+        if (existingDTO != null) {
+            dto.id = existingDTO.id;
+        }
+        return saveEntry(dto, extraData);
+    }
     /**
      * Just creates an Entry given a DTO and returns it.
      * @param dto the DTO containing the data needed to create the entry
      * @return the entry
      */
-    public abstract E createEntry(T dto);
-    //TODO considerar hacer el metodo de arriba prrotected
+    protected abstract E createEntry(T dto);  
+
+    protected abstract boolean addConcreteEntry(E entry);
+
+    protected abstract E getConcreteEntry(int id);
+    protected abstract E getConcreteEntryByName(String name);
+    protected abstract AbstractEntryDAO<T, E> getDAO();
 }

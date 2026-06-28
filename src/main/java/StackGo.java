@@ -1,11 +1,7 @@
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.stage.Stage;
-import mvc.context.DataContext;
-import mvc.context.RuntimeContext;
-import mvc.context.SessionContext;
-import mvc.context.SystemContext;
+import javafx.stage.Stage; 
 import mvc.controller.CoreController; 
 import mvc.view.ScreenManager;
 import mvc.view.ViewType;
@@ -15,24 +11,22 @@ public class StackGo extends Application {
     @Override
     public void start(Stage stage) throws Exception { 
 
-        ScreenManager screenManager = new ScreenManager();
-        DataContext dataContext = new DataContext();
-        SessionContext sessionContext = new SessionContext();
-        CoreController coreController = new CoreController();
-        SystemContext systemContext = new SystemContext(screenManager, coreController);
+        ScreenManager screenManager = new ScreenManager(); 
+        CoreController coreController = new CoreController(screenManager); 
 
-        RuntimeContext runtimeContext = new RuntimeContext(dataContext, sessionContext, systemContext);
-        coreController.initControllers(runtimeContext);
-        runtimeContext.setSessionContext(sessionContext);
+        //RuntimeContext runtimeContext = new RuntimeContext(dataContext, sessionContext, systemContext);
+        coreController.initServices();
+        coreController.initControllers();
+        /* runtimeContext.setSessionContext(sessionContext);
         runtimeContext.setSystemContext(systemContext);
-        runtimeContext.setDataContext(dataContext);
-        coreController.setContext(runtimeContext);
+        runtimeContext.setDataContext(dataContext); */
+        //coreController.setContext(runtimeContext);
 
  
 
         Scene scene = new Scene(screenManager.getRoot(), 800, 600);
         screenManager.setScene(scene);
-
+        
         
 
         // Icono de la app
@@ -45,6 +39,8 @@ public class StackGo extends Application {
         stage.setScene(scene);
         stage.show();
         stage.setMaximized(true);
+
+        
 
     }
 

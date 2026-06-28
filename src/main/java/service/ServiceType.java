@@ -9,6 +9,7 @@ public enum ServiceType {
     INVENTORY,
     ACCOUNT,
     SYSTEM,
+    COMPONENT,
     
     
 }

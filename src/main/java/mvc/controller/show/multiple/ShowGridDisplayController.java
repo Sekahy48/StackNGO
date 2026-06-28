@@ -3,7 +3,7 @@ package mvc.controller.show.multiple;
 import java.util.List; 
 import dataTransportLayer.GenericDTO; 
 import mvc.controller.AbstractController;
-import mvc.view.show.ShowGridDisplayView;
+import mvc.view.show.multiple.ShowGridDisplayView;
 
 /**
  * Controlador base para vistas tipo grid.
@@ -43,5 +43,10 @@ public abstract class ShowGridDisplayController<T extends GenericDTO> extends Ab
     @Override
     public void handleButtons() {
         commonHandleButton();
+    }
+
+    @Override 
+    public void updateAtShow() {
+        this.populateGrid();
     }
 }

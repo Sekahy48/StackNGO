@@ -1,19 +1,17 @@
 package mvc.controller.modify;
 
 import java.util.Objects;
+import java.util.Set;
 
 import creational.DTOFactory;
-import dataAccessLayer.DAO.RecipeDAO;
-import dataTransportLayer.CollectionDTO;
-import dataTransportLayer.EntryDTO;
+import dataTransportLayer.ItemDTO;
 import dataTransportLayer.RecipeDTO;
 import event.EventBus;
 import event.NavigateEvent;
 import javafx.scene.control.Alert;
 import logger.Logger;
 import mvc.view.ViewType;
-import mvc.view.modify.RecipeModifyView;
-import service.CollectionService;
+import mvc.view.modify.RecipeModifyView; 
 import service.RecipeService;
 import service.ServiceType;
 import service.SessionService;
@@ -69,8 +67,9 @@ public class RecipeModifyController extends AbstractModifyController<RecipeModif
     @Override
     protected RecipeDTO composeDTO() { 
         RecipeService recipeService = this.getService(ServiceType.RECIPE);
-
-        RecipeDTO dto = this.view.getEntryDTO();
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        
+        RecipeDTO dto = sessionService.getCurrentRecipeDTO();
 
         String newName = !this.view.getNewName().isBlank() ? this.view.getNewName() : dto.name;
 
@@ -102,9 +101,9 @@ public class RecipeModifyController extends AbstractModifyController<RecipeModif
     protected void onUpdateEvent(RecipeDTO dto) {
         RecipeService recipeService = this.getService(ServiceType.RECIPE);
         SessionService sessionService = this.getService(ServiceType.SESSION);
+        RecipeDTO oldDto = sessionService.getCurrentRecipeDTO();
         recipeService.saveEntry(dto, new int[]{sessionService.getCurrentAccount().getId().value()});
         
-        RecipeDTO oldDto = this.view.getEntryDTO();
         String alert = "La colección llamada " + oldDto.name + " ha sido modificada.";
         if (oldDto.name != dto.name) alert = "La coleccion antes llamada " + oldDto.name + " ha sido modificada pasandose a llamar " + dto.name + ".";
 
@@ -120,5 +119,14 @@ public class RecipeModifyController extends AbstractModifyController<RecipeModif
     public void onReturnEvent() { 
         EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_ITEM));
     }
- 
+    
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.RECIPE, ServiceType.SESSION); 
+    }
+
+    protected RecipeDTO getCurrentDTO() {
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        return sessionService.getCurrentRecipeDTO();
+    }
+    
 }

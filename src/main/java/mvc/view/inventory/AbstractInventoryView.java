@@ -207,16 +207,12 @@ public abstract class AbstractInventoryView extends AbstractView {
         // Contenedor de contenido para el SplitPane
         this.contentContainer = new BorderPane();
         contentContainer.setCenter(mainPane);
-        contentContainer.setBottom(bottomBar);
+        contentContainer.setBottom(bottomBar);  
+        this.attachContentToRoot();
+    }
 
-        // Aquí NO hay VBox extra
-        // Quito la sidebar this.initSidebar(contentContainer);
-
-        // Root
-        this.root = new VBox();
-        this.root.getChildren().add(splitPane);
-        VBox.setVgrow(splitPane, Priority.ALWAYS); 
-
+    protected void attachContentToRoot() {
+        this.root.getChildren().add(contentContainer);
     }
 
     /**

@@ -15,6 +15,8 @@ import service.SessionService;
 
 import static security.State.BLOCKED;
 
+import java.util.Set;
+
 /**
  *
  * Controler that manages logic related to {@link LoginView}
@@ -56,12 +58,12 @@ public class LoginController extends AbstractUserController<LoginView> {
         if  (account == null) {
 
             this.view.showAlert("Cuenta incorrecta", "No existe ninguna cuenta con ese nombre", Alert.AlertType.WARNING);
-            Logger.getInstance().error(this.getClass().toString(), "No existe una cuenta con nombre " + user);
+            Logger.getInstance().warning(this.getClass().toString(), "No existe una cuenta con nombre " + user);
 
         } else if (!account.verify(password)) {
 
             this.view.showAlert("Contraseña incorrecta", "La contraseña es incorrecta", Alert.AlertType.WARNING);
-            Logger.getInstance().error(this.getClass().toString(), "Contraseña incorrecta para el usuario " + user);
+            Logger.getInstance().warning(this.getClass().toString(), "Contraseña incorrecta para el usuario " + user);
 
         } else if (account.getState() == BLOCKED) {
 
@@ -86,5 +88,10 @@ public class LoginController extends AbstractUserController<LoginView> {
     @Override
     public void updateAtShow() {
         this.view.clearFields();
+    }
+
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.ACCOUNT, ServiceType.SESSION); 
     }
 }

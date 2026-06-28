@@ -72,8 +72,8 @@ public class CollectionModifyView extends AbstractModifyWithListsViews<Collectio
             deleteButton = UIPrefabsFactory.createRemoveButton();
             
             
-            iconView = ImageUtils.getImage(dto.imagePath);
-            HBox row = UIPrefabsFactory.createRow(dto.name, iconView, deleteButton); 
+            iconView = ImageUtils.getImage(elem.imagePath);
+            HBox row = UIPrefabsFactory.createRow(elem.name, iconView, deleteButton); 
             row.setAlignment(Pos.CENTER_LEFT);
 
             EventHandler<ActionEvent> event = EventPrefabFactory.getDeleteSelfRowEvent(table, row, this.getCurrentList1(), elem);
@@ -94,8 +94,8 @@ public class CollectionModifyView extends AbstractModifyWithListsViews<Collectio
             deleteButton = UIPrefabsFactory.createRemoveButton();
             
             
-            iconView = ImageUtils.getImage(dto.imagePath);
-            HBox row = UIPrefabsFactory.createRow(dto.name, iconView, deleteButton); 
+            iconView = ImageUtils.getImage(elem.imagePath);
+            HBox row = UIPrefabsFactory.createRow(elem.name, iconView, deleteButton); 
             row.setAlignment(Pos.CENTER_LEFT);
 
             EventHandler<ActionEvent> event = EventPrefabFactory.getDeleteSelfRowEvent(table, row, this.getCurrentList2(), elem);

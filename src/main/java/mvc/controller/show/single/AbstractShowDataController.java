@@ -1,8 +1,8 @@
 package mvc.controller.show.single;
     
 import javafx.scene.control.Button;
-import mvc.controller.AbstractController; 
-import mvc.view.show.entry.data.AbstractShowDataView;
+import mvc.controller.AbstractController;
+import mvc.view.show.single.AbstractShowDataView;
 
 public abstract class AbstractShowDataController<T extends AbstractShowDataView> extends AbstractController<T> {
 

@@ -22,6 +22,7 @@ public class DataContext implements Context{
         daoCollection.put(DAOType.COLLECTION, new CollectionDAO());
         daoCollection.put(DAOType.ITEM, new ItemDAO());
         daoCollection.put(DAOType.RECIPE, new RecipeDAO());
+        daoCollection.put(DAOType.COMPONENT, new ComponentDefinitionDAO());
     }
  
     private GenericDAO<? extends GenericDTO, ?> getDAO(DAOType type) {
@@ -42,6 +43,10 @@ public class DataContext implements Context{
 
     public ItemDAO getItemDAO() {
         return (ItemDAO) this.getDAO(DAOType.ITEM);
+    }
+
+    public ComponentDefinitionDAO getComponentDAO() {
+        return (ComponentDefinitionDAO) this.getDAO(DAOType.COMPONENT);
     }
 
     public AccountDAO getAccountDAOById(int id) {

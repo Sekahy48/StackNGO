@@ -1,7 +1,8 @@
 package mvc.controller.show.multiple;
  
 import java.util.List;
- 
+import java.util.Set;
+
 import dataTransportLayer.RecipeDTO;
 import service.RecipeService;
 import service.ServiceType;
@@ -30,6 +31,11 @@ public class ShowRecipesController extends ShowGridDisplayController<RecipeDTO> 
     @Override
     public void onReturnEvent() { 
         throw new UnsupportedOperationException("Unimplemented method 'onReturnEvent'");
+    }
+
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.RECIPE, ServiceType.SESSION); 
     }
  
 }

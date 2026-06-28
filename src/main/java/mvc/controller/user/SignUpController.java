@@ -1,8 +1,11 @@
 package mvc.controller.user;
  
+import java.util.Set;
+
 import creational.DTOFactory;
 import dataTransportLayer.AccountDTO;
 import event.EventBus;
+import event.NavigateEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import logger.Logger;
@@ -46,7 +49,7 @@ public class SignUpController extends AbstractUserController<SignUpView> {
                 );
 
                 this.signUp(dto, checkPassword); 
-                EventBus.getInstance().publish(ViewType.LOG_IN);
+                EventBus.getInstance().publish(new NavigateEvent(ViewType.LOG_IN));
             }
         );
 
@@ -61,12 +64,12 @@ public class SignUpController extends AbstractUserController<SignUpView> {
                 );
 
                 this.signUp(dto, checkPassword);
-                EventBus.getInstance().publish(ViewType.LOG_IN);
+                EventBus.getInstance().publish(new NavigateEvent(ViewType.LOG_IN));
             }
         );
 
         logInButton.setOnAction(
-            e -> { EventBus.getInstance().publish(ViewType.LOG_IN); }
+            e -> { EventBus.getInstance().publish(new NavigateEvent(ViewType.LOG_IN));}
         );
     }
 
@@ -98,5 +101,10 @@ public class SignUpController extends AbstractUserController<SignUpView> {
     public void onReturnEvent() {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onReturnEvent'");
+    }
+
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.ACCOUNT); 
     }
 }

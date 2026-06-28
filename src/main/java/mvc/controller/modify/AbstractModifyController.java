@@ -6,7 +6,7 @@ import dataTransportLayer.EntryDTO;
 import javafx.scene.image.Image;
 import javafx.stage.FileChooser;
 import mvc.controller.AbstractController; 
-import mvc.view.modify.AbstractModifyView;
+import mvc.view.modify.AbstractModifyView; 
 
 public abstract class AbstractModifyController<T extends AbstractModifyView<E>, E extends EntryDTO> extends AbstractController<T>{ 
     
@@ -57,7 +57,11 @@ public abstract class AbstractModifyController<T extends AbstractModifyView<E>, 
  
 
     @Override
-    public void updateAtShow() {
+    public void updateAtShow() { 
         this.view.clear();
+        E currentDTO = this.getCurrentDTO();
+        this.view.fillLabels(currentDTO.name, currentDTO.description, currentDTO.imagePath);
     }
+
+    protected abstract E getCurrentDTO();
 }

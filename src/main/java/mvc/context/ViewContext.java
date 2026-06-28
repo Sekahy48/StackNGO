@@ -1,4 +1,4 @@
-package mvc.controller;
+package mvc.context;
 
 import creational.view.AbstractViewFactory;
 import creational.view.ViewFactory;

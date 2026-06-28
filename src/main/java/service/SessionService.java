@@ -2,6 +2,7 @@ package service;
   
 
 import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.ComponentDefinitionDTO;
 import dataTransportLayer.ItemDTO;
 import dataTransportLayer.RecipeDTO;
 import domain.accounts.Account;
@@ -36,7 +37,7 @@ public class SessionService implements IService{
         return this.context.getCurrentInventoryRecipe();
     }
 
-    public ItemDTO getCurrentItem() {
+    public ItemDTO getCurrentItemDTO() {
         return this.context.getCurrentItem();
     }
 
@@ -68,12 +69,16 @@ public class SessionService implements IService{
     }
 
     public void setCurrentRecipe(RecipeDTO currentRecipeDTO) {
-        this.context.setCurrentRecipeDTO(currentRecipeDTO);
+        this.context.setCurrentRecipe(currentRecipeDTO);
     }
 
     public void setCurrentItem(ItemDTO currentItem) {
         this.context.setCurrentItem(currentItem);
     } 
+
+    public void setCurrentComponent(ComponentDefinitionDTO currentComponent) {
+        this.context.setCurrentComponent(currentComponent);
+    }
 
     
 }

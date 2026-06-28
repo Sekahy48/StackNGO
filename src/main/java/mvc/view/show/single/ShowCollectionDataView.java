@@ -1,4 +1,4 @@
-package mvc.view.show.entry.data;
+package mvc.view.show.single;
 
 import creational.UIPrefabsFactory;
 import javafx.geometry.Insets;

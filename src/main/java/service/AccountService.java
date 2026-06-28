@@ -42,12 +42,12 @@ public class AccountService implements IService {
         return context.getAccountDAO().create(this.createAccount(accountDTO), null);
     }
 
-    public Account getAccount(String name) {
-        AccountDTO accountDTO = context.getAccountDAO().read(name);
+    public Account  getAccount(String name) {
+        AccountDTO accountDTO = context.getAccountDAO().read(name); 
         if (accountDTO == null) {
             return null;
         }
-        return accountFactory.createAccount(accountDTO);
+        return accountFactory.loadAccount(accountDTO);
     }
     
     public boolean deleteAccount(int id) {

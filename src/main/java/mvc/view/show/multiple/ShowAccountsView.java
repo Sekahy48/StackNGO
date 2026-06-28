@@ -1,4 +1,4 @@
-package mvc.view.show;
+package mvc.view.show.multiple;
 
 import dataTransportLayer.AccountDTO;
 

@@ -1,5 +1,7 @@
 package mvc.controller.add;
  
+import java.util.Set;
+
 import creational.DTOFactory;
 import dataTransportLayer.CollectionDTO;
 import domain.accounts.Account;
@@ -76,5 +78,10 @@ public class AddCollectionController extends AbstractAddController<CollectionDTO
         
             }
         } 
+    }
+
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.COLLECTION, ServiceType.SESSION); 
     }
 }

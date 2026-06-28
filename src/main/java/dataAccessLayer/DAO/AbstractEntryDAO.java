@@ -3,6 +3,7 @@ package dataAccessLayer.DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import dataTransportLayer.EntryDTO;
@@ -121,10 +122,26 @@ public abstract class AbstractEntryDAO<T extends EntryDTO, E extends Entry> exte
         try {
             return readAllInternal(collectionId);
         } catch (SQLException e) {
+            e.printStackTrace();
             String error = "An error occurred trying to READ ALL entries for parent collection with id " + collectionId + " from table " + getTableName();
             Logger.getInstance().error(this.getClass().toString(), error);
             return List.of();
         }
+    }
+
+    public List<T> readAll() {
+        String sql = "SELECT * FROM " + getTableName();
+        List<T> out = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                out.add(buildDTO(rs));
+            }
+        } catch (SQLException e) {
+            String error = "An error occurred trying to READ ALL from table " + getTableName();
+            Logger.getInstance().error(this.getClass().toString(), error);
+        }
+        return out;
     }
 
 

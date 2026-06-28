@@ -1,6 +1,9 @@
 package mvc.controller.inventory;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+
 import creational.DTOFactory;
 import creational.UIPrefabsFactory;
 import dataTransportLayer.EntryDTO;
@@ -79,6 +82,21 @@ public class InventoryController extends AbstractInventoryController<InventoryVi
             
 
         });
+    }
+
+    @Override
+    public Set<ServiceType> requiredServices() {
+        Set<ServiceType> out = new HashSet<>(super.requiredServices());
+        out.add(ServiceType.COLLECTION);
+        return out;
+    }
+
+    @Override
+    public void clearInventory() {
+        super.clearInventory();
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        sessionService.setCurrentInventoryCollection(null);
+        sessionService.setCurrentInventoryRecipe(null);
     }
 
 }

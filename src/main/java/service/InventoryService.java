@@ -3,10 +3,15 @@ package service;
 import mvc.context.SessionContext;
 import mvc.model.entries.Item;
 import mvc.model.inventory.IInventoryElement;
+import mvc.model.inventory.InventoryObject;
 
 public class InventoryService implements IService{
 
     private SessionContext context;
+
+    public InventoryService(SessionContext context) {
+        this.context = context;
+    }
 
     @Override
     public ServiceType getType() {
@@ -14,7 +19,14 @@ public class InventoryService implements IService{
     }
 
     public IInventoryElement getCurrentInventory() {
-        return this.context.getInventoryStack().peek();
+        IInventoryElement inv = this.context.getInventoryStack().peek();
+
+        if (inv == null) {
+            inv = new InventoryObject(null);
+            pushCurrentInventory(inv);
+        }
+
+        return inv;
     }
 
     public IInventoryElement returnToParentInventory() {

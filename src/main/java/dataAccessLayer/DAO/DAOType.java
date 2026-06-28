@@ -4,5 +4,6 @@ public enum DAOType {
     ACCOUNT,
     COLLECTION,
     ITEM,
-    RECIPE
+    RECIPE,
+    COMPONENT
 }

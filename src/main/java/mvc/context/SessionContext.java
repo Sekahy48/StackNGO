@@ -1,8 +1,10 @@
 package mvc.context;
 
+import java.util.ArrayDeque;
 import java.util.Deque;
 
 import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.ComponentDefinitionDTO;
 import dataTransportLayer.ItemDTO;
 import dataTransportLayer.RecipeDTO;
 import domain.accounts.Account;
@@ -12,11 +14,12 @@ public class SessionContext implements Context{
     private Account currentAccount;
     private CollectionDTO currentCollection;
     private ItemDTO currentItem;
-    private RecipeDTO currentRecipeDTO;
+    private RecipeDTO currentRecipe;
+    private ComponentDefinitionDTO currentComponent;
 
     private CollectionDTO currentInventoryCollection;
     private RecipeDTO currentInventoryRecipe;
-    private Deque<IInventoryElement> inventoryStack;
+    private Deque<IInventoryElement> inventoryStack = new ArrayDeque<>();
     
     public Account getCurrentAccount() { 
         return currentAccount; 
@@ -67,10 +70,18 @@ public class SessionContext implements Context{
     }
 
     public RecipeDTO getCurrentRecipeDTO() {
-        return currentRecipeDTO;
+        return currentRecipe;
     }
 
-    public void setCurrentRecipeDTO(RecipeDTO currentRecipeDTO) {
-        this.currentRecipeDTO = currentRecipeDTO;
+    public void setCurrentRecipe(RecipeDTO currentRecipeDTO) {
+        this.currentRecipe = currentRecipeDTO;
+    }
+
+    public ComponentDefinitionDTO getCurrentComponentDTO() {
+        return this.currentComponent;
+    }
+
+    public void setCurrentComponent(ComponentDefinitionDTO currentComponentDTO) {
+        this.currentComponent = currentComponentDTO;
     }
 }

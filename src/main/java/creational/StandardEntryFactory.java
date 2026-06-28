@@ -2,8 +2,9 @@ package creational;
 
 
 import java.util.ArrayList;
-
+ 
 import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.ComponentDefinitionDTO;
 import dataTransportLayer.EntryDTO;
 import dataTransportLayer.ItemDTO;
 import dataTransportLayer.ItemIdStackDTO;
@@ -13,6 +14,7 @@ import identificators.EntryId;
 import mvc.model.entries.Item;
 import mvc.model.entries.ItemIdStack;
 import mvc.model.entries.Recipe;
+import mvc.model.entries.component.ComponentDefinition;
 
 public class StandardEntryFactory implements IEntriesFactory{
     private EntryBuilder builder = new EntryBuilder();
@@ -67,7 +69,16 @@ public class StandardEntryFactory implements IEntriesFactory{
         return (Collection) this.builder.build();
     }
 
+
+    public ComponentDefinition createComponent(ComponentDefinitionDTO dto) {
+        this.builder.restoreEntry(new ComponentDefinition("default_component", 1));
+        this.createEntry((EntryDTO) dto);
+        this.builder.addFields(dto.fields);
+        return (ComponentDefinition) this.builder.build();
+    }
+
     public void createEntry(EntryDTO dto){
+        System.out.println(dto.imagePath);
         builder.setName(dto.name);
         builder.setIconPath(dto.imagePath);
         builder.setDescription(dto.description);

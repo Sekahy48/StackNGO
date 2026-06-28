@@ -1,7 +1,8 @@
 package mvc.controller.add;
 
 import java.util.List;
- 
+import java.util.Set;
+
 import creational.DTOFactory;
 import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.EntryDTO;
@@ -90,5 +91,10 @@ public class AddItemController extends AbstractAddController<ItemDTO> implements
                 this.view.showAlert("Item existente", "El ítem llamado " + dto.name + " ya ha sido creado previamente", Alert.AlertType.ERROR); 
             }
         }  
+    }
+
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.ITEM, ServiceType.SESSION); 
     }
 }

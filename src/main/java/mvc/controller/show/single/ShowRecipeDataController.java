@@ -1,7 +1,8 @@
 package mvc.controller.show.single;
 
 import java.util.List;
- 
+import java.util.Set;
+
 import creational.UIPrefabsFactory;
 import static creational.UIPrefabsFactory.addPopUp;
 import static creational.UIPrefabsFactory.rowExists;
@@ -20,7 +21,7 @@ import javafx.scene.layout.VBox;
 import logger.Logger;
 import mvc.model.entries.RecipeIOType;
 import mvc.view.ViewType;
-import mvc.view.show.entry.data.ShowRecipeDataView;
+import mvc.view.show.single.ShowRecipeDataView;
 import service.ItemService;
 import service.RecipeService;
 import service.ServiceType;
@@ -33,6 +34,8 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
 
     @Override
     public void handleButtons() {
+        super.handleButtons();
+        
         SessionService sessionService = this.getService(ServiceType.SESSION);
         ItemService itemService = this.getService(ServiceType.ITEM);
 
@@ -131,6 +134,7 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
             recipeService.removeEntry(id); 
             this.view.showAlert("Receta eliminada", "La receta con nombre " + dto.name + " ha sido eliminada", Alert.AlertType.INFORMATION);
             Logger.getInstance().info(this.getClass().toString(), "El usuario " + sessionService.getCurrentAccount().getUsername() + " ha borrado la receta con nombre " + dto.name + " en la coleccion " + sessionService.getCurrentCollectionDTO().name);
+            EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTION));
         }
     }
 
@@ -232,6 +236,10 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
     public void onReturnEvent() {
         EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTION));    
     }
- 
+    
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.ITEM, ServiceType.RECIPE, ServiceType.SESSION); 
+    }
 
 }

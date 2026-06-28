@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List; 
 
 import creational.DTOFactory;
-import dataAccessLayer.DAO.CollectionDAO;
-import dataAccessLayer.DAO.ItemDAO;
-import dataTransportLayer.CollectionDTO;
+import dataAccessLayer.DAO.AbstractEntryDAO; 
+import dataAccessLayer.DAO.ItemDAO; 
 import dataTransportLayer.ItemDTO;
 import dataTransportLayer.ItemIdStackDTO;
 import dataTransportLayer.ItemStackDTO;
+import dataTransportLayer.ItemWithCollectionDTO;
 import identificators.EntryId;
 import logger.Logger;
 import mvc.context.DataContext;
@@ -33,6 +33,7 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
         if (out == null) {
             ItemDTO dto = getDTOById(id);
             out = createEntry(dto);
+            data.getEntriesRepo().addItem(out);
         }
         return out;
     }
@@ -43,6 +44,7 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
         if (out == null) {
             ItemDTO dto = getDTOByName(name);
             out = createEntry(dto);
+            data.getEntriesRepo().addItem(out);
         }
         return out;
     }
@@ -55,6 +57,7 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
             Item item = data.getEntriesRepo().getItem(new EntryId(dto.id));
             if (item == null) item = createEntry(dto);
             out.add(item);
+            data.getEntriesRepo().addItem(item);
         }
         return out;
     }
@@ -92,10 +95,19 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
     public List<ItemDTO> getAllDTO(int parentId) {
         return data.getItemDAO().readAllByParent(parentId);
     }
+ 
+    public List<ItemWithCollectionDTO> getAllWithCollectionDTO() {
+        return data.getItemDAO().readAllWithCollection();
+    }
+
+    public List<ItemDTO> getAllDTO() {
+        return data.getItemDAO().readAll();
+    }
+
     //#endregion
 
     @Override
-    public Item createEntry(ItemDTO dto) {
+    protected Item createEntry(ItemDTO dto) {
         return this.entriesFactory.createItem(dto);
     }
 
@@ -143,5 +155,25 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
 
     public boolean isContainedInARecipe(int id) {
         return this.data.getItemDAO().isInRecipe(id) != -1;
+    }
+
+    @Override
+    protected  boolean addConcreteEntry(Item entry) {
+        return this.data.getEntriesRepo().addItem(entry);
+    }
+
+    @Override 
+    protected Item getConcreteEntry(int id) {
+        return this.data.getEntriesRepo().getItem(new EntryId(id));
+    }
+
+    @Override 
+    protected Item getConcreteEntryByName(String name) {
+        return this.data.getEntriesRepo().getItemByName(name);
+    }
+
+    @Override
+    protected AbstractEntryDAO<ItemDTO, Item> getDAO() {
+        return this.data.getItemDAO();
     }
 }

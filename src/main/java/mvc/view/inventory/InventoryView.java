@@ -17,9 +17,7 @@ public class InventoryView extends AbstractInventoryView {
 
         selectRecipeButton = new Button("Seleccionar receta");
         selectRecipeButton.setMaxWidth(Double.MAX_VALUE);
-        super.build();
-
-        this.initSidebar(contentContainer);
+        super.build(); 
     }
 
        
@@ -39,6 +37,11 @@ public class InventoryView extends AbstractInventoryView {
     }
 
     public Button getSelectRecipeButton() {
-        return this.getSelectRecipeButton();
+        return this.selectRecipeButton;
+    }
+
+    @Override
+    protected void attachContentToRoot() {
+        this.initSidebar(contentContainer); // añade via sidebar, no directo
     }
 }

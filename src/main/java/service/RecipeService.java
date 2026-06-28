@@ -5,16 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import dataAccessLayer.DAO.CollectionDAO;
-import dataAccessLayer.DAO.ItemDAO;
+import dataAccessLayer.DAO.AbstractEntryDAO;
 import dataAccessLayer.DAO.RecipeDAO;
-import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.ItemStackDTO;
 import dataTransportLayer.RecipeDTO;
 import identificators.EntryId;
 import logger.Logger;
 import mvc.context.DataContext;
-import mvc.model.entries.Item;
 import mvc.model.entries.ItemIdStack;
 import mvc.model.entries.Recipe;
 import mvc.model.entries.repository.EntriesRepository;
@@ -37,6 +34,7 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
         if (out == null) {
             RecipeDTO dto = getDTOById(id);
             out = createEntry(dto);
+            data.getEntriesRepo().addRecipe(out);
         }
         return out;
     }
@@ -47,6 +45,7 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
         if (out == null) {
             RecipeDTO dto = getDTOByName(name);
             out = createEntry(dto);
+            data.getEntriesRepo().addRecipe(out);
         }
         return out;
     }
@@ -59,6 +58,7 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
             Recipe r = data.getEntriesRepo().getRecipe(new EntryId(dto.id));
             if (r == null) r = createEntry(dto);
             out.add(r);
+            data.getEntriesRepo().addRecipe(r);
         }
         return out;
     }
@@ -96,10 +96,15 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
     public List<RecipeDTO> getAllDTO(int parentId) {
         return data.getRecipeDAO().readAllByParent(parentId);
     }
+
+    public List<RecipeDTO> getAllDTO() {
+        return data.getRecipeDAO().readAll();
+    }
+
     //#endregion
 
     @Override
-    public Recipe createEntry(RecipeDTO dto) {
+    protected Recipe createEntry(RecipeDTO dto) {
         return this.entriesFactory.createRecipe(dto);
     } 
 
@@ -230,6 +235,25 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
         this.data.getRecipeDAO().deleteSingleOutput(recipeId, itemId);
     }
 
+    @Override
+    protected  boolean addConcreteEntry(Recipe entry) {
+        return this.data.getEntriesRepo().addRecipe(entry);
+    }
+
+    @Override 
+    protected Recipe getConcreteEntry(int id) {
+        return this.data.getEntriesRepo().getRecipe(new EntryId(id));
+    }
+
+    @Override 
+    protected Recipe getConcreteEntryByName(String name) {
+        return this.data.getEntriesRepo().getRecipeByName(name);
+    }
+
+    @Override
+    protected AbstractEntryDAO<RecipeDTO, Recipe> getDAO() {
+        return this.data.getRecipeDAO();
+    }
 
     //#endregion
 }

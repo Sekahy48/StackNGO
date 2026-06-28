@@ -220,7 +220,7 @@ public class UIPrefabsFactory {
         return btn;
     }
 
-    public static void initSideBar(VBox sideBar, Button inventoryButton, Button userButton, Button itemButton,  Button collectionButton, SplitPane splitPane, Node content) {
+    public static void initSideBar(VBox sideBar, Button inventoryButton, Button userButton, Button itemButton,  Button collectionButton, Button componentButton, SplitPane splitPane, Node content) {
         int defaultSize = 50;
         sideBar.setAlignment(Pos.TOP_LEFT);
         sideBar.setPadding(new Insets(10));
@@ -249,6 +249,14 @@ public class UIPrefabsFactory {
 
         collectionButton.setGraphic(collectionsIcon);
         collectionButton.setStyle("-fx-background-color: transparent;");
+        
+        // Components
+        ImageView componentsIcon = new ImageView(new Image("images/components.png"));
+        componentsIcon.setFitWidth(defaultSize);
+        componentsIcon.setFitHeight(defaultSize);
+
+        componentButton.setGraphic(componentsIcon);
+        componentButton.setStyle("-fx-background-color: transparent;");
 
         // Items
         ImageView itemsIcon = new ImageView(new Image("images/items.png"));
@@ -258,7 +266,7 @@ public class UIPrefabsFactory {
         itemButton.setGraphic(itemsIcon);
         itemButton.setStyle("-fx-background-color: transparent;");
 
-        sideBar.getChildren().addAll(userButton, collectionButton, itemButton, inventoryButton);
+        sideBar.getChildren().addAll(userButton, collectionButton, componentButton, itemButton, inventoryButton);
         sideBar.setStyle("-fx-border-color: black; -fx-border-width: 2;");
         sideBar.setPrefWidth(150);
 

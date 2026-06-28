@@ -7,6 +7,10 @@ public class SystemService implements IService {
     
     private SystemContext context;
     
+    public SystemService(SystemContext context) {
+        this.context = context;
+    }
+    
     @Override
     public ServiceType getType() {
         return ServiceType.SYSTEM;

@@ -1,4 +1,4 @@
-package mvc.view.show;
+package mvc.view.show.multiple;
 
 import dataTransportLayer.GenericDTO;
 import javafx.event.ActionEvent;
@@ -64,6 +64,7 @@ public abstract class ShowGridDisplayView<T extends GenericDTO> extends Abstract
     protected Button createElementCard(T dto){
         return this.createGenericElementCard(dto.getImagePath(), dto.getName());
     }
+    
     /**
      * Metodo privado que construye una de las celdas/boton de la grid de esta vista
      * Si la imagen es null, se añade una imagen por defecto

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 
 /**
@@ -305,12 +306,8 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO> implem
         return list;
     }
 
-    //private void goBack() {
-    //    CollectionDTO dto = this.context.getCurrentCollection();
-//
-    //    this.buffer.publish(new RedirectCommand(
-    //            this.context.getCoreController().getShowCollectionDataBuffer(),
-    //            new ShowCollection(dto)
-    //    ));
-    //}
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.ITEM, ServiceType.RECIPE, ServiceType.SESSION); 
+    }
 }

@@ -1,9 +1,12 @@
 package creational;
  
 import java.util.ArrayList;
+import java.util.List;
 
 import identificators.EntryId;
 import mvc.model.entries.*;
+import mvc.model.entries.component.ComponentDefinition;
+import mvc.model.entries.component.ComponentField;
 
 public class EntryBuilder {
     private Entry entry;
@@ -54,6 +57,14 @@ public class EntryBuilder {
         return this;
     }
 
+    //#endregion
+
+    //#region Component specific
+    public EntryBuilder addFields(List<ComponentField> fields) {
+        ((ComponentDefinition) this.entry).setFields(fields);
+        return this;
+    }
+    
     //#endregion
     public Entry build() {
         Entry out = this.entry;

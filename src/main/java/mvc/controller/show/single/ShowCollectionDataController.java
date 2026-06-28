@@ -1,7 +1,7 @@
 package mvc.controller.show.single;
-
-import java.util.List;
  
+import java.util.List;
+import java.util.Set; 
 import creational.UIPrefabsFactory;
 import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.ItemDTO;
@@ -15,7 +15,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import logger.Logger; 
 import mvc.view.ViewType;
-import mvc.view.show.entry.data.ShowCollectionDataView;
+import mvc.view.show.single.ShowCollectionDataView;
 import service.CollectionService; 
 import service.ItemService;
 import service.RecipeService;
@@ -29,6 +29,7 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
     public void handleButtons() {
 
         commonHandleButton();
+        super.handleButtons();
 
         this.view.getAddItemButton().setOnAction(e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.ADD_ITEM));});
 
@@ -50,12 +51,12 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
                 Alert.AlertType.CONFIRMATION
         );
 
-        if (delete) { 
-            collectionService.removeEntry(id); 
+        if (delete) {  
             String collectionName = collectionService.getEntryById(id).getName();
+            collectionService.removeEntry(id); 
             this.view.showAlert("Coleccion eliminada", "La coleccion con nombre " + collectionName + " ha sido eliminada", Alert.AlertType.INFORMATION);
             Logger.getInstance().info(this.getClass().toString(), "El usuario " + sessionService.getCurrentAccount().getUsername() + " ha borrado la coleccion con nombre " + collectionName);
- 
+            EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTIONS));
         }
     }
 
@@ -119,5 +120,10 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
     public int getShowingEntryId() {
         SessionService sessionService = this.getService(ServiceType.SESSION);
         return sessionService.getCurrentCollectionDTO().id;
+    }
+ 
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.COLLECTION, ServiceType.ITEM, ServiceType.RECIPE, ServiceType.SESSION); 
     }
 }

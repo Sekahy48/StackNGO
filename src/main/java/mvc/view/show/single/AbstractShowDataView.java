@@ -1,4 +1,4 @@
-package mvc.view.show.entry.data;
+package mvc.view.show.single;
 
 import identificators.GenericId;
 import javafx.scene.control.Button;

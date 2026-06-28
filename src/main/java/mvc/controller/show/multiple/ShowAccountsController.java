@@ -1,6 +1,7 @@
 package mvc.controller.show.multiple;
 
 import java.util.List;
+import java.util.Set;
 
 import dataTransportLayer.AccountDTO;
 import event.EventBus;
@@ -54,5 +55,10 @@ public class ShowAccountsController extends ShowGridDisplayController<AccountDTO
     @Override
     public void onReturnEvent() {
         EventBus.getInstance().publish(new NavigateEvent(ViewType.PRIVATE_ZONE));    
+    }
+
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.ACCOUNT, ServiceType.SESSION); 
     }
 }

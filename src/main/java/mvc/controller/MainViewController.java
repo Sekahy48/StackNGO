@@ -1,6 +1,7 @@
 package mvc.controller;
  
 import event.EventBus;
+import event.NavigateEvent;
 import javafx.scene.control.Button;
 import mvc.view.MainView;
 import mvc.view.ViewType;
@@ -20,7 +21,7 @@ public class MainViewController extends AbstractController<MainView> {
 
         enterButton.setOnAction(
                 e -> {
-                    EventBus.getInstance().publish(ViewType.LOG_IN);;
+                    EventBus.getInstance().publish(new NavigateEvent(ViewType.LOG_IN));;
                 }
         );
     }

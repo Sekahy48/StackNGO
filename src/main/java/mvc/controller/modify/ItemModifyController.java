@@ -1,8 +1,10 @@
 package mvc.controller.modify;
 
 import java.util.Objects;
+import java.util.Set;
 
-import creational.DTOFactory; 
+import creational.DTOFactory;
+import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.EntryDTO;
 import dataTransportLayer.ItemDTO;
 import event.EventBus;
@@ -20,8 +22,9 @@ public class ItemModifyController extends AbstractModifyController<ItemModifyVie
     @Override
     protected ItemDTO  composeDTO() { 
         ItemService itemService = this.getService(ServiceType.ITEM);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
 
-        EntryDTO dto = this.view.getEntryDTO();
+        EntryDTO dto = sessionService.getCurrentItemDTO();
 
         String newName = !this.view.getNewName().isBlank() ? this.view.getNewName() : dto.name;
 
@@ -51,7 +54,7 @@ public class ItemModifyController extends AbstractModifyController<ItemModifyVie
         SessionService sessionService = this.getService(ServiceType.SESSION);
         itemService.saveEntry(dto, new int[]{sessionService.getCurrentCollectionDTO().id});
         
-        ItemDTO oldDto = this.view.getEntryDTO();
+        ItemDTO oldDto = sessionService.getCurrentItemDTO();
         String alert = "El item llamado " + oldDto.name + " ha sido modificado.";
         if (oldDto.name != dto.name) alert = "El item antes llamado " + oldDto.name + " ha sido modificado pasandose a llamar " + dto.name + ".";
 
@@ -68,4 +71,12 @@ public class ItemModifyController extends AbstractModifyController<ItemModifyVie
         EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_ITEM));
     }
 
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.ITEM, ServiceType.SESSION); 
+    }
+
+    protected ItemDTO getCurrentDTO() {
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        return sessionService.getCurrentItemDTO();
+    }
 }

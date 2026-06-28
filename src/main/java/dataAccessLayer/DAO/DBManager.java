@@ -85,29 +85,7 @@ public class DBManager {
                     "FOREIGN KEY (collection_id) REFERENCES collections(id) ON DELETE CASCADE," + // ON DELETE CASCADE se utiliza para que si se borra una colección, sus ítems también seran eliminados
                     "UNIQUE KEY unique_item_per_collection (name, collection_id)" +
                     ");"
-            );
-
-            /* // Recipe inputs
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS recipe_inputs(" +
-                    "quantity INT," + 
-                    "recipes_id INT NOT NULL, " +
-                    "items_id INT NOT NULL, " +
-                    "PRIMARY KEY (recipes_id, items_id), " +
-                    "FOREIGN KEY (recipes_id)  REFERENCES recipes(id) ON DELETE CASCADE," +
-                    "FOREIGN KEY (items_id)  REFERENCES items(id) ON DELETE CASCADE," + 
-                    ");"
-            );
-
-            // Recipe outputs
-            stmt.executeUpdate("CREATE TABLE IF NOT EXISTS recipe_outputs(" +
-                    "quantity INT," + 
-                    "recipes_id INT NOT NULL, " +
-                    "items_id INT NOT NULL, " +
-                    "PRIMARY KEY (recipes_id, items_id), " +
-                    "FOREIGN KEY (recipes_id)  REFERENCES recipes(id) ON DELETE CASCADE," +
-                    "FOREIGN KEY (items_id)  REFERENCES items(id) ON DELETE CASCADE," + 
-                    ");"
-            ); */
+            ); 
 
             // io_type: INPUT o OUTPUT
             stmt.executeUpdate(
@@ -120,6 +98,44 @@ public class DBManager {
                 "FOREIGN KEY (recipes_id) REFERENCES recipes(id) ON DELETE CASCADE, " +
                 "FOREIGN KEY (items_id) REFERENCES items(id) ON DELETE CASCADE " +
                 ");");
+        
+            // Componentes
+            stmt.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS component_definitions (" +
+                "id INT PRIMARY KEY," +
+                "name VARCHAR(100) NOT NULL UNIQUE," +
+                "description VARCHAR(500)," +
+                "icon VARCHAR(255)," +
+                "account_id INT NOT NULL, " +
+                "FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE, " +
+                "UNIQUE KEY unique_def_per_account (name, account_id)" +
+                ");"
+            );
+
+            // Campos de componentes
+            stmt.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS component_fields (" +
+                "id INT AUTO_INCREMENT PRIMARY KEY," +
+                "component_def_id INT NOT NULL," +
+                "field_name VARCHAR(100) NOT NULL," +
+                "field_type VARCHAR(50) NOT NULL," +
+                "FOREIGN KEY (component_def_id) REFERENCES component_definitions(id) ON DELETE CASCADE," +
+                "UNIQUE KEY unique_field_per_def (component_def_id, field_name)" +
+                ");"
+            );
+
+            stmt.executeUpdate(
+                "CREATE TABLE IF NOT EXISTS item_components (" +
+                "item_id INT NOT NULL, " +
+                "component_def_id INT NOT NULL, " +
+                "field_name VARCHAR(100) NOT NULL, " +
+                "field_value VARCHAR(255) NOT NULL, " +
+                "PRIMARY KEY (item_id, component_def_id, field_name), " +
+                "FOREIGN KEY (item_id) REFERENCES items(id) ON DELETE CASCADE, " +
+                "FOREIGN KEY (component_def_id) REFERENCES component_definitions(id) ON DELETE CASCADE" +
+                ");"
+            );
+
 
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);

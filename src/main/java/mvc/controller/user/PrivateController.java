@@ -6,6 +6,9 @@ import event.EventBus;
 import event.NavigateEvent;
 
 import static domain.accounts.AccountType.ADMIN;
+
+import java.util.Set;
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
@@ -73,7 +76,7 @@ public class PrivateController extends AbstractUserController<PrivateView> {
 
             });
 
-        addButton.setOnAction(e -> { EventBus.getInstance().publish(ViewType.ADD_COLLECTION);});
+        addButton.setOnAction(e -> { EventBus.getInstance().publish(new NavigateEvent(ViewType.ADD_COLLECTION));});
 
         delete.setOnAction(
             e -> { 
@@ -86,12 +89,12 @@ public class PrivateController extends AbstractUserController<PrivateView> {
         );
 
         seeCollectionsButton.setOnAction(
-            e -> { EventBus.getInstance().publish(ViewType.SHOW_COLLECTIONS); }
+            e -> { EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTIONS)); }
         );
 
         logout.setOnAction(
             e -> {
-                EventBus.getInstance().publish(ViewType.LOG_IN);
+                EventBus.getInstance().publish(new NavigateEvent(ViewType.LOG_IN));
                 sessionService.untrackCurrentAccount();
             }
         ); 
@@ -128,5 +131,10 @@ public class PrivateController extends AbstractUserController<PrivateView> {
     @Override
     public void onReturnEvent() {
         throw new UnsupportedOperationException("Unimplemented method 'onReturnEvent'");
+    }
+
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.ACCOUNT, ServiceType.SESSION); 
     }
 }

@@ -26,7 +26,7 @@ public abstract class AbstractView {
     protected GenericId parentId;
     protected String parentName;
  
-    protected Button userButton, collectionButton, inventoryButton, itemButton;
+    protected Button userButton, collectionButton, inventoryButton, itemButton, componentButton;
 
     protected VBox sideBar;
     protected SplitPane splitPane;
@@ -45,6 +45,7 @@ public abstract class AbstractView {
         this.collectionButton = new Button();
         this.itemButton = new Button();
         this.inventoryButton = new Button();
+        this.componentButton = new Button();
         this.sideBar = new VBox(10);
         this.splitPane = new SplitPane();
         this.build();
@@ -56,6 +57,7 @@ public abstract class AbstractView {
 
     public Button getItemButton() { return this.itemButton; }
 
+    public Button getComponentButton() { return this.componentButton; }
     public Button getInventoryButton() { return this.inventoryButton; }
 
     public SplitPane getSplitPane() { return this.splitPane;}
@@ -116,6 +118,7 @@ public abstract class AbstractView {
                 this.userButton,
                 this.itemButton,
                 this.collectionButton,
+                this.componentButton,
                 this.splitPane,
                 content
             );

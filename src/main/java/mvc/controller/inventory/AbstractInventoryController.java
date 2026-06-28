@@ -2,13 +2,13 @@ package mvc.controller.inventory;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import creational.DTOFactory;
 import creational.UIPrefabsFactory;
 import dataTransportLayer.EntryDTO;
 import dataTransportLayer.ItemDTO;
-import dataTransportLayer.RecipeDTO;
-import event.EventBus;
+import dataTransportLayer.RecipeDTO; 
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.layout.StackPane;
@@ -43,7 +43,7 @@ public class AbstractInventoryController<T extends AbstractInventoryView> extend
         commonHandleButton();
         SessionService sessionService = this.getService(ServiceType.SESSION);
         ItemService itemService = this.getService(ServiceType.ITEM);
-
+ 
         this.view.getExecuteRecipeButton().setOnAction(e -> {
             if(sessionService.getCurrentInventoryRecipeDTO() == null){
                 this.view.showAlert(
@@ -151,8 +151,6 @@ public class AbstractInventoryController<T extends AbstractInventoryView> extend
 
         this.view.getClearButton().setOnAction(e -> {
             this.clearInventory(); 
-            sessionService.setCurrentInventoryCollection(null);
-            sessionService.setCurrentInventoryRecipe(null);
         });
 
         this.view.getAddContainerItemButton().setOnAction(e -> {
@@ -174,10 +172,10 @@ public class AbstractInventoryController<T extends AbstractInventoryView> extend
                         
                         Item toAdd = itemService.getEntryById(selected.id);
 
-                        if(this.<InventoryService>getService(ServiceType.INVENTORY).containsAsContainer(toAdd)) {
+                        if(!this.<InventoryService>getService(ServiceType.INVENTORY).containsAsContainer(toAdd)) {
                             this.view.showAlert("Advertencia", "Cuidado, si añades este item como contenedor no podrás" + 
                             " utilizarlo como item normal, por tanto no podras ejecutar las recetas que lo involucren. " + 
-                            "Si te arrepientes cancela en la selección de cantidad o elimina todos los items todos los items-contenedor " + 
+                            "Si te arrepientes cancela en la selección de cantidad o elimina todos los items-contenedor " + 
                             "de cierto tipo para poder inesertarlo como item normal.", Alert.AlertType.WARNING);
                         }
 
@@ -242,6 +240,7 @@ public class AbstractInventoryController<T extends AbstractInventoryView> extend
     private void openContainerInventory(ItemDTO containerItem) {
         // Resolve services.
         ItemService itemService = this.getService(ServiceType.ITEM);
+        RecipeService recipeService = this.getService(ServiceType.RECIPE);
         SessionService sessionService = this.getService(ServiceType.SESSION);
         InventoryService inventoryService = this.getService(ServiceType.INVENTORY);
 
@@ -254,12 +253,16 @@ public class AbstractInventoryController<T extends AbstractInventoryView> extend
         // Create popup's view and controler.
         InventoryPopupView view = new InventoryPopupView();
         InventoryPopupController controller = new InventoryPopupController();
-
+        String currentCollectionName = sessionService.getCurrentInventoryCollectionDTO().name;
+        String currentRecipeName = sessionService.getCurrentInventoryRecipeDTO().name;
+        if (currentCollectionName != null) view.getSelectedCollectionLabel().setText(currentCollectionName);
+        if (currentRecipeName != null) view.getSelectedRecipeLabel().setText(currentRecipeName);
         // Transfer services.
         controller.addService(itemService);
         controller.addService(inventoryService);
+        controller.addService(recipeService);
+        controller.addService(sessionService);  
         controller.attachView(view); 
-        controller.addService(sessionService); 
 
         // Update popup view.
         RecipeDTO currentRecipeDTO = sessionService.getCurrentInventoryRecipeDTO();
@@ -288,6 +291,10 @@ public class AbstractInventoryController<T extends AbstractInventoryView> extend
     
     public void onReturnEvent() {
         throw new UnsupportedOperationException("Not supported."); 
+    }
+
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.ITEM, ServiceType.INVENTORY, ServiceType.RECIPE, ServiceType.SESSION); 
     }
 
 }

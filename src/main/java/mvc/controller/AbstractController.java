@@ -24,27 +24,20 @@ public abstract class AbstractController<T extends AbstractView> extends Service
         Button collectionButton = view.getCollectionButton();
         Button inventoryButton = view.getInventoryButton();
         Button itemButton = view.getItemButton();
+        Button componentButton = view.getComponentButton();
         userButton.setOnAction(
                 e -> {
                     EventBus.getInstance().publish(new NavigateEvent(ViewType.PRIVATE_ZONE)); 
                 }
         );
 
-        collectionButton.setOnAction(
+        collectionButton.setOnAction(e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTIONS));});
 
-                e -> {
-                    EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTIONS)); 
-                }
-        );
+        itemButton.setOnAction(e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_ITEMS));});
 
-        itemButton.setOnAction(
-                e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_ITEMS));}
+        inventoryButton.setOnAction(e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.INVENTORY));});
 
-        );
-
-        inventoryButton.setOnAction(
-                e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.INVENTORY));;}
-        );
+        componentButton.setOnAction(e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COMPONENTS));});
     }
 
     public T getView() {

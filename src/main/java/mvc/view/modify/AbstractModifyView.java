@@ -23,7 +23,7 @@ public class AbstractModifyView<T extends EntryDTO> extends AbstractView {
 
    // ===== CAMPOS COMUNES (FX) =====
    protected EntryId entryId;
-   protected T dto;
+   //protected T dto;
    protected Label currentNameLabel;
    protected TextField newNameField;
 
@@ -124,8 +124,7 @@ public class AbstractModifyView<T extends EntryDTO> extends AbstractView {
 
    // ===== MÉTODO DE RELLENO =====
    public void modifyFields(T dto) {
-      this.entryId = new EntryId(dto.id);
-      this.dto = dto;
+      this.entryId = new EntryId(dto.id); 
       this.currentNameLabel.setText(dto.name);
       this.currentDescArea.setText(dto.description); 
       Image icon = ImageUtils.getImage(dto.imagePath);
@@ -163,10 +162,7 @@ public class AbstractModifyView<T extends EntryDTO> extends AbstractView {
    public EntryId getFullEntryId(){
       return entryId;
    }
-
-   public T getEntryDTO(){
-      return this.dto;
-   }
+  
  
    public void setIconPreview(Image image) {
     ImageView iv = new ImageView(image);
@@ -182,6 +178,11 @@ public class AbstractModifyView<T extends EntryDTO> extends AbstractView {
       this.selectedIconPath = path;
    }
 
-   
+   public void fillLabels(String name, String description, String iconPath) {
+      this.currentNameLabel.setText(name);
+      this.currentDescArea.setText(description);
+      System.out.println(iconPath);
+      if (iconPath != null && !iconPath.isEmpty()) this.currentIconView.setImage(ImageUtils.getImage(iconPath));
+   }
 
 }

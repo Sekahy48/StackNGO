@@ -8,6 +8,7 @@ import java.util.List;
 
 import creational.DTOFactory;
 import dataTransportLayer.ItemDTO;
+import dataTransportLayer.ItemWithCollectionDTO;
 import mvc.model.entries.Item;
 
 public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
@@ -40,6 +41,7 @@ public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
         }
         return out;
     }
+    
 
     public int isInRecipe(int itemId) {
         int recipeId;
@@ -82,5 +84,21 @@ public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<ItemWithCollectionDTO> readAllWithCollection() {
+        List<ItemWithCollectionDTO> out = new ArrayList<>();
+        String sql = "SELECT i.*, c.name AS collection_name FROM items i JOIN collections c ON i.collection_id = c.id";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                ItemDTO item = buildDTO(rs);
+                String collectionName = rs.getString("collection_name");
+                out.add(new ItemWithCollectionDTO(item, collectionName));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return out;
     }
 }

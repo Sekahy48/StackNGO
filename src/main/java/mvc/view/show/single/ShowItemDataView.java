@@ -1,4 +1,4 @@
-package mvc.view.show.entry.data;
+package mvc.view.show.single;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
