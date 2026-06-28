@@ -3,11 +3,11 @@ package mvc.view.modify;
 import java.util.ArrayList;
 import java.util.List;
 
-import creational.DTOFactory;
 import creational.EventPrefabFactory;
 import creational.UIPrefabsFactory;
-import dataTransportLayer.EntryDTO;
-import dataTransportLayer.GenericDTO;
+import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.ItemDTO;
+import dataTransportLayer.RecipeDTO;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -18,65 +18,65 @@ import javafx.scene.layout.VBox;
 import utilities.ImageUtils; 
 
 
-public class CollectionModifyView extends AbstractModifyWithListsViews{
+public class CollectionModifyView extends AbstractModifyWithListsViews<CollectionDTO, ItemDTO, RecipeDTO>{
     
-    protected List<EntryDTO> items = new ArrayList<>(), recipes = new ArrayList<>();
+    protected List<ItemDTO> items = new ArrayList<>();
+    protected List<RecipeDTO> recipes = new ArrayList<>();
 
     @Override
-    public void modifyFields(EntryDTO dto, List<GenericDTO> firstList, List<GenericDTO> secondList) {
+    public void modifyFields(CollectionDTO dto, List<ItemDTO> firstList, List<RecipeDTO> secondList) {
         this.list1Label.setText("Items");
         this.list2Label.setText("Recetas");
 
-        if (dto.iconPath != null && !dto.iconPath.isEmpty()){
-            Image currentIcon = ImageUtils.getImage(dto.iconPath);
+        if (dto.imagePath != null && !dto.imagePath.isEmpty()){
+            Image currentIcon = ImageUtils.getImage(dto.imagePath);
             this.setIconPreview(currentIcon);
         }
         super.modifyFields(dto, firstList, secondList);
     }
 
-    public List<EntryDTO> getItems(){
+    public List<ItemDTO> getItems(){
         return this.items;
     }
 
-    public List<EntryDTO> getRecipes(){
+    public List<RecipeDTO> getRecipes(){
         return this.recipes;
     }
 
-    public void setItems(List<EntryDTO> items){
+    public void setItems(List<ItemDTO> items){
         this.items = items;
     }
 
-    public void setRecipes(List<EntryDTO> recipes){
+    public void setRecipes(List<RecipeDTO> recipes){
         this.recipes = recipes;
     }
 
     @Override
-    protected List<GenericDTO> getCurrentList1() {
-        return DTOFactory.genericsFromEntries(getItems());
+    protected List<ItemDTO> getCurrentList1() {
+        return getItems();
     }
 
     @Override
-    protected List<GenericDTO> getCurrentList2() { 
-        return DTOFactory.genericsFromEntries(getRecipes());
+    protected List<RecipeDTO> getCurrentList2() { 
+        return getRecipes();
     }
 
     @Override
-    protected void createListTable(VBox table, List<GenericDTO> list, int whatList) {
+    protected void createListTable1(VBox table, List<ItemDTO> list) {
         Image iconView;
         Button deleteButton; 
 
-        for (GenericDTO elem : list) { 
+        for (ItemDTO elem : list) { 
                 
-            EntryDTO dto = (EntryDTO)elem;
 
             deleteButton = UIPrefabsFactory.createRemoveButton();
             
             
-            iconView = ImageUtils.getImage(dto.iconPath);
-            HBox row = UIPrefabsFactory.createRow(dto.name, iconView, deleteButton); 
+            iconView = ImageUtils.getImage(elem.imagePath);
+            HBox row = UIPrefabsFactory.createRow(elem.name, iconView, deleteButton); 
             row.setAlignment(Pos.CENTER_LEFT);
 
-            EventHandler<ActionEvent> event = EventPrefabFactory.getDeleteSelfRowEvent(table, row, whatList == 1 ? this.getCurrentList1() : this.getCurrentList2(), dto);
+            EventHandler<ActionEvent> event = EventPrefabFactory.getDeleteSelfRowEvent(table, row, this.getCurrentList1(), elem);
             deleteButton.setOnAction(event);
 
             table.getChildren().add(row);
@@ -84,13 +84,35 @@ public class CollectionModifyView extends AbstractModifyWithListsViews{
     }
 
     @Override
-    protected void setCurrentList1(List<GenericDTO> list) {
-        this.items = DTOFactory.entriesFromGenerics(list);
+    protected void createListTable2(VBox table, List<RecipeDTO> list) {
+        Image iconView;
+        Button deleteButton; 
+
+        for (RecipeDTO elem : list) { 
+                
+
+            deleteButton = UIPrefabsFactory.createRemoveButton();
+            
+            
+            iconView = ImageUtils.getImage(elem.imagePath);
+            HBox row = UIPrefabsFactory.createRow(elem.name, iconView, deleteButton); 
+            row.setAlignment(Pos.CENTER_LEFT);
+
+            EventHandler<ActionEvent> event = EventPrefabFactory.getDeleteSelfRowEvent(table, row, this.getCurrentList2(), elem);
+            deleteButton.setOnAction(event);
+
+            table.getChildren().add(row);
+        };
     }
 
     @Override
-    protected void setCurrentList2(List<GenericDTO> list) {
-        this.recipes = DTOFactory.entriesFromGenerics(list);
+    protected void setCurrentList1(List<ItemDTO> list) {
+        this.items = list;
+    }
+
+    @Override
+    protected void setCurrentList2(List<RecipeDTO> list) {
+        this.recipes = list;
     }
  
 }

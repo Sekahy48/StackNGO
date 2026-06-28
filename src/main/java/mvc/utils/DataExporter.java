@@ -21,19 +21,25 @@ import com.google.gson.GsonBuilder;
 import creational.DTOFactory;
 import dataTransportLayer.CollectionDTO;
 import dataTransportLayer.ItemDTO;
+import dataTransportLayer.ItemIdStackDTO;
 import dataTransportLayer.RecipeDTO;
-import javafx.stage.FileChooser;
-import mvc.context.RuntimeContext;
+import javafx.stage.FileChooser; 
+import service.CollectionService;
+import service.ItemService;
+import service.RecipeService;
+import service.ServiceConsumer;
+import service.ServiceType;
+import service.SessionService;
 
-public class DataExporter {
-
-    private final RuntimeContext context;
-
-    public DataExporter(RuntimeContext context) {
-        this.context = context;
-    }
+public class DataExporter extends ServiceConsumer {
 
     public void exportUserData() {
+        CollectionService collectionService = this.getService(ServiceType.COLLECTION);
+        RecipeService recipeService = this.getService(ServiceType.RECIPE);
+        ItemService itemService = this.getService(ServiceType.ITEM);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        CollectionDTO currentCollection = sessionService.getCurrentCollectionDTO();
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Exportar datos del usuario");
         fileChooser.getExtensionFilters().add(
@@ -48,14 +54,14 @@ public class DataExporter {
             List<Map<String, Object>> collectionsData = new ArrayList<>();
             Set<Path> imagesToAdd = new HashSet<>();
 
-            for (CollectionDTO c : context.getCollections()) {
+            for (CollectionDTO c : collectionService.getAllDTO(sessionService.getCurrentAccount().getId().value())) {
 
                 Map<String, Object> collMap = new LinkedHashMap<>();
 
                 // ===== COLLECTION =====
                 String collIcon = null;
-                if (c.iconPath != null) {
-                    Path p = Paths.get(c.iconPath);
+                if (c.imagePath != null) {
+                    Path p = Paths.get(c.imagePath);
                     imagesToAdd.add(p);
                     collIcon = "images/" + p.getFileName();
                 }
@@ -73,16 +79,15 @@ public class DataExporter {
                 collMap.put("collection", exportedCollection);
 
                 // ===== ITEMS =====
-                List<ItemDTO> items =
-                        context.getItemsAsEntriesByCollection(new identificators.EntryId(c.id));
+                List<ItemDTO> items = itemService.getAllDTO(currentCollection.id);
 
                 List<ItemDTO> exportedItems = new ArrayList<>();
 
                 for (ItemDTO i : items) {
                     String iconPath = null;
 
-                    if (i.iconPath != null) {
-                        Path p = Paths.get(i.iconPath);
+                    if (i.imagePath != null) {
+                        Path p = Paths.get(i.imagePath);
                         imagesToAdd.add(p);
                         iconPath = "images/" + p.getFileName();
                     }
@@ -98,19 +103,21 @@ public class DataExporter {
                 collMap.put("items", exportedItems);
 
                 // ===== RECIPES =====
-                List<RecipeDTO> recipes =
-                        context.getRecipesAsEntriesByCollection(new identificators.EntryId(c.id));
+                List<RecipeDTO> recipes = recipeService.getAllDTO(currentCollection.id);
 
                 List<RecipeDTO> exportedRecipes = new ArrayList<>();
 
                 for (RecipeDTO r : recipes) {
                     String iconPath = null;
 
-                    if (r.iconPath != null) {
-                        Path p = Paths.get(r.iconPath);
+                    if (r.imagePath != null) {
+                        Path p = Paths.get(r.imagePath);
                         imagesToAdd.add(p);
                         iconPath = "images/" + p.getFileName();
                     }
+
+                    for (ItemIdStackDTO ing : r.ingredients) ing.name = itemService.getDTOById(ing.id).name;
+                    for (ItemIdStackDTO res : r.results) res.name = itemService.getDTOById(res.id).name;
 
                     exportedRecipes.add(DTOFactory.recipe(
                             r.ingredients,

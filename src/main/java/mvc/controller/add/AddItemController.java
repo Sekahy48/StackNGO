@@ -1,101 +1,100 @@
 package mvc.controller.add;
 
 import java.util.List;
+import java.util.Set;
 
-import command.add.item.AddItemCommand;
-import command.add.item.AddItemImageCommand;
 import creational.DTOFactory;
-import dataAccessLayer.DAO.DAOType;
-import dataAccessLayer.DAO.ItemDAO;
-import dataTransportLayer.*;
-import identificators.GenericId;
+import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.EntryDTO;
+import dataTransportLayer.ItemDTO;
+import domain.accounts.Account;
+import event.EventBus;
+import event.NavigateEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import logger.LogLevel;
 import logger.Logger;
 import mvc.controller.InyectableController;
 import mvc.model.entries.Item;
+import mvc.view.ViewType;
 import mvc.view.add.AddItemView;
+import service.ItemService;
+import service.ServiceType;
+import service.SessionService;
 
 /**
  *
  * Controller that manages the logic related to {@link AddItemView}
  *
  */
-public class AddItemController extends AbstractAddController implements InyectableController{
-    protected List<EntryDTO> listWhereAdd;
-
-    public AddItemController(EventBuffer buffer) {
-        super(buffer);
-    }
-
+public class AddItemController extends AbstractAddController<ItemDTO> implements InyectableController{
+    protected List<EntryDTO> listWhereAdd; 
+    
     public void setListWhereAdd(List<EntryDTO> list){
         listWhereAdd = list;
     }
 
     @Override
-    public void handleButton() {
+    public void handleButtons() {
 
         commonHandleButton();
+        super.handleButtons();
 
-        AddItemView view = (AddItemView) this.getView();
-
-        Button addButton = view.getAddButton();
-        Button imageButton = view.getImageButton();
-        Button goBackButton = view.getGoBackButton();
+        Button addButton = ((AddItemView) (this.view)).getAddButton(); 
+        Button goBackButton = this.view.getGoBackButton();
 
         addButton.setOnAction(
                 e -> {
-                    String name = view.getNameLabel().getText();
-                    String iconLabel = view.getIconLabel().getText();
-                    String description = view.getDescriptionLabel().getText();
-
-                    if (name.isEmpty()) {
-                        this.view.showAlert("Nombre vacio", "Un item debe tener un nombre", Alert.AlertType.ERROR);
-                    } else {
-                        try {
-                            ItemDTO dto = DTOFactory.item(
+                    String name = this.view.getNameLabel().getText();
+                    String iconLabel = this.view.getIconLabel().getText();
+                    String description = this.view.getDescriptionLabel().getText();
+                    
+                    ItemDTO dto = DTOFactory.item(
                                     name,
                                     iconLabel,
                                     description,
                                     this.idGenerator.generateId()
-                            );
-                            this.buffer.publish(new AddItemCommand(dto));
-
-                        } catch (Exception ex) {
-                            this.view.showAlert("Item existente", "El item llamado " + name + " ya ha sido creado previamente", Alert.AlertType.ERROR);
-                        }
-                    }   
-                         
+                    );
+                     
+                    this.onCreateEvent(dto);     
                 }
         );
-
-        imageButton.setOnAction(
-                e -> {
-                    this.buffer.publish(new AddItemImageCommand());
-                }
-        );
+ 
 
         goBackButton.setOnAction(
-                e -> {
-                    goBack();
-                }
+                e -> {this.onReturnEvent();}
         );
     }
 
+    public void onReturnEvent() {
+        EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTION));
+    }
+    
     @Override
-    public void create(EntryDTO dto) {
-        GenericId collection_id = view.getParentId();
-        ItemDAO dao = (ItemDAO) this.context.getDAO(DAOType.ITEM);
-        int[] foreignKeys = {collection_id.value()};
+    public void onCreateEvent(ItemDTO dto) {
+        if (dto.name.isEmpty()) {
+            this.view.showAlert("Nombre vacio", "Un ítem debe tener un nombre", Alert.AlertType.ERROR);
+        } else { 
+            ItemService itemService = this.getService(ServiceType.ITEM);
+            SessionService sessionService = this.getService(ServiceType.SESSION);
 
-        Item item = this.context.getEntriesFactory().createItem((ItemDTO) dto);
-        this.context.getRepo().addItem(item);
+            // TODO mirar si se pueden simplificar cosas como la extraccion del id de la coleccion vigente sin tanta variable intermedia
+            CollectionDTO currentCollectionDTO = sessionService.getCurrentCollectionDTO();
+            Account currentAccount = sessionService.getCurrentAccount();
+            int[] extraData = {currentCollectionDTO.id};
+            Item newItem = itemService.saveEntry(dto, extraData);
+            
+            if (newItem != null) {
+                this.view.showAlert("Item creado","Item " + dto.name + " creado correctamente", Alert.AlertType.INFORMATION);
+                Logger.getInstance().info(this.getClass().toString(), "El usuario " + currentAccount.getUsername() + " ha creado un  ítem con nombre " + dto.name);
+                this.onReturnEvent();
+            } else {
+                this.view.showAlert("Item existente", "El ítem llamado " + dto.name + " ya ha sido creado previamente", Alert.AlertType.ERROR); 
+            }
+        }  
+    }
 
-        dao.create(item, foreignKeys);
-
-        this.view.showAlert("Item creado", "Item con nombre " + dto.name +  " ha sido creado", Alert.AlertType.INFORMATION);
-        Logger.getInstance().info(this.getClass().toString(), "El usuario " + this.context.getAccount().getUsername() + " ha creado un item llamado " + dto.name + " en la coleccion " + this.context.getSessionContext().getCurrentCollection().getName());
-        goBack();
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.ITEM, ServiceType.SESSION); 
     }
 }

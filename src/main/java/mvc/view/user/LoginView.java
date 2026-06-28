@@ -100,4 +100,9 @@ public class LoginView extends AbstractUserView {
         this.root.getChildren().addAll(this.title, this.username, this.password, this.hBox);
     }
 
+    public void clearFields() {
+        username.clear();
+        password.clear();
+    }
+
 }

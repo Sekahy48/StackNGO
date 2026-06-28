@@ -1570,3 +1570,136 @@
 (2026-02-20 21:02:00)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
 (2026-02-20 21:02:10)	[INFO] class mvc.controller.add.AddCollectionController: El usuario a ha creado una coleccion con nombre sas
 (2026-02-20 21:02:26)	[INFO] class command.modify.ModifyEntryCommand: La coleccion con nombre sas ha sido modificada.
+(2026-06-26 21:26:23)	[WARNING] class mvc.controller.user.SignUpController: Intento de creacion de una cuenta existente con nombre a
+(2026-06-26 21:26:28)	[INFO] class mvc.controller.user.SignUpController: El usuario b ha creado su cuenta correctamente
+(2026-06-26 21:49:24)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-26 21:49:57)	[INFO] class mvc.controller.user.LoginController: El usuario b ha iniciado sesion
+(2026-06-26 21:50:13)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-26 21:55:25)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-26 21:55:33)	[INFO] class mvc.controller.add.AddCollectionController: El usuario a ha creado una coleccion con nombre ses
+(2026-06-26 21:59:59)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-26 22:05:41)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-26 22:07:47)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-26 22:18:34)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-26 22:24:29)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-26 22:30:20)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-26 23:24:28)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-26 23:32:18)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-26 23:47:43)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 00:02:39)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 00:04:50)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 14:21:29)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 14:22:31)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 14:28:42)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 14:30:44)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 14:31:24)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 14:31:28)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Stick ha sido modificado.
+(2026-06-27 14:31:34)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Stick ha sido modificado.
+(2026-06-27 14:33:10)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 14:33:33)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Stick ha sido modificado.
+(2026-06-27 14:34:08)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 14:36:14)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 14:36:28)	[INFO] class mvc.controller.show.single.ShowRecipeDataController: El usuario a ha borrado la receta con nombre sass2 en la coleccion Minecraft
+(2026-06-27 17:54:41)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Entry con id 3 no es un item.
+(2026-06-27 17:54:46)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Entry con id 3 no es un item.
+(2026-06-27 17:59:45)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Entry con id 4 no es un item.
+(2026-06-27 17:59:57)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Entry con id 7 no es un item.
+(2026-06-27 18:00:11)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Entry con id 22 no es un item.
+(2026-06-27 18:00:26)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Entry con id 24 no es un item.
+(2026-06-27 18:24:25)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Entry con id 3 no es un item.
+(2026-06-27 18:24:27)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Entry con id 4 no es un item.
+(2026-06-27 18:24:30)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Entry con id 5 no es un item.
+(2026-06-27 18:33:29)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 18:33:45)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Entry con id 3 no es un item.
+(2026-06-27 18:34:16)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 18:34:36)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Entry con id 3 no es un item.
+(2026-06-27 19:10:13)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 19:10:31)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-06-27 19:10:32)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-06-27 19:10:32)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-06-27 19:18:10)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 19:42:27)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 19:42:50)	[INFO] class mvc.model.entries.Recipe con id 14: La receta se ha ejecutado correctamente.
+(2026-06-27 19:42:50)	[INFO] class mvc.model.entries.Recipe con id 14: La receta se ha ejecutado correctamente.
+(2026-06-27 21:40:35)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 21:41:39)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-06-27 21:41:39)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-06-27 21:41:40)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-06-27 22:53:33)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-27 22:54:08)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-06-27 22:54:09)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-06-27 22:54:30)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-06-27 22:54:53)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-06-27 22:54:53)	[INFO] class mvc.model.entries.Recipe con id 10: La receta se ha ejecutado correctamente.
+(2026-06-28 17:37:57)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 17:38:15)	[INFO] class mvc.controller.add.AddCollectionController: El usuario a ha creado una coleccion con nombre Artisan
+(2026-06-28 17:38:29)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Artisan ha sido modificada.
+(2026-06-28 17:38:36)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Artisan ha sido modificada.
+(2026-06-28 17:42:23)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Artisan ha sido modificada.
+(2026-06-28 17:42:27)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Artisan ha sido modificada.
+(2026-06-28 17:42:59)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Artisan ha sido modificada.
+(2026-06-28 17:43:07)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada ses ha sido modificada.
+(2026-06-28 17:51:47)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 17:52:53)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 17:53:36)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 17:54:04)	[WARNING] CollectionService: Entry with id 32 not found in database.
+(2026-06-28 17:54:09)	[WARNING] CollectionService: Entry with id 32 not found in database.
+(2026-06-28 17:54:13)	[WARNING] CollectionService: Entry with id 32 not found in database.
+(2026-06-28 17:56:52)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 17:59:55)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 18:00:03)	[INFO] class mvc.controller.add.AddCollectionController: El usuario a ha creado una coleccion con nombre Artisan
+(2026-06-28 18:00:14)	[WARNING] CollectionService: Entry with id 32 not found in database.
+(2026-06-28 18:02:37)	[ERROR] class mvc.controller.user.LoginController: Contraseña incorrecta para el usuario a
+(2026-06-28 18:03:58)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 18:04:04)	[WARNING] CollectionService: Entry with id 31 not found in database.
+(2026-06-28 18:06:00)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 18:06:08)	[INFO] class mvc.controller.add.AddCollectionController: El usuario a ha creado una coleccion con nombre sewsasd
+(2026-06-28 18:06:13)	[INFO] class mvc.controller.show.single.ShowCollectionDataController: El usuario a ha borrado la coleccion con nombre sewsasd
+(2026-06-28 18:06:21)	[INFO] class mvc.controller.add.AddCollectionController: El usuario a ha creado una coleccion con nombre Artisan
+(2026-06-28 18:07:33)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 18:07:42)	[INFO] class mvc.controller.add.AddCollectionController: El usuario a ha creado una coleccion con nombre siesos
+(2026-06-28 18:09:09)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 18:09:19)	[INFO] class mvc.controller.show.single.ShowCollectionDataController: El usuario a ha borrado la coleccion con nombre siesos
+(2026-06-28 18:09:35)	[INFO] class mvc.controller.add.AddCollectionController: El usuario a ha creado una coleccion con nombre ses
+(2026-06-28 18:09:47)	[INFO] class mvc.controller.show.single.ShowCollectionDataController: El usuario a ha borrado la coleccion con nombre ses
+(2026-06-28 18:15:13)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 18:15:23)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Minecraft ha sido modificada.
+(2026-06-28 18:15:25)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Minecraft ha sido modificada.
+(2026-06-28 18:18:19)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 18:18:24)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Minecraft ha sido modificada.
+(2026-06-28 18:18:30)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Artisan ha sido modificada.
+(2026-06-28 18:18:44)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Collection with name "Parabellum" was not found.
+(2026-06-28 18:20:15)	[ERROR] class mvc.model.entries.repository.EntriesRepository: Collection with name "Parabellum" was not found.
+(2026-06-28 18:21:43)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 18:21:49)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Minecraft ha sido modificada.
+(2026-06-28 18:21:59)	[WARNING] class mvc.model.entries.repository.EntriesRepository: Collection with name "parabellum" was not found.
+(2026-06-28 18:21:59)	[WARNING] class service.CollectionService: Entry with name parabellum not found in database.
+(2026-06-28 18:27:32)	[WARNING] class mvc.model.entries.repository.EntriesRepository: Collection with name "parabellum" was not found.
+(2026-06-28 18:27:32)	[WARNING] class service.CollectionService: Entry with name parabellum not found in database.
+(2026-06-28 18:30:10)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 18:30:38)	[WARNING] class mvc.model.entries.repository.EntriesRepository: Collection with name "TW3 - Wildhunt" was not found.
+(2026-06-28 18:30:38)	[WARNING] class service.CollectionService: Entry with name TW3 - Wildhunt not found in database.
+(2026-06-28 18:32:25)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 18:32:37)	[INFO] class mvc.controller.modify.CollectionModifyController: La coleccion antes llamada TW3 ha sido modificada pasandose a llamar TW· - Wildhunt.
+(2026-06-28 18:37:05)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 18:37:16)	[INFO] class mvc.controller.modify.CollectionModifyController: La coleccion antes llamada TW· - Wildhunt ha sido modificada pasandose a llamar TW3.
+(2026-06-28 18:37:22)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Artisan ha sido modificada.
+(2026-06-28 18:37:39)	[INFO] class mvc.controller.modify.CollectionModifyController: La coleccion antes llamada Artisan ha sido modificada pasandose a llamar Bulo del PSOE.
+(2026-06-28 18:38:00)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Bulo del PSOE ha sido modificada.
+(2026-06-28 19:01:16)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 19:05:05)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 19:08:34)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 19:09:33)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 19:10:03)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 19:57:28)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 20:21:16)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 20:22:20)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 20:41:41)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 22:17:30)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 22:26:47)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 22:33:30)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 22:33:31)	[ERROR] class dataAccessLayer.DAO.ComponentDefinitionDAO: An error occurred trying to READ ALL entries for parent collection with id 1 from table component_definitions
+(2026-06-28 22:33:32)	[ERROR] class dataAccessLayer.DAO.ComponentDefinitionDAO: An error occurred trying to READ ALL entries for parent collection with id 1 from table component_definitions
+(2026-06-28 22:45:32)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-06-28 22:45:34)	[ERROR] class dataAccessLayer.DAO.ComponentDefinitionDAO: An error occurred trying to READ ALL entries for parent collection with id 1 from table component_definitions
+(2026-06-28 22:52:09)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion

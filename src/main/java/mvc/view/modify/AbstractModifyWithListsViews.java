@@ -1,31 +1,22 @@
 package mvc.view.modify;
  
-import java.util.ArrayList;
 import java.util.List;
 
-import creational.EventPrefabFactory;
-import creational.UIPrefabsFactory;
-import dataTransportLayer.EntryDTO;
-import dataTransportLayer.GenericDTO;
-import identificators.EntryId;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import dataTransportLayer.EntryDTO; 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import utilities.ImageUtils;
 
-    public abstract class AbstractModifyWithListsViews extends AbstractModifyView {
+    public abstract class AbstractModifyWithListsViews<T extends EntryDTO, E extends EntryDTO, U extends EntryDTO> extends AbstractModifyView<T> {
 
         // ===== LISTAS (FX) =====
         protected VBox list1Box;
@@ -126,31 +117,33 @@ import utilities.ImageUtils;
             this.root.getChildren().add(root);
         }
 
-        public void modifyFields(EntryDTO dto, List<GenericDTO> firstList, List<GenericDTO> secondList) {
+        public void modifyFields(T dto, List<E> firstList, List<U> secondList) {
             super.modifyFields(dto); 
 
             this.setCurrentList1(firstList);
             this.setCurrentList2(secondList);
 
-            this.createListTable(list1Box, firstList, 1);
-            this.createListTable(list2Box, secondList, 2);
+            this.createListTable1(list1Box, firstList);
+            this.createListTable2(list2Box, secondList);
              
         }
 
-        protected abstract void createListTable(VBox table, List<GenericDTO> list, int whatList);
+        protected abstract void createListTable1(VBox table, List<E> list);
+        protected abstract void createListTable2(VBox table, List<U> list);
 
         public VBox getList1(){
             return this.list1Box;
         }
+        
 
         public VBox getList2(){
             return this.list2Box;
         }
  
 
-        protected abstract List<GenericDTO> getCurrentList1();
-        protected abstract List<GenericDTO> getCurrentList2();
-        protected abstract void setCurrentList1(List<GenericDTO> list);
-        protected abstract void setCurrentList2(List<GenericDTO> list);
+        protected abstract List<E> getCurrentList1();
+        protected abstract List<U> getCurrentList2();
+        protected abstract void setCurrentList1(List<E> list);
+        protected abstract void setCurrentList2(List<U> list);
     
     }

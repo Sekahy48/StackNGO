@@ -1,28 +1,20 @@
 package mvc.controller.user;
+ 
+import java.util.Set;
 
-import command.screen.ChangeScreenCommand;
-import command.user.SignUpCommand;
 import creational.DTOFactory;
-import dataAccessLayer.DAO.AccountDAO;
-import dataAccessLayer.DAO.DAOType;
 import dataTransportLayer.AccountDTO;
-import dataTransportLayer.CollectionDTO;
-import dataTransportLayer.EventBuffer;
-import domain.accounts.Account;
-import domain.accounts.AccountType;
+import event.EventBus;
+import event.NavigateEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import logger.LogLevel;
 import logger.Logger;
 import mvc.model.entries.repository.EntryIdGenerator;
 import mvc.view.ViewType;
 import mvc.view.user.SignUpView;
-import security.Hasher;
-import security.Salt;
 import security.SecuritySystem;
-
-import java.lang.reflect.Type;
-import java.util.Objects;
+import service.AccountService;
+import service.ServiceType;
 
 /**
  *
@@ -30,11 +22,7 @@ import java.util.Objects;
  *
  */
 public class SignUpController extends AbstractUserController<SignUpView> {
-
-    public SignUpController(EventBuffer buffer) {
-        super(buffer);
-    }
-
+ 
     @Override
     public void attachView(SignUpView view) {
         this.view = view;
@@ -42,7 +30,7 @@ public class SignUpController extends AbstractUserController<SignUpView> {
     }
 
     @Override
-    public void handleButton() {
+    public void handleButtons() {
 
         Button confirmButton = view.getConfirmButton();
         Button logInButton = view.getLoginButton();
@@ -50,49 +38,51 @@ public class SignUpController extends AbstractUserController<SignUpView> {
 
 
         confirmButton.setOnAction(
-                e -> {
-                    String user = view.getUsername().getText().trim();
-                    String password = view.getPassword().getText().trim();
-                    String checkPassword = view.getCheckPassword().getText().trim();
+            e -> {
+                String user = view.getUsername().getText().trim();
+                String password = view.getPassword().getText().trim();
+                String checkPassword = view.getCheckPassword().getText().trim();
 
 
-                    AccountDTO dto = DTOFactory.accountRegister(
-                        user, "USER", password, EntryIdGenerator.getInstance().generateId()
-                    );
+                AccountDTO dto = DTOFactory.accountRegister(
+                    user, "USER", password, EntryIdGenerator.getInstance().generateId()
+                );
 
-                    buffer.publish(new SignUpCommand(dto, checkPassword));
-                }
+                this.signUp(dto, checkPassword); 
+                EventBus.getInstance().publish(new NavigateEvent(ViewType.LOG_IN));
+            }
         );
 
         createAdminButton.setOnAction(
-                e -> {
-                    String user = view.getUsername().getText().trim();
-                    String password = view.getPassword().getText().trim();
-                    String checkPassword = view.getCheckPassword().getText().trim();
+            e -> {
+                String user = view.getUsername().getText().trim();
+                String password = view.getPassword().getText().trim();
+                String checkPassword = view.getCheckPassword().getText().trim();
 
-                    AccountDTO dto = DTOFactory.accountRegister(
-                            user, "ADMIN", password, EntryIdGenerator.getInstance().generateId()
-                    );
+                AccountDTO dto = DTOFactory.accountRegister(
+                        user, "ADMIN", password, EntryIdGenerator.getInstance().generateId()
+                );
 
-                    buffer.publish(new SignUpCommand(dto, checkPassword));
-                }
+                this.signUp(dto, checkPassword);
+                EventBus.getInstance().publish(new NavigateEvent(ViewType.LOG_IN));
+            }
         );
 
         logInButton.setOnAction(
-                e -> {
-                    buffer.publish(new ChangeScreenCommand(ViewType.LOG_IN));
-                }
+            e -> { EventBus.getInstance().publish(new NavigateEvent(ViewType.LOG_IN));}
         );
     }
 
     public void signUp(AccountDTO dto, String checkPassword) {
+        AccountService accountService = this.getService(ServiceType.ACCOUNT);
+
         if (dto.name.isEmpty()) {
             this.view.showAlert("Nombre incorrecto", "Una cuenta debe tener un nombre valido", Alert.AlertType.WARNING);
 
         } else if (dto.password.isEmpty()) {
             this.view.showAlert("Contraseña incorrecta", "Una cuenta debe tener una contraseña valida", Alert.AlertType.WARNING);
 
-        } else if (context.getAccount(dto.name) != null) {
+        } else if (accountService.existsAccount(dto.name)) {
             this.view.showAlert("Cuenta ya existente", "La cuenta con nombre " + dto.name + " ya existe", Alert.AlertType.WARNING);
             Logger.getInstance().warning(this.getClass().toString(), "Intento de creacion de una cuenta existente con nombre " + dto.name);
 
@@ -103,12 +93,18 @@ public class SignUpController extends AbstractUserController<SignUpView> {
             this.view.showAlert("Registro correcto", "La cuenta con nombre " + dto.name + " ha sido creada correctamente" , Alert.AlertType.INFORMATION);
             Logger.getInstance().info(this.getClass().toString(), "El usuario " + dto.name + " ha creado su cuenta correctamente" );
 
-            AccountDAO accountDAO = (AccountDAO) this.context.getDAO(DAOType.ACCOUNT);
-            accountDAO.create(
-                    context.createAccount(dto),
-                    null
-            );
-            this.buffer.publish(new ChangeScreenCommand(ViewType.LOG_IN));
+            accountService.saveAccount(dto); 
         }
+    }
+
+    @Override
+    public void onReturnEvent() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'onReturnEvent'");
+    }
+
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.ACCOUNT); 
     }
 }

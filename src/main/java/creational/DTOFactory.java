@@ -2,13 +2,17 @@ package creational;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import dataTransportLayer.*; 
-import identificators.EntryId;
-import logger.LogLevel;
-import logger.Logger;
-import mvc.model.inventory.IInventoryElement; 
+import dataTransportLayer.AccountDTO;
+import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.EntryDTO;
+import dataTransportLayer.GenericDTO;
+import dataTransportLayer.ItemDTO;
+import dataTransportLayer.ItemIdStackDTO; 
+import dataTransportLayer.ItemStackDTO;
+import dataTransportLayer.ItemWithCollectionDTO;
+import dataTransportLayer.RecipeDTO;
+import dataTransportLayer.RecipeWithCollectionDTO;
 
 public final class DTOFactory {
 
@@ -53,10 +57,26 @@ public final class DTOFactory {
         return out;
     }
 
-    public static List<EntryDTO> itemsAsEntries(List<ItemWithCollectionDTO> dtos) {
+    public static List<EntryDTO> itemsWithCollectionAsEntries(List<ItemWithCollectionDTO> dtos) {
         ArrayList<EntryDTO> out = new ArrayList<>();
         for (ItemWithCollectionDTO elem : dtos) {
             out.add(elem.item);
+        }
+        return out;
+    }
+
+    public static List<ItemWithCollectionDTO> itemsToWithCollection(List<ItemDTO> dtos, String collectionName) {
+        ArrayList<ItemWithCollectionDTO> out = new ArrayList<>();
+        for (ItemDTO elem : dtos) {
+            out.add(new ItemWithCollectionDTO(elem, collectionName));
+        }
+        return out;
+    }
+
+    public static List<EntryDTO> itemsAsEntries(List<ItemDTO> dtos) {
+        ArrayList<EntryDTO> out = new ArrayList<>();
+        for (ItemDTO elem : dtos) {
+            out.add(elem);
         }
         return out;
     }
@@ -91,10 +111,26 @@ public final class DTOFactory {
         return out;
     }
 
-    public static List<EntryDTO> recipesAsEntries(List<RecipeWithCollectionDTO> dtos) {
+    public static List<EntryDTO> recipesWithCollectionAsEntries(List<RecipeWithCollectionDTO> dtos) {
         ArrayList<EntryDTO> out = new ArrayList<>();
         for (RecipeWithCollectionDTO elem : dtos) {
             out.add(elem.recipe);
+        }
+        return out;
+    }
+
+    public static List<RecipeWithCollectionDTO> recipesToWithCollection(List<RecipeDTO> dtos, String collectionName) {
+        ArrayList<RecipeWithCollectionDTO> out = new ArrayList<>();
+        for (RecipeDTO elem : dtos) {
+            out.add(new RecipeWithCollectionDTO(elem, collectionName));
+        }
+        return out;
+    }
+
+    public static List<EntryDTO> recipesAsEntries(List<RecipeDTO> dtos) {
+        ArrayList<EntryDTO> out = new ArrayList<>();
+        for (RecipeDTO elem : dtos) {
+            out.add(elem);
         }
         return out;
     }

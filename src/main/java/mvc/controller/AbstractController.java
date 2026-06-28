@@ -1,52 +1,21 @@
 package mvc.controller;
-
-import java.security.Provider.Service;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import command.BackNavigation;
-import command.ICommand;
-import command.screen.ChangeScreenCommand;
-import command.screen.RedirectCommand;
-import command.show.ShowCollections;
-import command.show.ShowItems;
-import dataTransportLayer.EventBuffer;
-import javafx.scene.control.Button;
-import logger.LogLevel;
-import logger.Logger;
-import mvc.context.RuntimeContext;
-import mvc.context.SystemContext;
+  
+import event.EventBus;
+import event.NavigateEvent;
+import javafx.scene.control.Button; 
 import mvc.view.AbstractView;
-import mvc.view.ViewType;
-import observer.IObserver;
-import service.IService;
-import service.ServiceType;
+import mvc.view.ViewType; 
+import service.ServiceConsumer;
 
-public abstract class AbstractController<T extends AbstractView, E extends IService> implements IObserver<EventBuffer> {
-
-    protected EventBuffer buffer;
-    protected HashMap<ServiceType, E> services;
-    protected T view;
-
-    protected ICommand backCommand; 
-
-
-    public AbstractController(EventBuffer buffer) {
-        this.buffer = buffer;
-        buffer.attachObserver(this);
-        this.services = new HashMap<ServiceType, E>(); 
-    }
-
-    public void addService(E service){
-        if (!this.services.isEmpty() && !this.services.values().contains(service)) {
-            services.put(service.getType(), service);
-        }
-    }
+public abstract class AbstractController<T extends AbstractView> extends ServiceConsumer {
  
+    protected T view;
+    public abstract void handleButtons();
 
-    public abstract void handleButton();
-
+    /**
+     * Method that sets handlers for the buttons of the sidebar common to most of the main views.
+     * Buttons: user space, collections list, items list, inventory playgorund.
+     */
     protected void commonHandleButton() {
 
         AbstractView view = this.getView();
@@ -55,83 +24,33 @@ public abstract class AbstractController<T extends AbstractView, E extends IServ
         Button collectionButton = view.getCollectionButton();
         Button inventoryButton = view.getInventoryButton();
         Button itemButton = view.getItemButton();
+        Button componentButton = view.getComponentButton();
         userButton.setOnAction(
                 e -> {
-                    this.buffer.publish(new ChangeScreenCommand(ViewType.PRIVATE_ZONE)); 
+                    EventBus.getInstance().publish(new NavigateEvent(ViewType.PRIVATE_ZONE)); 
                 }
         );
 
-        collectionButton.setOnAction(
+        collectionButton.setOnAction(e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTIONS));});
 
-                e -> {
-                    this.buffer.publish(new RedirectCommand(
-                                    this.services.get(ServiceType.).getController(ViewType.SHOW_COLLECTIONS).getBuffer(),
-                                    new ShowCollections()
-                                 
-                            )
-                    );
-                    this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_COLLECTIONS)); 
-                }
-        );
+        itemButton.setOnAction(e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_ITEMS));});
 
-        itemButton.setOnAction(
-                e -> {
-                    this.buffer.publish(new RedirectCommand(
-                                    this.systemContext.getController(ViewType.SHOW_ITEMS).getBuffer(),
-                                    new ShowItems()
-                                 
-                            )
-                    );
-                    this.buffer.publish(new ChangeScreenCommand(ViewType.SHOW_ITEMS)); 
-                }
+        inventoryButton.setOnAction(e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.INVENTORY));});
 
-        );
-
-        inventoryButton.setOnAction(
-                e -> {
-                    this.buffer.publish(new ChangeScreenCommand(ViewType.INVENTORY)); 
-                }
-        );
+        componentButton.setOnAction(e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COMPONENTS));});
     }
 
     public T getView() {
         return this.view;
-    }
-
-    @Override
-    public void update(EventBuffer buffer) {
-        //revisar esto
-        for (ICommand command : buffer.drain()) {
-            command.execute( this);
-        }
-    }
-
-    public void setBackNavigation(ICommand backCommand) {
-        this.backCommand = backCommand;
-    }
+    } 
 
     public void attachView(T view) {
-        this.handleButton(); 
-    }
-
-    public EventBuffer getBuffer() {
-        return buffer;
+        this.handleButtons(); 
     }
  
-
-    protected void goBack() {
-        if (backCommand != null) {
-            this.buffer.publish(backCommand);
-            this.backCommand = null;
-        } else {
-            Logger.getInstance().info(
-                getClass().toString(),
-                "goBack sin contexto de navegación"
-            );
-        }
-    }
-
-    public void updateAtShow(){
-        // De momento no hace nada
+    public abstract void onReturnEvent();
+ 
+ 
+    public void updateAtShow(){ 
     }
 }

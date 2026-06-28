@@ -1,10 +1,10 @@
 package mvc.view.modify;
+ 
+import dataTransportLayer.ItemDTO;
 
-import dataTransportLayer.EntryDTO;
-
-public class ItemModifyView extends AbstractModifyView{ 
+public class ItemModifyView extends AbstractModifyView<ItemDTO>{ 
     @Override
-    public void modifyFields(EntryDTO dto) {
+    public void modifyFields(ItemDTO dto) {
         super.modifyFields(dto);
     }
 }

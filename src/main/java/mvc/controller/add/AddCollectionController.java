@@ -1,23 +1,16 @@
 package mvc.controller.add;
+ 
+import java.util.Set;
 
-import command.add.collection.AddCollectionCommand;
-import command.add.collection.AddCollectionImageCommand;
-import command.screen.ChangeScreenCommand;
-import command.screen.RedirectCommand;
-import command.show.ShowCollection;
 import creational.DTOFactory;
-import dataAccessLayer.DAO.CollectionDAO;
-import dataAccessLayer.DAO.DAOType;
 import dataTransportLayer.CollectionDTO;
-import dataTransportLayer.EntryDTO;
-import dataTransportLayer.EventBuffer;
 import domain.accounts.Account;
+import event.EventBus;
+import event.NavigateEvent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import logger.LogLevel;
 import logger.Logger;
 import mvc.model.entries.Collection;
-import mvc.model.entries.Entry;
 import mvc.view.ViewType;
 import mvc.view.add.AddCollectionView;
 import service.CollectionService;
@@ -31,45 +24,22 @@ import service.SessionService;
  */
 public class AddCollectionController extends AbstractAddController<CollectionDTO> {
 
-    public AddCollectionController(EventBuffer buffer) {
-        super(buffer);
-    }
-
     @Override
-    public void handleButton() {
+    public void handleButtons() {
 
         commonHandleButton();
+        super.handleButtons();
 
         AddCollectionView view = (AddCollectionView) this.getView();
 
-        Button addButton = view.getAddButton();
-        Button imageButton = view.getImageButton();
+        Button addButton = view.getAddButton(); 
         Button goBackButton = view.getGoBackButton();
 
         addButton.setOnAction(
                 e -> {
                     String name = view.getNameLabel().getText();
                     String iconLabel = view.getIconLabel().getText();
-                    String description = view.getDescriptionLabel().getText();
-                    /*
-                    if (name.isEmpty()) {
-                        this.view.showAlert("Nombre vacio", "Una coleccion debe tener un nombre", Alert.AlertType.ERROR);
-                    } else {
-                        try {
-                            CollectionDTO dto = DTOFactory.collection(null,
-                                    null,
-                                    name,
-                                    iconLabel,
-                                    description,
-                                    this.idGenerator.generateId());
-
-                            this.buffer.publish(new AddCollectionCommand(dto));
-                        } catch (Exception ex) {
-                            this.view.showAlert("Coleccion existente", "La coleccion llamada " + name + " ya ha sido creada previamente", Alert.AlertType.ERROR);
-                        }
-                    } */
-
-                    //NUEVO
+                    String description = view.getDescriptionLabel().getText(); 
                     CollectionDTO dto = DTOFactory.collection(null,
                                     null,
                                     name,
@@ -78,41 +48,23 @@ public class AddCollectionController extends AbstractAddController<CollectionDTO
                                     this.idGenerator.generateId());
                     this.onCreateEvent(dto);
                 }
-        );
-
-        imageButton.setOnAction(
-                e -> {
-                    this.buffer.publish(new AddCollectionImageCommand());
-                }
-        );
+        ); 
 
         goBackButton.setOnAction(
-                e -> {
-                    goBack();
-                }
-        );
+                e -> {onReturnEvent();;}
+        ); 
     }
+ 
+    public void onReturnEvent() {
+        EventBus.getInstance().publish(new NavigateEvent(ViewType.PRIVATE_ZONE));
+    } 
 
     @Override
-    protected void goBack() {
-        this.buffer.publish(new ChangeScreenCommand(ViewType.PRIVATE_ZONE));
-    }
-
-    @Override
-    public void onCreateEvent(CollectionDTO dto) {
-        /*Lo que habia antes
-        CollectionDAO dao = (CollectionDAO) this.context.getDAO(DAOType.COLLECTION);
-        int accountId = this.context.getAccount().getId().value();
-        int[] foreignKeys = {accountId};
-        String accountName = this.context.getAccount().getUsername();
-        Collection collection = context.getEntriesFactory().createCollection((CollectionDTO) dto);
-        this.context.getRepo().addCollection(collection);
-         */
-        // NUEVO
+    public void onCreateEvent(CollectionDTO dto) { 
         if (dto.name.isEmpty()) {
             this.view.showAlert("Nombre vacio", "Una coleccion debe tener un nombre", Alert.AlertType.ERROR);
         } else {
-            CollectionService service = this.<CollectionService>getService(ServiceType.COLLECTION);
+            CollectionService service = this.getService(ServiceType.COLLECTION);
             Account currentAccount = this.<SessionService>getService(ServiceType.SESSION).getCurrentAccount();
             int[] extraData = {currentAccount.getId().value()};
             Collection newCollection = service.saveEntry(dto, extraData);
@@ -120,22 +72,16 @@ public class AddCollectionController extends AbstractAddController<CollectionDTO
             if (newCollection != null) {
                 this.view.showAlert("Colleccion creada","Coleccion " + dto.name + " creada correctamente", Alert.AlertType.INFORMATION);
                 Logger.getInstance().info(this.getClass().toString(), "El usuario " + currentAccount.getUsername() + " ha creado una coleccion con nombre " + dto.name);
+                EventBus.getInstance().publish(new NavigateEvent(ViewType.PRIVATE_ZONE));
             } else {
-                this.view.showAlert("Coleccion existente", "La coleccion llamada " + dto.name + " ya ha sido creada previamente", Alert.AlertType.ERROR);
-                this.buffer.publish(new ChangeScreenCommand(ViewType.PRIVATE_ZONE));
+                this.view.showAlert("Coleccion existente", "La coleccion llamada " + dto.name + " ya existe, utilice otro nombre o modifique la ya existente.", Alert.AlertType.ERROR);
+        
             }
-        }
-        // NUEVO
+        } 
+    }
 
-        /*
-        dao.create(
-                collection,
-                foreignKeys);
-
-        this.view.showAlert("Colleccion creada","Coleccion " + dto.name + " creada correctamente", Alert.AlertType.INFORMATION);
-        Logger.getInstance().info(this.getClass().toString(), "El usuario " + accountName + " ha creado una coleccion con nombre " + dto.name);
-
-        this.buffer.publish(new ChangeScreenCommand(ViewType.PRIVATE_ZONE));
-         */
+    @Override
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.COLLECTION, ServiceType.SESSION); 
     }
 }

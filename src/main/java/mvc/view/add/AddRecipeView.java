@@ -12,7 +12,7 @@ import javafx.scene.layout.VBox;
 public class AddRecipeView extends AbstractAddView {
 
 
-    private Button addButton, addIngredientButton, addResultButton;
+    private Button addIngredientButton, addResultButton;
     private VBox ingredientsList;
     private VBox resultsList;
     private VBox ingredients;
@@ -104,5 +104,12 @@ public class AddRecipeView extends AbstractAddView {
                 descriptionLabel, descriptionArea,
                 listContainer, buttonBox
         );
+    }
+
+    @Override
+    public void clearFields(){
+        super.clearFields();
+        ingredientsList = new VBox(5);
+        resultsList = new VBox(5);
     }
 }

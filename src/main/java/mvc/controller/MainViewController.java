@@ -1,7 +1,7 @@
 package mvc.controller;
-
-import command.screen.ChangeScreenCommand;
-import dataTransportLayer.EventBuffer;
+ 
+import event.EventBus;
+import event.NavigateEvent;
 import javafx.scene.control.Button;
 import mvc.view.MainView;
 import mvc.view.ViewType;
@@ -13,18 +13,15 @@ import mvc.view.ViewType;
  */
 public class MainViewController extends AbstractController<MainView> {
 
-    public MainViewController(EventBuffer buffer) {
-        super(buffer);
-    }
 
     @Override
-    public void handleButton() {
+    public void handleButtons() {
 
         Button enterButton = this.view.getEnterButton();
 
         enterButton.setOnAction(
                 e -> {
-                    this.buffer.publish(new ChangeScreenCommand(ViewType.LOG_IN));
+                    EventBus.getInstance().publish(new NavigateEvent(ViewType.LOG_IN));;
                 }
         );
     }
@@ -33,5 +30,10 @@ public class MainViewController extends AbstractController<MainView> {
     public void attachView(MainView view) {
         this.view = view; 
         super.attachView(view);
+    }
+
+    @Override
+    public void onReturnEvent() { 
+        throw new UnsupportedOperationException("Unimplemented method 'onReturnEvent'");
     }
 }

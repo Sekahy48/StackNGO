@@ -10,12 +10,17 @@ public class ItemWithCollectionDTO implements GenericDTO{
     }
 
     @Override
-    public String getIconPath() {
-        return item.getIconPath();
+    public String getImagePath() {
+        return item.getImagePath();
     }
 
     @Override
     public String getName() {
         return item.getName();
+    }
+
+    @Override
+    public int getIdValue() {
+       return item.id; 
     }
 }

@@ -7,7 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
-import mvc.controller.ViewContext;
+import mvc.context.ViewContext;
 
 public class ScreenManager implements IScreenManager {
 
@@ -61,15 +61,12 @@ public class ScreenManager implements IScreenManager {
                 root.getChildren().remove(logoOverlay);
             }
         }
-
-        // Aplicar estilos de la escena si existen
-        if (scene != null) {
-            nextView.getStylesheets().clear();
-            nextView.getStylesheets().addAll(scene.getStylesheets());
-        }
+ 
     }
 
     public void setScene(Scene scene) {
-        this.scene = scene;
+    this.scene = scene;
+
+    scene.getStylesheets().add(getClass().getResource("/css/dark-theme.css").toExternalForm());
     }
 }

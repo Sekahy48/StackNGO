@@ -10,6 +10,7 @@ import mvc.model.entries.Collection;
 import mvc.model.entries.Entry;
 import mvc.model.entries.Item;
 import mvc.model.entries.Recipe;
+import mvc.model.entries.component.ComponentDefinition;
 import mvc.model.entries.repository.cache.CacheEvictionStrategy;
 import mvc.model.entries.repository.cache.LRUEvictionStrategy;
 
@@ -29,7 +30,7 @@ public class EntriesRepository {
         if(limit > 0){
             this.cacheLimit = limit;
         }else{
-            Logger.getInstance().error(this.getClass().toString(), "El limite del cache del repositorio no puede ser negativo o nulo");
+            Logger.getInstance().warning(this.getClass().toString(), "El limite del cache del repositorio no puede ser negativo o nulo");
         }
     }
 
@@ -37,7 +38,7 @@ public class EntriesRepository {
         if(newStrategy != null){
             this.evictionStrategy = newStrategy;
         }else{
-            Logger.getInstance().error(this.getClass().toString(), "El repositorio no puede tener una expulsion de cache nula");
+            Logger.getInstance().warning(this.getClass().toString(), "El repositorio no puede tener una expulsion de cache nula");
         }
     }
 
@@ -47,20 +48,30 @@ public class EntriesRepository {
 
     //#region Get by id
     public Item getItem(EntryId id){
-        if (repo.get(id) instanceof  Item) return (Item) repo.get(id);
-        Logger.getInstance().error(this.getClass().toString(), "Entry con id " + id.value() + " no es un item.");
+        Entry e = repo.get(id);
+        if (e instanceof Item) return (Item) e;
+        if (e != null) Logger.getInstance().warning(this.getClass().toString(), "Entry con id " + id.value() + " no es un item."); 
         return null;
-    }
+    } 
 
     public Recipe getRecipe(EntryId id){
-        if (repo.get(id) instanceof  Recipe) return (Recipe) repo.get(id);
-        Logger.getInstance().error(this.getClass().toString(), "Entry con id " + id.value() + " no es una receta.");
+        Entry e = repo.get(id);
+        if (e instanceof Recipe) return (Recipe) e;
+        if (e != null) Logger.getInstance().warning(this.getClass().toString(), "Entry con id " + id.value() + " no es una receta."); 
         return null;
     }
 
     public Collection getCollection(EntryId id){
-        if (repo.get(id) instanceof  Collection) return (Collection) repo.get(id);
-        Logger.getInstance().error(this.getClass().toString(), "Entry con id " + id.value() + " no es una coleccion.");
+        Entry e = repo.get(id);
+        if (e instanceof Collection) return (Collection) e;
+        if (e != null) Logger.getInstance().warning(this.getClass().toString(), "Entry con id " + id.value() + " no es una colección."); 
+        return null;
+    }
+    
+    public ComponentDefinition getComponent(EntryId id){
+        Entry e = repo.get(id);
+        if (e instanceof ComponentDefinition) return (ComponentDefinition) e;
+        if (e != null) Logger.getInstance().warning(this.getClass().toString(), "Entry con id " + id.value() + " no es un componente."); 
         return null;
     }
     //#endregion
@@ -72,7 +83,7 @@ public class EntriesRepository {
                 return (Item) e;
             }
         }
-        Logger.getInstance().error(this.getClass().toString(),
+        Logger.getInstance().warning(this.getClass().toString(),
                 "Item with name \"" + name + "\" was not found.");
         return null;
     }
@@ -83,7 +94,7 @@ public class EntriesRepository {
                 return (Recipe) e;
             }
         }
-        Logger.getInstance().error(this.getClass().toString(),
+        Logger.getInstance().warning(this.getClass().toString(),
                 "Recipe with name \"" + name + "\" was not found.");
         return null;
     }
@@ -94,8 +105,19 @@ public class EntriesRepository {
                 return (Collection) e;
             }
         }
-        Logger.getInstance().error(this.getClass().toString(),
+        Logger.getInstance().warning(this.getClass().toString(),
                 "Collection with name \"" + name + "\" was not found.");
+        return null;
+    }
+
+    public ComponentDefinition getComponentByName(String name) {
+        for (Entry e : repo.values()) {
+            if (e instanceof ComponentDefinition && e.getName().equals(name)) {
+                return (ComponentDefinition) e;
+            }
+        }
+        Logger.getInstance().warning(this.getClass().toString(),
+                "Component with name \"" + name + "\" was not found.");
         return null;
     }
 
@@ -118,11 +140,15 @@ public class EntriesRepository {
         return addEntry(collection);
     }
 
+    public boolean addComponent(ComponentDefinition component) {
+        return addEntry(component);
+    }
+
     public void modifyEntry(Entry entry){
         if (this.repo.containsKey(entry.getId())){
             this.repo.put(entry.getId(), entry);
         }else{
-            Logger.getInstance().error(this.getClass().toString(), "Entry con id " + entry.getId() + " no se encuentra cargada");
+            Logger.getInstance().warning(this.getClass().toString(), "Entry con id " + entry.getId() + " no se encuentra cargada");
         }
     }
 
@@ -133,9 +159,12 @@ public class EntriesRepository {
         repo.put(entry.getId(), entry);
         return true;
     }
+ 
 
-    public void tryToRemoveEntry(EntryId id){
-        if (this.repo.containsKey(id)) this.repo.remove(id);
+    public boolean tryToRemoveEntry(EntryId id){
+        boolean contains = this.repo.containsKey(id);
+        if (contains) this.repo.remove(id);
+        return contains;
     }
 
     private void releaseCacheIfNeeded() {

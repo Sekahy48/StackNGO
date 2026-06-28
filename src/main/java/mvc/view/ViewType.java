@@ -13,6 +13,8 @@ public enum ViewType {
     SHOW_RECIPE,
     SHOW_ITEM,
     SHOW_ITEMS,
+    SHOW_COMPONENT,
+    SHOW_COMPONENTS,
     SHOW_ACCOUNTS,
     REMOVE,
     MODIFY_COLLECTION,

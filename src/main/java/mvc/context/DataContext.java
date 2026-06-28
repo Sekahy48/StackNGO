@@ -1,20 +1,9 @@
 package mvc.context;
- 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import creational.StandardEntryFactory;
-import creational.AccountFactory;
-import creational.DTOFactory;
+  
+import java.util.HashMap; 
+import java.util.Map; 
 import dataAccessLayer.DAO.*; 
-import dataTransportLayer.*;
-import domain.accounts.Account;
-import identificators.EntryId;
-import mvc.model.entries.Collection;
-import mvc.model.entries.Item;
-import mvc.model.entries.Recipe;
+import dataTransportLayer.*; 
 import mvc.model.entries.repository.EntriesRepository; 
 
 
@@ -33,6 +22,7 @@ public class DataContext implements Context{
         daoCollection.put(DAOType.COLLECTION, new CollectionDAO());
         daoCollection.put(DAOType.ITEM, new ItemDAO());
         daoCollection.put(DAOType.RECIPE, new RecipeDAO());
+        daoCollection.put(DAOType.COMPONENT, new ComponentDefinitionDAO());
     }
  
     private GenericDAO<? extends GenericDTO, ?> getDAO(DAOType type) {
@@ -53,6 +43,14 @@ public class DataContext implements Context{
 
     public ItemDAO getItemDAO() {
         return (ItemDAO) this.getDAO(DAOType.ITEM);
+    }
+
+    public ComponentDefinitionDAO getComponentDAO() {
+        return (ComponentDefinitionDAO) this.getDAO(DAOType.COMPONENT);
+    }
+
+    public AccountDAO getAccountDAOById(int id) {
+        return (AccountDAO) this.getDAO(DAOType.ACCOUNT);
     }
 
     public EntriesRepository getEntriesRepo() {

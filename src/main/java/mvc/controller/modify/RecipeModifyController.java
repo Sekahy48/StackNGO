@@ -1,44 +1,34 @@
 package mvc.controller.modify;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import creational.DTOFactory;
-import creational.UIPrefabsFactory;
-import dataAccessLayer.DAO.RecipeDAO;
-import dataTransportLayer.EntryDTO;
-import dataTransportLayer.EventBuffer;
-import dataTransportLayer.ItemIdStackDTO;
-import dataTransportLayer.ItemStackDTO;
-import dataTransportLayer.ItemWithCollectionDTO;
+import dataTransportLayer.ItemDTO;
 import dataTransportLayer.RecipeDTO;
-import identificators.EntryId;
+import event.EventBus;
+import event.NavigateEvent;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image; 
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import mvc.view.modify.RecipeModifyView;
+import logger.Logger;
+import mvc.view.ViewType;
+import mvc.view.modify.RecipeModifyView; 
+import service.RecipeService;
+import service.ServiceType;
+import service.SessionService;
 
-public class RecipeModifyController extends AbstractModifyController<RecipeModifyView>{
+public class RecipeModifyController extends AbstractModifyController<RecipeModifyView, RecipeDTO>{
+ 
 
-    private RecipeDAO dao;
-
-    public RecipeModifyController(EventBuffer buffer) {
-        super(buffer); 
-        this.modifyType = ModType.RECIPE;
-        this.dao = new RecipeDAO();
-    }
-
-    private void onAddList(Button button, VBox targetList, boolean isIng){
-        List<ItemWithCollectionDTO> items = this.context.getItemsByCollection(new EntryId(view.getParentId().value()));
+/*     private void onAddList(Button button, VBox targetList, boolean isIng){
+        ItemService itemService = this.getService(ServiceType.ITEM);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        List<ItemWithCollectionDTO> items = DTOFactory.itemsToWithCollection(itemService.getAllDTO(sessionService.getCurrentCollectionDTO().getId()), sessionService.getCurrentCollectionDTO().name);
         List<EntryDTO> dtos = new ArrayList<>();
         for (ItemWithCollectionDTO elem : items) {
             dtos.add( elem.item);
         }
         TextField amount = new TextField("1");
+        //Aqui se queja pq createSeñectionPopup ahora ya no acepta la VBox target List, no se usaba en el metodo asique lo quite, pero bueno, aparte de esto no hay mas errores de compilacion
         UIPrefabsFactory.createSelectionPopup(
             button,
             targetList,
@@ -71,33 +61,20 @@ public class RecipeModifyController extends AbstractModifyController<RecipeModif
                 this.view.putIngredient(selected, 1);
             }
         );
-    }
+    } */
  
 
     @Override
-    protected EntryDTO composeDTO() { 
-        ArrayList<ItemIdStackDTO> ingredients = new ArrayList<>(), 
-                                  results = new ArrayList<>();
-
-        List<ItemStackDTO> ingMap = this.view.getIngredients(), resMap = this.view.getResults();
-
-        for (ItemStackDTO elem : ingMap) {
-            ingredients.add(new ItemIdStackDTO(elem.item.id, elem.amount));
-        }
-
-        for (ItemStackDTO elem : resMap) {
-            results.add(new ItemIdStackDTO(elem.item.id, elem.amount));
-        }
+    protected RecipeDTO composeDTO() { 
+        RecipeService recipeService = this.getService(ServiceType.RECIPE);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
         
-        RecipeDTO dto = (RecipeDTO) this.view.getEntryDTO();
+        RecipeDTO dto = sessionService.getCurrentRecipeDTO();
 
-        String newName = !Objects.isNull(this.view.getNewName()) && !this.view.getNewName().isEmpty()
-              ? this.view.getNewName() 
-              : dto.name;
+        String newName = !this.view.getNewName().isBlank() ? this.view.getNewName() : dto.name;
 
-        if (!newName.equals(dto.name)) {
-
-            if (dao.existsEntryByName(newName, dto.id, this.context.getSessionContext().getCurrentCollection().getId())) {
+        if (!newName.equals(dto.name)) {  
+            if (recipeService.containsEntryByName(newName)) {
                 this.view.showAlert("Nombre duplicado","Ya existe una receta con ese nombre", Alert.AlertType.ERROR);
                 return null;
             }
@@ -105,7 +82,7 @@ public class RecipeModifyController extends AbstractModifyController<RecipeModif
 
         String iconPath = !Objects.isNull(this.view.getNewImagePath()) && !this.view.getNewImagePath().isEmpty()
                         ? this.view.getNewImagePath() 
-                        : dto.iconPath;
+                        : dto.imagePath;
 
         String description = !Objects.isNull(this.view.getNewDescription()) && !this.view.getNewDescription().isEmpty()
                             ? this.view.getNewDescription()
@@ -119,5 +96,37 @@ public class RecipeModifyController extends AbstractModifyController<RecipeModif
                 description,
                 dto.id);
     }
- 
+
+    @Override
+    protected void onUpdateEvent(RecipeDTO dto) {
+        RecipeService recipeService = this.getService(ServiceType.RECIPE);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        RecipeDTO oldDto = sessionService.getCurrentRecipeDTO();
+        recipeService.saveEntry(dto, new int[]{sessionService.getCurrentAccount().getId().value()});
+        
+        String alert = "La colección llamada " + oldDto.name + " ha sido modificada.";
+        if (oldDto.name != dto.name) alert = "La coleccion antes llamada " + oldDto.name + " ha sido modificada pasandose a llamar " + dto.name + ".";
+
+        Logger.getInstance().info(
+            this.getClass().toString(),
+            alert
+        );
+        
+        this.onReturnEvent();
+    }
+
+    @Override
+    public void onReturnEvent() { 
+        EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_ITEM));
+    }
+    
+    public Set<ServiceType> requiredServices() {
+        return Set.of(ServiceType.RECIPE, ServiceType.SESSION); 
+    }
+
+    protected RecipeDTO getCurrentDTO() {
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        return sessionService.getCurrentRecipeDTO();
+    }
+    
 }

@@ -3,7 +3,7 @@ package mvc.view;
 import java.util.Optional;
 
 import creational.UIPrefabsFactory;
-import dataTransportLayer.EventBuffer;
+import event.EventBus;
 import identificators.GenericId;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -22,11 +22,11 @@ import javafx.scene.layout.VBox;
 public abstract class AbstractView {
 
     protected VBox root;
-    protected EventBuffer buffer;
+    protected EventBus buffer;
     protected GenericId parentId;
     protected String parentName;
  
-    protected Button userButton, collectionButton, inventoryButton, itemButton;
+    protected Button userButton, collectionButton, inventoryButton, itemButton, componentButton;
 
     protected VBox sideBar;
     protected SplitPane splitPane;
@@ -34,7 +34,7 @@ public abstract class AbstractView {
 
     /**
      *
-     * Constructor that receives an {@link EventBuffer} where events are placed
+     * Constructor that receives an {@link EventBus} where events are placed
      *
      */
     public AbstractView() {
@@ -45,6 +45,7 @@ public abstract class AbstractView {
         this.collectionButton = new Button();
         this.itemButton = new Button();
         this.inventoryButton = new Button();
+        this.componentButton = new Button();
         this.sideBar = new VBox(10);
         this.splitPane = new SplitPane();
         this.build();
@@ -56,6 +57,7 @@ public abstract class AbstractView {
 
     public Button getItemButton() { return this.itemButton; }
 
+    public Button getComponentButton() { return this.componentButton; }
     public Button getInventoryButton() { return this.inventoryButton; }
 
     public SplitPane getSplitPane() { return this.splitPane;}
@@ -109,7 +111,19 @@ public abstract class AbstractView {
     }
 
     protected void initSidebar(Node content){
-        UIPrefabsFactory.initSideBar(this.sideBar, this.inventoryButton, this.userButton, this.itemButton, this.collectionButton, this.splitPane, content);
-        root.getChildren().add(splitPane);
+        if (!root.getChildren().contains(splitPane)) {
+            UIPrefabsFactory.initSideBar(
+                this.sideBar,
+                this.inventoryButton,
+                this.userButton,
+                this.itemButton,
+                this.collectionButton,
+                this.componentButton,
+                this.splitPane,
+                content
+            );
+
+            root.getChildren().add(splitPane);
+        }
     }
 }
