@@ -8,23 +8,14 @@ import event.NavigateEvent;
 import mvc.context.DataContext; 
 import mvc.context.SessionContext;
 import mvc.context.SystemContext;
-import mvc.controller.add.AddCollectionController;
-import mvc.controller.add.AddItemController;
-import mvc.controller.add.AddRecipeController;
-import mvc.controller.inventory.InventoryController;
-import mvc.controller.modify.CollectionModifyController;
-import mvc.controller.modify.ItemModifyController;
-import mvc.controller.modify.RecipeModifyController;
-import mvc.controller.show.multiple.ShowAccountsController;
-import mvc.controller.show.multiple.ShowCollectionsController;
-import mvc.controller.show.multiple.ShowComponentsController;
-import mvc.controller.show.multiple.ShowItemsController;
-import mvc.controller.show.single.ShowCollectionDataController;
-import mvc.controller.show.single.ShowItemDataController;
-import mvc.controller.show.single.ShowRecipeDataController;
-import mvc.controller.user.LoginController;
-import mvc.controller.user.PrivateController;
-import mvc.controller.user.SignUpController;
+import mvc.controller.add.*;
+import mvc.controller.show.single.*;
+import mvc.controller.show.multiple.*; 
+import mvc.controller.modify.*;
+import mvc.controller.user.*;
+import mvc.utils.DataExporter;
+import mvc.utils.DataImporter;
+import mvc.controller.inventory.*;
 import mvc.view.AbstractView;
 import mvc.view.ScreenManager;
 import mvc.view.ViewType;
@@ -44,6 +35,9 @@ public class CoreController extends ServiceConsumer{
     private final DataContext dataContext;
     private final SessionContext sessionContext;
     private final SystemContext systemContext;
+
+    private DataImporter dataImporter;
+    private DataExporter dataExporter;
 
     private final Map<ViewType, AbstractController<?>> controllers = new HashMap<>();
 
@@ -95,14 +89,17 @@ public class CoreController extends ServiceConsumer{
 
         registerController(ViewType.MAIN, new MainViewController());
 
-        registerController(ViewType.PRIVATE_ZONE, new PrivateController());
+        PrivateController privateController = new PrivateController();
+        privateController.setImporter(this.dataImporter).setExporter(this.dataExporter); 
+        registerController(ViewType.PRIVATE_ZONE, privateController); 
 
         // ───── INVENTORY ─────
         registerController(ViewType.INVENTORY, new InventoryController());
 
         // ───── COMPONENT ─────
         registerController(ViewType.SHOW_COMPONENTS, new ShowComponentsController());
-        //registerController(ViewType.SHOW_COMPONENT, new ShowComponent);
+        registerController(ViewType.ADD_COMPONENT, new AddComponentController());
+        registerController(ViewType.SHOW_COMPONENT, new ShowComponentDataController());
 
         EventBus.getInstance().subscribe(NavigateEvent.class, this::onNavigateEvent);
         
@@ -120,9 +117,7 @@ public class CoreController extends ServiceConsumer{
         controllers.put(viewType, controller);
 
 
-        for (ServiceType t : controller.requiredServices()) {
-            controller.addService(this.getService(t));
-        }
+        this.suplyServices(controller);
         
         controller.attachView(view);;
     }
@@ -142,7 +137,21 @@ public class CoreController extends ServiceConsumer{
         this.addService(new InventoryService(sessionContext));
         this.addService(new SessionService(sessionContext));
         this.addService(new SystemService(systemContext));
-        this.addService(new ComponentService(dataContext));
+        this.addService(new ComponentService(dataContext)); 
+    }
+
+    public void initUtilities() {
+        
+        this.dataImporter = new DataImporter();
+        this.dataExporter = new DataExporter();
+        this.suplyServices(this.dataImporter);
+        this.suplyServices(this.dataExporter);
+    }
+
+    public void suplyServices(ServiceConsumer consumer) {
+        for (ServiceType t : consumer.requiredServices()) {
+            consumer.addService(this.getService(t));
+        }
     }
     
      

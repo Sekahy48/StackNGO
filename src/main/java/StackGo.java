@@ -16,6 +16,7 @@ public class StackGo extends Application {
 
         //RuntimeContext runtimeContext = new RuntimeContext(dataContext, sessionContext, systemContext);
         coreController.initServices();
+        coreController.initUtilities();
         coreController.initControllers();
         /* runtimeContext.setSessionContext(sessionContext);
         runtimeContext.setSystemContext(systemContext);

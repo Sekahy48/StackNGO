@@ -1,7 +1,6 @@
 package mvc.view.add;
  
-import creational.UIPrefabsFactory;
-import javafx.geometry.Insets;
+import creational.UIPrefabsFactory; 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -20,16 +19,7 @@ public class AddRecipeView extends AbstractAddView {
     private HBox listContainer;
     private ImageView plusView1, plusView2;
 
-    /**
-     *
-     * Constructor that receives a buffer where events will reside
-     *
-     */
-    public AddRecipeView() {
-        super();
-    }
-
-    public Button getAddButton() { return this.addButton; }
+    
     public Button getAddIngredientButton() { return this.addIngredientButton; }
     public Button getAddResultButton() { return this.addResultButton; }
     public VBox getIngredientsList() { return this.ingredients; }
@@ -39,8 +29,6 @@ public class AddRecipeView extends AbstractAddView {
     protected void buildSpecificFields() {
 
         this.nameLabel.setText("Nombre de la receta");
-
-        HBox imageBox = new HBox(10, imageButton, preview, fileNameLabel);
 
         this.ingredientsList = new VBox(5);
         this.resultsList = new VBox(5);
@@ -90,26 +78,15 @@ public class AddRecipeView extends AbstractAddView {
         VBox.setVgrow(addResultButton, javafx.scene.layout.Priority.NEVER);
 
         this.listContainer = new HBox(20, ingredientsList, resultsList);
-
-        this.addButton = new Button("Añadir receta");
-
-        HBox buttonBox = new HBox(10, this.addButton, goBackButton);
-        buttonBox.setStyle("-fx-alignment: center-right;");
-
-        root.setPadding(new Insets(15));
-        root.setSpacing(10);
-        root.getChildren().addAll(
-                nameLabel, nameField,
-                iconLabel, imageBox,
-                descriptionLabel, descriptionArea,
-                listContainer, buttonBox
-        );
+        this.addButton.setText("Añadir receta");
+ 
+        root.getChildren().add(listContainer);
     }
 
     @Override
     public void clearFields(){
         super.clearFields();
-        ingredientsList = new VBox(5);
-        resultsList = new VBox(5);
+        ingredients.getChildren().clear();
+        results.getChildren().clear();
     }
 }

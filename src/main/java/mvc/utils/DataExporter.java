@@ -158,4 +158,14 @@ public class DataExporter extends ServiceConsumer {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public Set<ServiceType> requiredServices() {
+        Set<ServiceType> out = new HashSet<>(super.requiredServices());
+        out.add(ServiceType.COLLECTION);
+        out.add(ServiceType.ITEM);
+        out.add(ServiceType.RECIPE);
+        out.add(ServiceType.SESSION);
+        return out;
+    }
 }

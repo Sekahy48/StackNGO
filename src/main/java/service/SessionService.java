@@ -46,6 +46,9 @@ public class SessionService implements IService{
         return this.context.getCurrentRecipeDTO();
     }
 
+    public ComponentDefinitionDTO getCurrentComponentDTO() {
+        return this.context.getCurrentComponentDTO();
+    }
 
 
     public void setCurrentCollection(CollectionDTO collection) {

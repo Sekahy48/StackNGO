@@ -117,7 +117,7 @@ public class RecipeModifyController extends AbstractModifyController<RecipeModif
 
     @Override
     public void onReturnEvent() { 
-        EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_ITEM));
+        EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_RECIPE));
     }
     
     public Set<ServiceType> requiredServices() {
