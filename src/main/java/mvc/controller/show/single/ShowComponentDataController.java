@@ -19,6 +19,9 @@ public class ShowComponentDataController extends AbstractShowDataController<Show
     @Override
     public void handleButtons() {
         super.handleButtons();
+        this.view.getModifyButton().setOnAction(
+                e -> { EventBus.getInstance().publish(new NavigateEvent(ViewType.MODIFY_COMPONENT)); }
+        );
     }
 
     @Override
@@ -61,7 +64,7 @@ public class ShowComponentDataController extends AbstractShowDataController<Show
 
     @Override
     public void onReturnEvent() {
-        EventBus.getInstance().publish(new NavigateEvent(ViewType.PRIVATE_ZONE));
+        EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COMPONENTS));
     }
 
     @Override

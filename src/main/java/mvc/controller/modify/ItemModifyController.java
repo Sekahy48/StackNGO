@@ -1,24 +1,55 @@
 package mvc.controller.modify;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
 import creational.DTOFactory;
-import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.ComponentDefinitionDTO;
 import dataTransportLayer.EntryDTO;
 import dataTransportLayer.ItemDTO;
 import event.EventBus;
 import event.NavigateEvent;
 import javafx.scene.control.Alert;
 import logger.Logger;
+import mvc.model.entries.component.ItemComponentValue;
 import mvc.view.ViewType;
 import mvc.view.modify.ItemModifyView; 
+import service.ComponentService;
 import service.ItemService;
 import service.ServiceType;
 import service.SessionService;
 
 public class ItemModifyController extends AbstractModifyController<ItemModifyView, ItemDTO>{
- 
+
+    private List<ItemComponentValue> componentValues = new ArrayList<>();
+
+    @Override
+    public void attachView(ItemModifyView view) {
+        super.attachView(view);
+        view.getAddComponentButton().setOnAction(e -> onAddComponent());
+    }
+
+    private void onAddComponent() {
+        ComponentDefinitionDTO def = view.getComponentCombo().getValue();
+        if (def == null) return;
+
+        if (componentValues.stream().anyMatch(v -> v.getComponentDefId() == def.id)) {
+            view.showAlert("Componente duplicado", "Este item ya tiene el componente " + def.name, Alert.AlertType.ERROR);
+            return;
+        }
+
+        ItemComponentValue value = new ItemComponentValue(def.id);
+        componentValues.add(value);
+        view.addComponentRow(def, value, () -> onRemoveComponent(value));
+    }
+
+    private void onRemoveComponent(ItemComponentValue value) {
+        componentValues.remove(value);
+        view.removeComponentRow(value);
+    }
+
     @Override
     protected ItemDTO  composeDTO() { 
         ItemService itemService = this.getService(ServiceType.ITEM);
@@ -43,7 +74,7 @@ public class ItemModifyController extends AbstractModifyController<ItemModifyVie
                             ? this.view.getNewDescription()
                             : dto.description;
 
-        return DTOFactory.item(newName, iconPath, description, dto.id);
+        return DTOFactory.item(newName, iconPath, description, dto.id, new ArrayList<>(componentValues));
 
             
     }
@@ -61,9 +92,32 @@ public class ItemModifyController extends AbstractModifyController<ItemModifyVie
         Logger.getInstance().info(
             this.getClass().toString(),
             alert
-        );
-        
-        this.onReturnEvent();
+        ); 
+
+        componentValues.clear();
+        view.clearComponentRows();
+    }
+
+    @Override
+    public void updateAtShow() {
+        super.updateAtShow();
+        componentValues = new ArrayList<>(getCurrentDTO().components);
+
+        ComponentService componentService = this.getService(ServiceType.COMPONENT);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        List<ComponentDefinitionDTO> available = componentService.getAllDTO(sessionService.getCurrentAccount().getId().value());
+        view.setAvailableComponents(available);
+
+        view.clearComponentRows();
+        for (ItemComponentValue value : componentValues) {
+            ComponentDefinitionDTO def = available.stream()
+                    .filter(d -> d.id == value.getComponentDefId())
+                    .findFirst()
+                    .orElse(null);
+            if (def != null) {
+                view.addComponentRow(def, value, () -> onRemoveComponent(value));
+            }
+        }
     }
 
     @Override
@@ -72,11 +126,16 @@ public class ItemModifyController extends AbstractModifyController<ItemModifyVie
     }
 
     public Set<ServiceType> requiredServices() {
-        return Set.of(ServiceType.ITEM, ServiceType.SESSION); 
+        return Set.of(ServiceType.ITEM, ServiceType.COMPONENT, ServiceType.SESSION); 
     }
 
     protected ItemDTO getCurrentDTO() {
         SessionService sessionService = this.getService(ServiceType.SESSION);
         return sessionService.getCurrentItemDTO();
+    }
+
+    @Override
+    protected void updateCurrentDTO(ItemDTO dto) {
+        this.<SessionService>getService(ServiceType.SESSION).setCurrentItem(dto);
     }
 }

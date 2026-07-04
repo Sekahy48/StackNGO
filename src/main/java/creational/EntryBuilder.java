@@ -7,6 +7,7 @@ import identificators.EntryId;
 import mvc.model.entries.*;
 import mvc.model.entries.component.ComponentDefinition;
 import mvc.model.entries.component.ComponentField;
+import mvc.model.entries.component.ItemComponentValue;
 
 public class EntryBuilder {
     private Entry entry;
@@ -66,6 +67,14 @@ public class EntryBuilder {
     }
     
     //#endregion
+
+    //#region Item specific
+    public EntryBuilder addComponents(List<ItemComponentValue> components) {
+        ((Item) this.entry).setComponents(components);
+        return this;
+    }
+    //#endregion
+
     public Entry build() {
         Entry out = this.entry;
         this.reset();

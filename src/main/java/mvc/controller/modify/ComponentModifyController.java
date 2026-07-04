@@ -1,37 +1,29 @@
-package mvc.controller.add;
+package mvc.controller.modify;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import creational.DTOFactory;
 import dataTransportLayer.ComponentDefinitionDTO;
 import event.EventBus;
 import event.NavigateEvent;
 import javafx.scene.control.Alert;
-import mvc.model.entries.component.ComponentDefinition;
 import mvc.model.entries.component.ComponentField;
 import mvc.model.entries.component.FieldType;
 import mvc.view.ViewType;
-import mvc.view.add.AddComponentView; 
+import mvc.view.modify.ComponentModifyView;
 import service.ComponentService;
 import service.ServiceType;
-import service.SessionService; 
+import service.SessionService;
 
-public class AddComponentController extends AbstractAddController<ComponentDefinitionDTO, ComponentDefinition, AddComponentView> { 
+public class ComponentModifyController extends AbstractModifyController<ComponentModifyView, ComponentDefinitionDTO> {
 
     private List<ComponentField> fields = new ArrayList<>();
 
     @Override
-    public void attachView(AddComponentView view) {
+    public void attachView(ComponentModifyView view) {
         super.attachView(view);
-        wireFieldButtons();
-    }
-
-    private void wireFieldButtons() {
         view.getAddFieldButton().setOnAction(e -> onAddField());
     }
 
@@ -88,54 +80,60 @@ public class AddComponentController extends AbstractAddController<ComponentDefin
     }
 
     @Override
+    protected ComponentDefinitionDTO composeDTO() {
+        ComponentDefinitionDTO current = getCurrentDTO();
+
+        String newName = !view.getNewName().isEmpty() ? view.getNewName() : current.name;
+        String newDescription = !view.getNewDescription().isEmpty() ? view.getNewDescription() : current.description;
+        String newImagePath = view.getNewImagePath() != null ? view.getNewImagePath() : current.imagePath;
+
+        ComponentService componentService = this.getService(ServiceType.COMPONENT);
+
+        if (!newName.equals(current.name) && componentService.containsEntryByName(newName)) {
+            view.showAlert("Nombre duplicado", "Ya existe un componente con ese nombre", Alert.AlertType.ERROR);
+            return null;
+        }
+
+        return new ComponentDefinitionDTO(newName, newImagePath, newDescription, current.id, new ArrayList<>(fields));
+    }
+
+    @Override
+    protected void onUpdateEvent(ComponentDefinitionDTO dto) {
+        ComponentService componentService = this.getService(ServiceType.COMPONENT);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+
+        int[] extraData = {sessionService.getCurrentAccount().getId().value()};
+        componentService.saveEntry(dto, extraData);
+
+        view.showAlert("Componente modificado", "El componente ha sido modificado correctamente", Alert.AlertType.INFORMATION);
+        EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COMPONENT));
+    }
+
+    @Override
+    protected void updateCurrentDTO(ComponentDefinitionDTO dto) {
+        this.<SessionService>getService(ServiceType.SESSION).setCurrentComponent(dto);
+    }
+
+    @Override
+    protected ComponentDefinitionDTO getCurrentDTO() {
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        return sessionService.getCurrentComponentDTO();
+    }
+
+    @Override
+    public void updateAtShow() {
+        super.updateAtShow();
+        fields = new ArrayList<>(getCurrentDTO().fields);
+        view.setFields(fields, this::onEditField, this::onRemoveField);
+    }
+
+    @Override
     public void onReturnEvent() {
-        EventBus.getInstance().publish(new NavigateEvent(ViewType.PRIVATE_ZONE));
+        EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COMPONENT));
     }
 
     @Override
-    public Set<ServiceType> requiredServices() {
-        Set<ServiceType> out = new HashSet<>(super.requiredServices());
-        out.add(ServiceType.COMPONENT);
-        return out; 
+    public java.util.Set<ServiceType> requiredServices() {
+        return java.util.Set.of(ServiceType.COMPONENT, ServiceType.SESSION);
     }
-
-    @Override
-    public ComponentService getEntryService() {
-        return this.<ComponentService>getService(service.ServiceType.COMPONENT);
-    }
-
-    @Override
-    public String getEntryType() {
-        return "El componente";
-    }
-
-    @Override
-    public ComponentDefinitionDTO getDTOFromView() {
-        String name = view.getNameLabel().getText();
-        String iconLabel = view.getIconLabel().getText();
-        String description = view.getDescriptionLabel().getText();
-
-        ComponentDefinitionDTO dto = DTOFactory.component(
-                this.idGenerator.generateId(),
-                name,
-                iconLabel,
-                description,
-                new ArrayList<>(fields)
-        );
-        
-        return dto;
-    }
-
-    @Override
-    public void onCreateEvent(ComponentDefinitionDTO dto) {
-        super.onCreateEvent(dto);
-        fields.clear();
-        view.clearFieldRows();
-    }
-
-    @Override
-    public int getParentId() {
-        return this.<SessionService>getService(ServiceType.SESSION).getCurrentAccount().getId().value();
-    }
-
 }

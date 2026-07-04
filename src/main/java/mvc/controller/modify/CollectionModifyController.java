@@ -5,6 +5,7 @@ import java.util.Set;
 
 import creational.DTOFactory; 
 import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.ComponentDefinitionDTO;
 import dataTransportLayer.EntryDTO;
 import event.EventBus;
 import event.NavigateEvent;
@@ -74,9 +75,7 @@ public class CollectionModifyController extends AbstractModifyController<Collect
         Logger.getInstance().info(
             this.getClass().toString(),
             alert
-        );
-        sessionService.setCurrentCollection(collectionService.getDTOById(dto.id));
-        this.onReturnEvent();
+        ); 
     }
 
     public void onReturnEvent() {
@@ -90,6 +89,11 @@ public class CollectionModifyController extends AbstractModifyController<Collect
     protected CollectionDTO getCurrentDTO() {
         SessionService sessionService = this.getService(ServiceType.SESSION);
         return sessionService.getCurrentCollectionDTO();
+    }
+
+    @Override
+    protected void updateCurrentDTO(CollectionDTO dto) {
+        this.<SessionService>getService(ServiceType.SESSION).setCurrentCollection(dto);
     }
     
 }

@@ -1,5 +1,8 @@
-package mvc.view.add;
+package mvc.view.modify;
+ 
+import java.util.List;
 
+import dataTransportLayer.ComponentDefinitionDTO;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -13,33 +16,28 @@ import javafx.scene.layout.VBox;
 import mvc.model.entries.component.ComponentField;
 import mvc.model.entries.component.FieldType;
 
-/**
- *
- * View que muestra lo que ve el usuario al añadir un nuevo {@code ComponentDefinition}.
- * Ademas de los campos comunes (nombre, icono, descripcion), permite ir "pre-añadiendo"
- * fields (nombre + tipo + opciones si es ENUM) a la definicion del componente, con
- * opcion de editarlos o quitarlos antes de confirmar la creacion.
- *
- */
-public class AddComponentView extends AbstractAddView {
+public class ComponentModifyView extends AbstractModifyView<ComponentDefinitionDTO> {
+
+    private VBox fieldsBox;
+    private VBox fieldsList;
 
     private TextField fieldNameField;
     private ComboBox<FieldType> fieldTypeCombo;
     private TextField enumValuesField;
     private Button addFieldButton;
 
-    private VBox fieldsList;
-
     @Override
-    protected void buildSpecificFields() {
-        this.nameLabel.setText("Nombre del componente");
-        this.addButton.setText("Añadir componente");
-    }
+    protected void build() {
+        super.build();
 
-    @Override
-    protected void addExtraContent(VBox root) {
+        Label fieldsTitle = new Label("Campos");
 
-        Label fieldsTitle = new Label("Campos del componente");
+        fieldsList = new VBox(5);
+        fieldsList.setPadding(new Insets(5, 0, 5, 0));
+
+        ScrollPane fieldsScroll = new ScrollPane(fieldsList);
+        fieldsScroll.setFitToWidth(true);
+        fieldsScroll.setPrefHeight(150);
 
         fieldNameField = new TextField();
         fieldNameField.setPromptText("Nombre del campo");
@@ -66,16 +64,10 @@ public class AddComponentView extends AbstractAddView {
         HBox fieldInputRow = new HBox(10, fieldNameField, fieldTypeCombo, enumValuesField, addFieldButton);
         fieldInputRow.setAlignment(Pos.CENTER_LEFT);
 
-        fieldsList = new VBox(5);
-        fieldsList.setPadding(new Insets(5, 0, 5, 0));
+        fieldsBox = new VBox(5, fieldsTitle, fieldsScroll, fieldInputRow);
+        fieldsBox.setPadding(new Insets(10, 0, 0, 0));
 
-        ScrollPane fieldsScroll = new ScrollPane(fieldsList);
-        fieldsScroll.setFitToWidth(true);
-        fieldsScroll.setPrefHeight(150);
-
-        VBox fieldsBox = new VBox(5, fieldsTitle, fieldsScroll, fieldInputRow);
-
-        root.getChildren().add(fieldsBox);
+        this.root.getChildren().add(fieldsBox);
     }
 
     public Button getAddFieldButton() { return this.addFieldButton; }
@@ -84,15 +76,6 @@ public class AddComponentView extends AbstractAddView {
     public TextField getEnumValuesField() { return this.enumValuesField; }
     public VBox getFieldsList() { return this.fieldsList; }
 
-     /**
-     *
-     * Añade visualmente una fila representando un field pre-añadido, con botones
-     * para editarlo o quitarlo.
-     *
-     * @param field field a mostrar
-     * @param onEdit callback invocado cuando se pulsa el boton de editar esa fila
-     * @param onRemove callback invocado cuando se pulsa el boton de quitar esa fila
-     */
     public void addFieldRow(ComponentField field, Runnable onEdit, Runnable onRemove) {
 
         Label nameLabel = new Label(field.getFieldName());
@@ -130,9 +113,18 @@ public class AddComponentView extends AbstractAddView {
         enumValuesField.clear();
     }
 
+    public void setFields(List<ComponentField> fields, Runnable2<ComponentField> onEdit, Runnable2<ComponentField> onRemove) {
+        clearFieldRows();
+        for (ComponentField f : fields) {
+            addFieldRow(f, () -> onEdit.run(f), () -> onRemove.run(f));
+        }
+    }
+
+    public interface Runnable2<X> { void run(X arg); }
+
     @Override
-    public void clearFields() {
-        super.clearFields();
+    public void clear() {
+        super.clear();
         clearFieldRows();
         clearFieldInputs();
     }

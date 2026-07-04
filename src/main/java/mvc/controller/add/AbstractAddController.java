@@ -4,16 +4,13 @@ import java.io.File;
 import java.util.Set;
 
 import dataTransportLayer.EntryDTO;
-import domain.accounts.Account;
-import event.EventBus;
-import event.NavigateEvent;
+import domain.accounts.Account; 
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import logger.Logger;
 import mvc.controller.AbstractController;
 import mvc.model.entries.Entry;
-import mvc.model.entries.repository.EntryIdGenerator;
-import mvc.view.ViewType;
+import mvc.model.entries.repository.EntryIdGenerator; 
 import mvc.view.add.AbstractAddView;
 import service.AbstractEntryService; 
 import service.ServiceType;

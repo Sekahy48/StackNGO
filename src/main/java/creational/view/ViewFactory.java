@@ -9,6 +9,7 @@ import mvc.view.add.AddItemView;
 import mvc.view.add.AddRecipeView;
 import mvc.view.inventory.InventoryView;
 import mvc.view.modify.CollectionModifyView;
+import mvc.view.modify.ComponentModifyView;
 import mvc.view.modify.ItemModifyView;
 import mvc.view.modify.RecipeModifyView;
 import mvc.view.show.multiple.ShowAccountsView;
@@ -51,6 +52,7 @@ public class ViewFactory implements AbstractViewFactory {
             case MODIFY_COLLECTION -> new CollectionModifyView();
             case MODIFY_RECIPE -> new RecipeModifyView();
             case MODIFY_ITEM -> new ItemModifyView();
+            case MODIFY_COMPONENT -> new ComponentModifyView();
             case INVENTORY -> new InventoryView();
             default -> throw new IllegalArgumentException("View not supported: " + view);
         };

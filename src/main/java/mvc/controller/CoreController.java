@@ -100,6 +100,7 @@ public class CoreController extends ServiceConsumer{
         registerController(ViewType.SHOW_COMPONENTS, new ShowComponentsController());
         registerController(ViewType.ADD_COMPONENT, new AddComponentController());
         registerController(ViewType.SHOW_COMPONENT, new ShowComponentDataController());
+        registerController(ViewType.MODIFY_COMPONENT, new ComponentModifyController());
 
         EventBus.getInstance().subscribe(NavigateEvent.class, this::onNavigateEvent);
         

@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.Set;
 
 import creational.DTOFactory;
+import dataTransportLayer.ComponentDefinitionDTO;
 import dataTransportLayer.ItemDTO;
 import dataTransportLayer.RecipeDTO;
 import event.EventBus;
@@ -110,9 +111,7 @@ public class RecipeModifyController extends AbstractModifyController<RecipeModif
         Logger.getInstance().info(
             this.getClass().toString(),
             alert
-        );
-        
-        this.onReturnEvent();
+        ); 
     }
 
     @Override
@@ -127,6 +126,11 @@ public class RecipeModifyController extends AbstractModifyController<RecipeModif
     protected RecipeDTO getCurrentDTO() {
         SessionService sessionService = this.getService(ServiceType.SESSION);
         return sessionService.getCurrentRecipeDTO();
+    }
+
+    @Override
+    protected void updateCurrentDTO(RecipeDTO dto) {
+        this.<SessionService>getService(ServiceType.SESSION).setCurrentRecipe(dto);
     }
     
 }

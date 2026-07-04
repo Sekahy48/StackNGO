@@ -1821,3 +1821,19 @@
 (2026-07-02 00:18:03)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
 (2026-07-02 00:19:54)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
 (2026-07-02 00:21:39)	[INFO] class mvc.controller.add.AddComponentController: El usuario a ha creado El componente Fisiologic Component
+(2026-07-02 10:57:07)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-02 11:19:07)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-02 11:33:32)	[INFO] class mvc.controller.add.AddComponentController: El usuario a ha creado El componente Material
+(2026-07-02 12:09:12)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-02 12:11:04)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-02 12:13:34)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado saseseasdasde3wasd ha sido modificado.
+(2026-07-02 12:24:10)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-02 12:25:39)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-02 12:26:13)	[INFO] class mvc.controller.modify.CollectionModifyController: La coleccion antes llamada TW3 ha sido modificada pasandose a llamar TW3 - Wildhunt.
+(2026-07-02 12:26:25)	[INFO] class mvc.controller.modify.ItemModifyController: El item antes llamado sasesisosisuskjadskjoiasd ha sido modificado pasandose a llamar Esquizo.
+(2026-07-02 16:46:40)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-02 22:03:40)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Iron Plate ha sido modificado.
+(2026-07-03 23:03:38)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-04 08:23:47)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-04 08:25:00)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Oak Log ha sido modificado.
+(2026-07-04 08:25:05)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Oak Log ha sido modificado.

@@ -113,7 +113,16 @@ public class AbstractModifyView<T extends EntryDTO> extends AbstractView {
         root.setBottom(bottomBox);
 
         this.root.getChildren().add(root);
+        addExtraContent(this.root);
     }
+
+   /**
+    * Hook para que vistas hijas añadan contenido extra tras el layout base
+    * (p.ej. listas editables especificas de la entidad).
+    */
+   protected void addExtraContent(VBox root) {
+        // No-op por defecto
+   }
 
    public void clear(){
       newNameField.clear();
@@ -181,7 +190,6 @@ public class AbstractModifyView<T extends EntryDTO> extends AbstractView {
    public void fillLabels(String name, String description, String iconPath) {
       this.currentNameLabel.setText(name);
       this.currentDescArea.setText(description);
-      System.out.println(iconPath);
       if (iconPath != null && !iconPath.isEmpty()) this.currentIconView.setImage(ImageUtils.getImage(iconPath));
    }
 

@@ -21,5 +21,6 @@ public enum ViewType {
     MODIFY_COLLECTION,
     MODIFY_RECIPE,
     MODIFY_ITEM,
+    MODIFY_COMPONENT,
     INVENTORY
 }

@@ -22,6 +22,7 @@ public class StandardEntryFactory implements IEntriesFactory{
     public Item createItem(ItemDTO dto){
         this.builder.restoreEntry(new Item("default_item", 1));
         this.createEntry((EntryDTO) dto); 
+        this.builder.addComponents(dto.components);
         return (Item) this.builder.build();
     }
 
@@ -78,7 +79,6 @@ public class StandardEntryFactory implements IEntriesFactory{
     }
 
     public void createEntry(EntryDTO dto){
-        System.out.println(dto.imagePath);
         builder.setName(dto.name);
         builder.setIconPath(dto.imagePath);
         builder.setDescription(dto.description);
