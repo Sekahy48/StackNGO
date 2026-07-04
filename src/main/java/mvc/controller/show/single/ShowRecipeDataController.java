@@ -185,11 +185,11 @@ public class ShowRecipeDataController extends AbstractShowDataController<ShowRec
             if (type == RecipeIOType.INPUT) {
                 Logger.getInstance().info(this.getClass().toString(),
                         "El usuario " + currentAcountName + " ha creado el input " + item.name + " en la receta " + currentRecipeDTO.name + " en la coleccion " + currentCollectionDTO.name);
-                recipeService.insertSingleInput(view.getParentId().value(), item.id, amountValue);
+                recipeService.insertSingleInput(view.getParentId().value(), item.id, amountValue, sessionService.getCurrentCollectionDTO().id);
             } else {
                 Logger.getInstance().info(this.getClass().toString(),
                         "El usuario " + currentAcountName + " ha creado el output " + item.name + " en la receta " + currentRecipeDTO.name + " en la coleccion " + currentCollectionDTO.name);
-                recipeService.insertSingleOutput(view.getParentId().value(), item.id, amountValue);
+                recipeService.insertSingleOutput(view.getParentId().value(), item.id, amountValue, sessionService.getCurrentCollectionDTO().id);
             }
         }
 

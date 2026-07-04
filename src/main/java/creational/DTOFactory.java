@@ -5,6 +5,7 @@ import java.util.List;
 
 import dataTransportLayer.AccountDTO;
 import dataTransportLayer.CollectionDTO;
+import dataTransportLayer.ComponentDefinitionDTO;
 import dataTransportLayer.EntryDTO;
 import dataTransportLayer.GenericDTO;
 import dataTransportLayer.ItemDTO;
@@ -13,6 +14,8 @@ import dataTransportLayer.ItemStackDTO;
 import dataTransportLayer.ItemWithCollectionDTO;
 import dataTransportLayer.RecipeDTO;
 import dataTransportLayer.RecipeWithCollectionDTO;
+import mvc.model.entries.component.ComponentField;
+import mvc.model.entries.component.ItemComponentValue;
 
 public final class DTOFactory {
 
@@ -40,6 +43,16 @@ public final class DTOFactory {
             int id
     ) {
         return new ItemDTO(name, iconPath, description, id);
+    }
+
+    public static ItemDTO item(
+            String name,
+            String iconPath,
+            String description,
+            int id,
+            List<ItemComponentValue> components
+    ) {
+        return new ItemDTO(name, iconPath, description, id, components);
     }
 
     public static ItemDTO item(
@@ -279,6 +292,16 @@ public final class DTOFactory {
         }
         return out;
     }
- 
+    
+    /* ===== COMPONENT ===== */
+    public static ComponentDefinitionDTO component(
+            int id,
+            String name,
+            String iconPath,
+            String description,
+            List<ComponentField> fields
+    ) {
+        return new ComponentDefinitionDTO(name, iconPath, description, id, fields);
+    }
     
 }

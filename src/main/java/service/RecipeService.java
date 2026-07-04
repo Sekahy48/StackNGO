@@ -219,12 +219,12 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
         this.data.getRecipeDAO().updateOutputAmount(recipeId, itemId, amount);
     }
 
-    public void insertSingleInput(int recipeId, int itemId, int amount) {
-        this.data.getRecipeDAO().insertSingleInput(recipeId, itemId, amount);
+    public void insertSingleInput(int recipeId, int itemId, int amount, int collectionId) {
+        this.data.getRecipeDAO().insertSingleInput(recipeId, itemId, amount, collectionId);
     }
 
-    public void insertSingleOutput(int recipeId, int itemId, int amount) {
-        this.data.getRecipeDAO().insertSingleOutput(recipeId, itemId, amount);
+    public void insertSingleOutput(int recipeId, int itemId, int amount, int collectionId) {
+        this.data.getRecipeDAO().insertSingleOutput(recipeId, itemId, amount, collectionId);
     }
 
     public void deleteSingleInput(int recipeId, int itemId) { 

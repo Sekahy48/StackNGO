@@ -25,7 +25,6 @@ public class DBManager {
 
             props.load(input);
 
-            // Inicializar conexión
             conn = DriverManager.getConnection(
                     props.getProperty("db.url"),
                     props.getProperty("db.user"),
@@ -34,9 +33,7 @@ public class DBManager {
 
             Statement stmt = conn.createStatement();
 
-            // Creación de tablas (solo se crean en el caso de que no existan)
-
-            // Cuentas (probablemente cambie que el id sea autoincrementable)
+            // Cuentas  
             stmt.executeUpdate(
             "CREATE TABLE IF NOT EXISTS accounts (" +
                     "id INT PRIMARY KEY, " +
@@ -54,7 +51,7 @@ public class DBManager {
                     "icon VARCHAR(255)," +
                     "description VARCHAR(500)," +
                     "account_id INT NOT NULL," +
-                    "FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE," + // ON DELETE CASCADE se utiliza para que si se borra una cuenta
+                    "FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE," +
                     "UNIQUE KEY unique_collection_per_account (name, account_id)" +
                     ");"
 
@@ -68,11 +65,10 @@ public class DBManager {
                     "icon VARCHAR(255)," +
                     "description VARCHAR(500)," +
                     "collection_id INT NOT NULL, " +
-                    "FOREIGN KEY (collection_id) REFERENCES collections(id) ON DELETE CASCADE," + // ON DELETE CASCADE se utiliza para que si se borra una colección, sus items también seran eliminados
+                    "FOREIGN KEY (collection_id) REFERENCES collections(id) ON DELETE CASCADE," +
                     "UNIQUE KEY unique_recipe_per_collection (name, collection_id)" +
                     ");"
             );
-
 
             // Items
             stmt.executeUpdate(
@@ -82,7 +78,7 @@ public class DBManager {
                     "icon VARCHAR(255), " +
                     "description VARCHAR(500), " +
                     "collection_id INT NOT NULL, " +
-                    "FOREIGN KEY (collection_id) REFERENCES collections(id) ON DELETE CASCADE," + // ON DELETE CASCADE se utiliza para que si se borra una colección, sus ítems también seran eliminados
+                    "FOREIGN KEY (collection_id) REFERENCES collections(id) ON DELETE CASCADE," +
                     "UNIQUE KEY unique_item_per_collection (name, collection_id)" +
                     ");"
             ); 
@@ -99,7 +95,7 @@ public class DBManager {
                 "FOREIGN KEY (items_id) REFERENCES items(id) ON DELETE CASCADE " +
                 ");");
         
-            // Componentes
+            // Componentes        
             stmt.executeUpdate(
                 "CREATE TABLE IF NOT EXISTS component_definitions (" +
                 "id INT PRIMARY KEY," +
@@ -119,6 +115,7 @@ public class DBManager {
                 "component_def_id INT NOT NULL," +
                 "field_name VARCHAR(100) NOT NULL," +
                 "field_type VARCHAR(50) NOT NULL," +
+                "enum_values VARCHAR(500)," +
                 "FOREIGN KEY (component_def_id) REFERENCES component_definitions(id) ON DELETE CASCADE," +
                 "UNIQUE KEY unique_field_per_def (component_def_id, field_name)" +
                 ");"

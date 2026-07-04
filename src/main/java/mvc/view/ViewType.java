@@ -7,6 +7,7 @@ public enum ViewType {
     ADD_COLLECTION,
     ADD_ITEM,
     ADD_RECIPE,
+    ADD_COMPONENT,
     PRIVATE_ZONE,
     SHOW_COLLECTION,
     SHOW_COLLECTIONS,
@@ -20,5 +21,6 @@ public enum ViewType {
     MODIFY_COLLECTION,
     MODIFY_RECIPE,
     MODIFY_ITEM,
+    MODIFY_COMPONENT,
     INVENTORY
 }

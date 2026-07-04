@@ -23,6 +23,9 @@ public class PrivateView extends AbstractUserView {
 
     private Button addCollectionButton;
     private Button seeCollectionsButton;
+    private Button addComponentButton;
+    private Button seeComponentsButton;
+
     private Button exportCollectionsButton;
     private Button importCollectionsButton;
     private Button adminButton;
@@ -40,6 +43,8 @@ public class PrivateView extends AbstractUserView {
 
     public Button getAddCollectionButton() { return this.addCollectionButton; }
     public Button getSeeCollectionsButton() { return this.seeCollectionsButton; }
+    public Button getAddComponentButton() { return this.addComponentButton; }
+    public Button getSeeComponentsButton() { return this.seeComponentsButton; }
     public Button getExportCollectionsButton() { return this.exportCollectionsButton; }
     public Button getImportCollectionsButton() { return this.importCollectionsButton; }
     public Button getAdminButton() { return this.adminButton; }
@@ -66,6 +71,8 @@ public class PrivateView extends AbstractUserView {
         /* ===== BOTONES ===== */
         addCollectionButton = new Button("Añadir una colección");
         seeCollectionsButton = new Button("Ver colecciones");
+        addComponentButton = new Button("Añadir un componente");
+        seeComponentsButton = new Button("Ver componentes");
         exportCollectionsButton = new Button("Exportar colecciones");
         importCollectionsButton = new Button("Importar colecciones");
         adminButton = new Button("Panel del admin");
@@ -98,6 +105,8 @@ public class PrivateView extends AbstractUserView {
         VBox actionsColumn = new VBox(10,
                 addCollectionButton,
                 seeCollectionsButton,
+                addComponentButton,
+                seeComponentsButton,
                 exportCollectionsButton,
                 importCollectionsButton,
                 adminButton

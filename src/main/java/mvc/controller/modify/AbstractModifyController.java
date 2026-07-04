@@ -24,7 +24,9 @@ public abstract class AbstractModifyController<T extends AbstractModifyView<E>, 
                 E dto = this.composeDTO();
 
                 if (dto != null) {
-                    this.onUpdateEvent(dto); 
+                    this.onUpdateEvent(dto);
+                    this.updateCurrentDTO(dto);
+                    this.onReturnEvent();
                 }
             }
         );
@@ -54,6 +56,15 @@ public abstract class AbstractModifyController<T extends AbstractModifyView<E>, 
     protected abstract E composeDTO();
     
     protected abstract void onUpdateEvent(E dto);
+
+    /**
+     * Actualiza el DTO "actual" guardado en sesion (SessionService) tras una
+     * modificacion exitosa, para que las vistas Show reflejen los cambios sin
+     * necesidad de recargar.
+     *
+     * @param dto DTO ya persistido con los datos actualizados
+     */
+    protected abstract void updateCurrentDTO(E dto);
  
 
     @Override

@@ -2,8 +2,7 @@ package mvc.controller.add;
  
 import creational.DTOFactory;
 import creational.UIPrefabsFactory;
-import dataTransportLayer.*;
-import domain.accounts.Account;
+import dataTransportLayer.*; 
 import event.EventBus;
 import event.NavigateEvent;
 import javafx.scene.Node;
@@ -12,12 +11,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Popup;
-import logger.Logger;
+import javafx.stage.Popup; 
 import mvc.controller.InyectableController;
 import mvc.model.entries.Recipe;
 import mvc.view.ViewType;
-import mvc.view.add.AddRecipeView;
+import mvc.view.add.AddRecipeView; 
 import service.ItemService;
 import service.RecipeService;
 import service.ServiceType;
@@ -26,6 +24,7 @@ import utilities.ImageUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +35,7 @@ import java.util.Set;
  * Controller that manages the logic related to {@link AddRecipeView}
  *
  */
-public class AddRecipeController extends AbstractAddController<RecipeDTO> implements InyectableController {
+public class AddRecipeController extends AbstractAddController<RecipeDTO, Recipe, AddRecipeView> implements InyectableController {
     protected List<EntryDTO> listWhereAdd; 
 
     @Override
@@ -45,92 +44,24 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO> implem
     }
 
     @Override
-    public void handleButtons() {
-
-        commonHandleButton();
+    public void handleButtons() { 
         super.handleButtons();
-
-        AddRecipeView view = (AddRecipeView) this.getView();
-
-        Button addButton = view.getAddButton(); 
-        Button addIngredientButton = view.getAddIngredientButton();
-        Button addResultButton = view.getAddResultButton();
-        Button goBackButton = view.getGoBackButton();
-        VBox ingredientsList = view.getIngredientsList();
-        VBox resultsList = view.getResultsList();
-
-
-        addButton.setOnAction(
-                e -> {
-                    String name = view.getNameLabel().getText();
-                    String iconLabel = view.getIconLabel().getText();
-                    String description = view.getDescriptionLabel().getText();
-
-                    ArrayList<ItemIdStackDTO> ingredients = extractItemsFromVBox(view.getIngredientsList());
-                    ArrayList<ItemIdStackDTO> results = extractItemsFromVBox(view.getResultsList());
-
-
-                    RecipeDTO dto = DTOFactory.recipe(
-                                    ingredients,
-                                    results,
-                                    name,
-                                    iconLabel,
-                                    description,
-                                    this.idGenerator.generateId()
-                            );
-
-                    this.onCreateEvent(dto);
-                }
-        );
  
-        goBackButton.setOnAction(
-                e -> {this.onReturnEvent();}
-        );
+ 
+        Button addIngredientButton = this.view.getAddIngredientButton();
+        Button addResultButton = this.view.getAddResultButton(); 
+        VBox ingredientsList = this.view.getIngredientsList();
+        VBox resultsList = this.view.getResultsList();
+  
+        addIngredientButton.setOnAction(e  -> {addPopUp(addIngredientButton, this.view, ingredientsList);});
 
-        addIngredientButton.setOnAction(
-                e  -> {
-                    addPopUp(addIngredientButton, view, ingredientsList);
-                }
-        );
-
-        addResultButton.setOnAction(
-                e -> {
-                    addPopUp(addResultButton, view, resultsList);
-                }
-        );
+        addResultButton.setOnAction(e -> {addPopUp(addResultButton, this.view, resultsList);});
     }
 
     public void onReturnEvent() {
         EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTION));
     }
-    
-    @Override
-    public void onCreateEvent(RecipeDTO dto) { 
-        if (dto.name.isEmpty()) {
-            this.view.showAlert("Nombre vacio", "Una receta debe tener un nombre", Alert.AlertType.ERROR);
-        } else if (dto.ingredients.isEmpty()) {
-            this.view.showAlert("Ingredientes vacios", "Una receta debe tener al menos un ingrediente", Alert.AlertType.ERROR);
-        } else if (dto.results.isEmpty()) {
-            this.view.showAlert("Resultados vacíos", "Una receta debe tener al menos un resultado", Alert.AlertType.ERROR);
-        }else {
-            RecipeService recipeService = this.getService(ServiceType.RECIPE);
-            SessionService sessionService = this.getService(ServiceType.SESSION);
-
-            CollectionDTO currentCollectionDTO = sessionService.getCurrentCollectionDTO();
-            Account currentAccount = sessionService.getCurrentAccount();
-            int[] extraData = {currentCollectionDTO.id};
-            Recipe newRecipe = recipeService.saveEntry(dto, extraData);
-            
-            if (newRecipe != null) {
-                this.view.showAlert("Receta creada","Coleccion " + dto.name + " creada correctamente", Alert.AlertType.INFORMATION);
-                Logger.getInstance().info(this.getClass().toString(), "El usuario " + currentAccount.getUsername() + " ha creado una receta con nombre " + dto.name);
-                this.onReturnEvent();
-            } else {
-                this.view.showAlert("Receta existente", "La receta llamada " + dto.name + " ya ha sido creada previamente", Alert.AlertType.ERROR);
-            }
-        } 
-    }
-
+     
     private void addRow(AddRecipeView view, String resultName, String iconPath, Button button) {
 
         VBox targetList;
@@ -308,6 +239,45 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO> implem
 
     @Override
     public Set<ServiceType> requiredServices() {
-        return Set.of(ServiceType.ITEM, ServiceType.RECIPE, ServiceType.SESSION); 
+        Set<ServiceType> out = new HashSet<>(super.requiredServices());
+        out.add(ServiceType.RECIPE);
+        return out;
+    }
+
+    @Override
+    public RecipeService getEntryService() {
+        return this.<RecipeService>getService(ServiceType.RECIPE);
+    }
+
+    @Override
+    public String getEntryType() {
+        return "La receta";
+    }
+
+    @Override
+    public RecipeDTO getDTOFromView() { 
+        String name = view.getNameLabel().getText();
+        String iconLabel = view.getIconLabel().getText();
+        String description = view.getDescriptionLabel().getText();
+
+        ArrayList<ItemIdStackDTO> ingredients = extractItemsFromVBox(view.getIngredientsList());
+        ArrayList<ItemIdStackDTO> results = extractItemsFromVBox(view.getResultsList());
+
+
+        RecipeDTO dto = DTOFactory.recipe(
+                        ingredients,
+                        results,
+                        name,
+                        iconLabel,
+                        description,
+                        this.idGenerator.generateId()
+                );
+
+        return dto;
+    }
+
+    @Override
+    public int getParentId() {
+        return this.<SessionService>getService(ServiceType.SESSION).getCurrentCollectionDTO().id;
     }
 }

@@ -67,22 +67,41 @@ public class ComponentDefinitionDAO extends AbstractEntryDAO<ComponentDefinition
             stmt.setString(2, entry.getDescription());
             stmt.setString(3, entry.getImagePath());
             stmt.setInt(4, id);
-            return stmt.executeUpdate() > 0;
+            boolean ok = stmt.executeUpdate() > 0;
+            if (ok) updateFields(id, entry.getFields());
+            return ok;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean updateFields(int defId, List<ComponentField> fields) {
+        String deleteSql = "DELETE FROM component_fields WHERE component_def_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(deleteSql)) {
+            stmt.setInt(1, defId);
+            stmt.executeUpdate();
+            insertFields(defId, fields);
+            return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
     private List<ComponentField> readFields(int defId) throws SQLException {
-        String sql = "SELECT field_name, field_type FROM component_fields WHERE component_def_id = ?";
+        String sql = "SELECT field_name, field_type, enum_values FROM component_fields WHERE component_def_id = ?";
         List<ComponentField> fields = new ArrayList<>();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, defId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
+                String enumRaw = rs.getString("enum_values");
+                List<String> enumValues = (enumRaw == null || enumRaw.isBlank())
+                        ? new ArrayList<>()
+                        : new ArrayList<>(java.util.Arrays.asList(enumRaw.split(",")));
                 fields.add(new ComponentField(
                     rs.getString("field_name"),
-                    FieldType.valueOf(rs.getString("field_type"))
+                    FieldType.valueOf(rs.getString("field_type")),
+                    enumValues
                 ));
             }
         }
@@ -90,12 +109,13 @@ public class ComponentDefinitionDAO extends AbstractEntryDAO<ComponentDefinition
     }
 
     private void insertFields(int defId, List<ComponentField> fields) throws SQLException {
-        String sql = "INSERT INTO component_fields (component_def_id, field_name, field_type) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO component_fields (component_def_id, field_name, field_type, enum_values) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             for (ComponentField f : fields) {
                 stmt.setInt(1, defId);
                 stmt.setString(2, f.getFieldName());
                 stmt.setString(3, f.getFieldType().name());
+                stmt.setString(4, f.getEnumValues().isEmpty() ? null : String.join(",", f.getEnumValues()));
                 stmt.addBatch();
             }
             stmt.executeBatch();

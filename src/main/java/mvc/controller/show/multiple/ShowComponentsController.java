@@ -17,6 +17,7 @@ public class ShowComponentsController extends ShowGridDisplayController<Componen
     protected List<ComponentDefinitionDTO> getElements() {
         ComponentService componentService = this.getService(ServiceType.COMPONENT);
         SessionService sessionService = this.getService(ServiceType.SESSION);
+        System.out.println(componentService.getAllDTO(sessionService.getCurrentAccount().getId().value()).size());
         return componentService.getAllDTO(sessionService.getCurrentAccount().getId().value());
     }
 

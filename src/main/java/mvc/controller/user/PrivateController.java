@@ -26,12 +26,14 @@ public class PrivateController extends AbstractUserController<PrivateView> {
     private DataExporter exporter;
     private DataImporter importer; 
 
-    public void setExporter(DataExporter exporter) {
+    public PrivateController setExporter(DataExporter exporter) {
         this.exporter = exporter;
+        return this;
     }
 
-    public void setImporter(DataImporter importer) {
+    public PrivateController setImporter(DataImporter importer) {
         this.importer = importer;
+        return this;
     }
     
     @Override
@@ -49,8 +51,10 @@ public class PrivateController extends AbstractUserController<PrivateView> {
 
         PrivateView view = this.getView();
 
-        Button addButton = view.getAddCollectionButton();
+        Button addCollectionButton = view.getAddCollectionButton();
         Button seeCollectionsButton = view.getSeeCollectionsButton();
+        Button addComponentButton = view.getAddComponentButton();
+        Button seeComponentsButton = view.getSeeComponentsButton();
         MenuItem logout = view.getLogoutItem();
         MenuItem delete = view.getDeleteAccountItem();
         Button adminButton = view.getAdminButton();
@@ -76,7 +80,9 @@ public class PrivateController extends AbstractUserController<PrivateView> {
 
             });
 
-        addButton.setOnAction(e -> { EventBus.getInstance().publish(new NavigateEvent(ViewType.ADD_COLLECTION));});
+        addCollectionButton.setOnAction(e -> { EventBus.getInstance().publish(new NavigateEvent(ViewType.ADD_COLLECTION));});
+
+        addComponentButton.setOnAction(e -> { EventBus.getInstance().publish(new NavigateEvent(ViewType.ADD_COMPONENT));});
 
         delete.setOnAction(
             e -> { 
@@ -88,9 +94,9 @@ public class PrivateController extends AbstractUserController<PrivateView> {
             }
         );
 
-        seeCollectionsButton.setOnAction(
-            e -> { EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTIONS)); }
-        );
+        seeCollectionsButton.setOnAction(e -> { EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COLLECTIONS)); });
+
+        seeComponentsButton.setOnAction(e -> { EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_COMPONENTS)); });
 
         logout.setOnAction(
             e -> {

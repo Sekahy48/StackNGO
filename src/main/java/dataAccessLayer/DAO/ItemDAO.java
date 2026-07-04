@@ -10,8 +10,11 @@ import creational.DTOFactory;
 import dataTransportLayer.ItemDTO;
 import dataTransportLayer.ItemWithCollectionDTO;
 import mvc.model.entries.Item;
+import mvc.model.entries.component.ItemComponentValue;
 
 public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
+
+    private final ItemComponentDAO itemComponentDAO = new ItemComponentDAO();
 
     @Override
     protected String getTableName() {
@@ -20,11 +23,13 @@ public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
 
     @Override
     protected ItemDTO buildDTO(ResultSet rs) throws SQLException {
+        int id = rs.getInt("id");
         return DTOFactory.item(
             rs.getString("name"),
             rs.getString("icon"),
             rs.getString("description"),
-            rs.getInt("id")
+            id,
+            itemComponentDAO.readByItem(id)
         );
     }
 
@@ -66,7 +71,9 @@ public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
             stmt.setString(3, entry.getImagePath());
             stmt.setString(4, entry.getDescription());
             stmt.setInt(5, foreignKeys[0]); // collection_id
-            return stmt.executeUpdate() > 0;
+            boolean ok = stmt.executeUpdate() > 0;
+            if (ok) itemComponentDAO.updateForItem(entry.getId().value(), entry.getComponents());
+            return ok;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -80,7 +87,9 @@ public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
             stmt.setString(2, entry.getImagePath());
             stmt.setString(3, entry.getDescription());
             stmt.setInt(4, id);
-            return stmt.executeUpdate() > 0;
+            boolean ok = stmt.executeUpdate() > 0;
+            if (ok) itemComponentDAO.updateForItem(id, entry.getComponents());
+            return ok;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

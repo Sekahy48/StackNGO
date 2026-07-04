@@ -124,8 +124,8 @@ public class RecipeDAO extends AbstractEntryDAO<RecipeDTO, Recipe> {
             boolean recipe = stmt.executeUpdate() > 0;
             if (!recipe) return false;
 
-            insertInputs(entry);
-            insertOutputs(entry);
+            insertInputs(entry, foreignKeys[0]);
+            insertOutputs(entry, foreignKeys[0]);
 
             return true;
         } catch (SQLException e) {
@@ -135,20 +135,22 @@ public class RecipeDAO extends AbstractEntryDAO<RecipeDTO, Recipe> {
 
     /**
      * Method that inserts all the inputs linked to a recipe.
-     * @param entry
+     * @param recipe
+     * @param collectionId
      */
-    private void insertInputs(Recipe recipe) {
-    for (ItemIdStack stack : recipe.getIngredients()) {
-        insertSingleInput(recipe.getId().value(), stack.getId().value(), stack.getAmount());
+    private void insertInputs(Recipe recipe, int collectionId) {
+        for (ItemIdStack stack : recipe.getIngredients()) {
+            insertSingleInput(recipe.getId().value(), stack.getId().value(), stack.getAmount(), collectionId);
+        }
     }
-}
 
-    public void insertSingleInput(int recipeId, int itemId, int amount) {
-        String sql = "INSERT INTO recipe_inputs (recipes_id, items_id, quantity) VALUES (?, ?, ?)";
+    public void insertSingleInput(int recipeId, int itemId, int amount, int collectionId) {
+        String sql = "INSERT INTO recipe_inputs (recipes_id, items_id, quantity, collection_id) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, recipeId);
             stmt.setInt(2, itemId);
             stmt.setInt(3, amount);
+            stmt.setInt(4, collectionId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -178,18 +180,19 @@ public class RecipeDAO extends AbstractEntryDAO<RecipeDTO, Recipe> {
         }
     }
 
-    private void insertOutputs(Recipe entry) {
+    private void insertOutputs(Recipe entry, int collectionId) {
         for (ItemIdStack stack : entry.getResults()) {
-            insertSingleOutput(entry.getId().value(), stack.getId().value(), stack.getAmount());
+            insertSingleOutput(entry.getId().value(), stack.getId().value(), stack.getAmount(), collectionId);
         }
     }
 
-    public void insertSingleOutput(int recipeId, int itemId, int amount) {
-        String sql = "INSERT INTO recipe_outputs (recipes_id, items_id, quantity) VALUES (?, ?, ?)";
+    public void insertSingleOutput(int recipeId, int itemId, int amount, int collectionId) {
+        String sql = "INSERT INTO recipe_outputs (recipes_id, items_id, quantity, collection_id) VALUES (?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, recipeId);
             stmt.setInt(2, itemId);
             stmt.setInt(3, amount);
+            stmt.setInt(4, collectionId);
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);

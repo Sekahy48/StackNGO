@@ -19,6 +19,8 @@ public class EntryIdDAO {
                 "    SELECT id FROM recipes\n" +
                 "    UNION ALL\n" +
                 "    SELECT id FROM collections\n" +
+                "    UNION ALL\n" +
+                "    SELECT id FROM component_definitions\n" +
                 ") AS all_ids;";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql);
