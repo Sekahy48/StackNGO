@@ -81,15 +81,16 @@ public class ComponentModifyController extends AbstractModifyController<Componen
 
     @Override
     protected ComponentDefinitionDTO composeDTO() {
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        ComponentService componentService = this.getService(ServiceType.COMPONENT);
+
         ComponentDefinitionDTO current = getCurrentDTO();
 
         String newName = !view.getNewName().isEmpty() ? view.getNewName() : current.name;
         String newDescription = !view.getNewDescription().isEmpty() ? view.getNewDescription() : current.description;
-        String newImagePath = view.getNewImagePath() != null ? view.getNewImagePath() : current.imagePath;
+        String newImagePath = view.getNewImagePath() != null ? view.getNewImagePath() : current.imagePath; 
 
-        ComponentService componentService = this.getService(ServiceType.COMPONENT);
-
-        if (!newName.equals(current.name) && componentService.containsEntryByName(newName)) {
+        if (!newName.equals(current.name) && componentService.containsEntryByName(newName, sessionService.getCurrentAccount().getId().value())) {
             view.showAlert("Nombre duplicado", "Ya existe un componente con ese nombre", Alert.AlertType.ERROR);
             return null;
         }

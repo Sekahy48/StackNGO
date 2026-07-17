@@ -49,20 +49,23 @@ public abstract class AbstractEntryDAO<T extends EntryDTO, E extends Entry> exte
         return null;
     }
 
-    public T readByName(String name) {
-        String sql = "SELECT * FROM " + getTableName() + " WHERE name = ?";
+    public T readByName(String name, int parentId) {
+        String sql = "SELECT * FROM " + getTableName() + " WHERE name = ? AND " + getParentColumnName() + " = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, name);
+            stmt.setInt(2, parentId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return buildDTO(rs);
             }
         } catch (SQLException e) {
-            String error = "An error occurred trying to READ the Entry with name '" + name + "' from table " + getTableName() + " by query: " + sql;
+            String error = "An error occurred trying to READ the Entry with name '" + name + "' and parent " + parentId + " from table " + getTableName() + " by query: " + sql;
             Logger.getInstance().error(this.getClass().toString(), error);
         }
         return null;
     }
+
+    protected abstract String getParentColumnName();
 
     public boolean existsEntryByName(String name, int entryId, int collectionId) {
         String sql = "SELECT * FROM " + getTableName() + " WHERE name = ? AND id != ? AND collection_id = ?";

@@ -39,10 +39,10 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
     }
 
     @Override
-    public Item getEntryByName(String name) {
+    public Item getEntryByName(String name, int parentId) {
         Item out = data.getEntriesRepo().getItemByName(name);  
         if (out == null) {
-            ItemDTO dto = getDTOByName(name);
+            ItemDTO dto = getDTOByName(name, parentId);
             out = createEntry(dto);
             data.getEntriesRepo().addItem(out);
         }
@@ -82,8 +82,8 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
     }
 
     @Override
-    public ItemDTO getDTOByName(String name) {
-        ItemDTO out = data.getItemDAO().readByName(name);
+    public ItemDTO getDTOByName(String name, int parentId) {
+        ItemDTO out = data.getItemDAO().readByName(name, parentId);
         if (out == null) {
             String error = "Item with name " + name + " not found in database.";
             Logger.getInstance().warning(this.getClass().toString(), error); 
@@ -96,8 +96,8 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
         return data.getItemDAO().readAllByParent(parentId);
     }
  
-    public List<ItemWithCollectionDTO> getAllWithCollectionDTO() {
-        return data.getItemDAO().readAllWithCollection();
+    public List<ItemWithCollectionDTO> getAllWithCollectionDTO(int accountId) {
+        return this.data.getItemDAO().readAllWithCollection(accountId);
     }
 
     public List<ItemDTO> getAllDTO() {
@@ -135,7 +135,7 @@ public class ItemService extends AbstractEntryService<ItemDTO, Item> {
     @Override
     public Item saveFromImport(ItemDTO dto, int[] extraData) {
         ItemDAO dao = this.data.getItemDAO();
-        ItemDTO existingDTO = dao.readByName(dto.name);
+        ItemDTO existingDTO = dao.readByName(dto.name, extraData[0]);
         if (existingDTO != null) {
             dto.id = existingDTO.id;
         }

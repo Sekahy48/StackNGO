@@ -61,10 +61,11 @@ public class AddItemView extends AbstractAddView {
 
         ScrollPane scroll = new ScrollPane(componentsList);
         scroll.setFitToWidth(true);
-        scroll.setPrefHeight(200);
+        VBox.setVgrow(scroll, Priority.ALWAYS);
 
-        VBox box = new VBox(5, title, scroll, inputRow);
-        root.getChildren().add(box);
+        VBox box = new VBox(5, title, scroll);
+        VBox.setVgrow(box, Priority.ALWAYS);
+        root.getChildren().addAll(box, inputRow);
     }
 
     public ComboBox<ComponentDefinitionDTO> getComponentCombo() { return this.componentCombo; }
@@ -86,7 +87,7 @@ public class AddItemView extends AbstractAddView {
     public void addComponentRow(ComponentDefinitionDTO def, ItemComponentValue value, Runnable onRemove) {
 
         Label nameLabel = new Label(def.name);
-        nameLabel.setStyle("-fx-font-weight: bold;");
+        nameLabel.getStyleClass().add("bold-label");
 
         Button removeBtn = new Button("Quitar");
         removeBtn.setOnAction(e -> onRemove.run());
@@ -115,7 +116,7 @@ public class AddItemView extends AbstractAddView {
         }
 
         VBox componentBox = new VBox(5, header, fieldsBox);
-        componentBox.setStyle("-fx-border-color: gray; -fx-border-width: 1; -fx-padding: 8;");
+        componentBox.getStyleClass().add("component-box");
         componentBox.setUserData(value);
 
         componentsList.getChildren().add(componentBox);

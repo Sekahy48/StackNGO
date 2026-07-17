@@ -96,4 +96,9 @@ public class CollectionDAO extends AbstractEntryDAO<CollectionDTO, Collection> {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    protected String getParentColumnName() {
+        return "account_id";    
+    }
 }

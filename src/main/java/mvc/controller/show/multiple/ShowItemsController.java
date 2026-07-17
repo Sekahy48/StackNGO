@@ -22,7 +22,8 @@ public class ShowItemsController extends ShowGridDisplayController<ItemWithColle
     @Override
     protected List<ItemWithCollectionDTO> getElements() {
         ItemService itemService = this.getService(ServiceType.ITEM); 
-        return itemService.getAllWithCollectionDTO();
+        SessionService sessionService = this.getService(ServiceType.SESSION);
+        return itemService.getAllWithCollectionDTO(sessionService.getCurrentAccount().getId().value());
     } 
 
     @Override
@@ -30,7 +31,8 @@ public class ShowItemsController extends ShowGridDisplayController<ItemWithColle
         SessionService sessionService = this.getService(ServiceType.SESSION);
         CollectionService collectionService = this.getService(ServiceType.COLLECTION);
         sessionService.setCurrentItem(dto.item);
-        sessionService.setCurrentCollection(collectionService.getDTOByName(dto.collection));
+        sessionService.setCurrentCollection(collectionService.getDTOByName(dto.collection, sessionService.getCurrentAccount().getId().value())); 
+        System.out.println("Nombre que llega: " + dto.collection);
         EventBus.getInstance().publish(new NavigateEvent(ViewType.SHOW_ITEM));
     }
 

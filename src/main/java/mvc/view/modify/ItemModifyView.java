@@ -80,7 +80,7 @@ public class ItemModifyView extends AbstractModifyView<ItemDTO>{
     public void addComponentRow(ComponentDefinitionDTO def, ItemComponentValue value, Runnable onRemove) {
 
         Label nameLabel = new Label(def.name);
-        nameLabel.setStyle("-fx-font-weight: bold;");
+        nameLabel.getStyleClass().add("bold-label");
 
         Button removeBtn = new Button("Quitar");
         removeBtn.setOnAction(e -> onRemove.run());
@@ -111,7 +111,7 @@ public class ItemModifyView extends AbstractModifyView<ItemDTO>{
         }
 
         VBox componentBox = new VBox(5, header, fieldsBox);
-        componentBox.setStyle("-fx-border-color: gray; -fx-border-width: 1; -fx-padding: 8;");
+        componentBox.getStyleClass().add("component-box");
         componentBox.setUserData(value);
 
         componentsList.getChildren().add(componentBox);

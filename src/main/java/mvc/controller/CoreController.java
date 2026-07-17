@@ -59,7 +59,10 @@ public class CoreController extends ServiceConsumer{
         // ───── SHOW ─────
         registerController(ViewType.SHOW_COLLECTIONS, new ShowCollectionsController());
 
-        registerController(ViewType.SHOW_COLLECTION, new ShowCollectionDataController());
+
+        ShowCollectionDataController showCollectionController = new ShowCollectionDataController();
+        showCollectionController.setExporter(this.dataExporter);
+        registerController(ViewType.SHOW_COLLECTION, showCollectionController);
 
         registerController(ViewType.SHOW_RECIPE, new ShowRecipeDataController());
 

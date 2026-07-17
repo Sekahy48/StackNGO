@@ -30,34 +30,24 @@ public class ShowItemsView extends ShowGridDisplayView<ItemWithCollectionDTO> {
         ImageView imageView;
         if (imagePath != null && !imagePath.isEmpty()) {
             imageView = new ImageView(ImageUtils.getImage(imagePath));
-            imageView.setFitWidth(120);
-            imageView.setFitHeight(120);
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(200);
             imageView.setPreserveRatio(true);
         } else {
             imageView = new ImageView();
-            imageView.setFitWidth(120);
-            imageView.setFitHeight(120);
-            imageView.setStyle("-fx-background-color: #888888;");
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(200);
+            imageView.getStyleClass().add("card-placeholder");
         }
 
         // Label inferior (title)
         Label titleLabel = new Label(title);
-        titleLabel.setStyle(
-            "-fx-background-color: rgba(0,0,0,0.6);" +
-            "-fx-text-fill: white;" +
-            "-fx-alignment: center;" +
-            "-fx-padding: 5;"
-        );
+        titleLabel.getStyleClass().add("card-title");
         titleLabel.setMaxWidth(Double.MAX_VALUE);
 
         // Label superior (collection)
         Label collectionLabel = new Label(collection);
-        collectionLabel.setStyle(
-            "-fx-background-color: rgba(0,0,0,0.4);" + // más transparente
-            "-fx-text-fill: white;" +
-            "-fx-alignment: center;" +
-            "-fx-padding: 3;"
-        );
+        collectionLabel.getStyleClass().add("card-collection");
         collectionLabel.setMaxWidth(Double.MAX_VALUE);
 
         // StackPane con imagen y labels
@@ -69,7 +59,7 @@ public class ShowItemsView extends ShowGridDisplayView<ItemWithCollectionDTO> {
         // Botón clicable
         Button cardButton = new Button();
         cardButton.setGraphic(stack);
-        cardButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+        cardButton.getStyleClass().add("card-button");
 
         return cardButton;
     }

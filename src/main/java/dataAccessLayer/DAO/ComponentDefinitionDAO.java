@@ -121,4 +121,9 @@ public class ComponentDefinitionDAO extends AbstractEntryDAO<ComponentDefinition
             stmt.executeBatch();
         }
     }
+
+    @Override
+    protected String getParentColumnName() {
+        return "account_id";    
+    }
 }

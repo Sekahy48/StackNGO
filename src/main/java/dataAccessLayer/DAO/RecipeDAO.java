@@ -237,4 +237,9 @@ public class RecipeDAO extends AbstractEntryDAO<RecipeDTO, Recipe> {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    protected String getParentColumnName() {
+        return "collection_id";    
+    }
 }

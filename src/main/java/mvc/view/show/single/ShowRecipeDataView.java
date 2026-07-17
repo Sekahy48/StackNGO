@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import utilities.ThemeManager;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -45,13 +46,13 @@ public class ShowRecipeDataView extends AbstractShowEntryView {
         leftPanel.setPadding(new Insets(10));
 
         inputLabel = new Label("Ingredientes");
-        plusIconI = new ImageView(new Image("images/añadir.png"));
+        plusIconI = new ImageView(ThemeManager.getThemedImage("añadir.png"));
         plusIconI.setFitHeight(16);
         plusIconI.setFitWidth(16);
 
         addInputButton = new Button();
         addInputButton.setGraphic(plusIconI);
-        addInputButton.setStyle("-fx-background-color: transparent;");
+        addInputButton.getStyleClass().add("icon-button");
 
         inputs = new VBox(5);
         inputList = UIPrefabsFactory.createScrollableModifableList(inputLabel, inputs, addInputButton);
@@ -59,13 +60,13 @@ public class ShowRecipeDataView extends AbstractShowEntryView {
         VBox.setVgrow(inputList, Priority.ALWAYS);
 
         outputLabel = new Label("Resultados");
-        plusIconO = new ImageView(new Image("images/añadir.png"));
+        plusIconO = new ImageView(ThemeManager.getThemedImage("añadir.png"));
         plusIconO.setFitHeight(16);
         plusIconO.setFitWidth(16);
 
         addOutputButton = new Button();
         addOutputButton.setGraphic(plusIconO);
-        addOutputButton.setStyle("-fx-background-color: transparent;");
+        addOutputButton.getStyleClass().add("icon-button");
 
         outputs = new VBox(5);
         outputList = UIPrefabsFactory.createScrollableModifableList(outputLabel, outputs, addOutputButton);
@@ -95,25 +96,25 @@ public class ShowRecipeDataView extends AbstractShowEntryView {
         goBackIcon.setFitWidth(32);
         goBackButton = new Button();
         goBackButton.setGraphic(goBackIcon);
-        goBackButton.setStyle("-fx-background-color: transparent;-fx-border-color: black;-fx-border-width: 2;");
+        goBackButton.getStyleClass().add("action-button");
 
-        modifyIcon = new ImageView(new Image("images/lapiz.png"));
+        modifyIcon = new ImageView(ThemeManager.getThemedImage("lapiz.png"));
         modifyIcon.setFitHeight(32);
         modifyIcon.setFitWidth(32);
         modifyButton = new Button();
         modifyButton.setGraphic(modifyIcon);
-        modifyButton.setStyle("-fx-background-color: transparent;-fx-border-color: black;-fx-border-width: 2;");
+        modifyButton.getStyleClass().add("action-button");
 
-        deleteIcon = new ImageView(new Image("images/papelera.png"));
+        deleteIcon = new ImageView(ThemeManager.getThemedImage("papelera.png"));
         deleteIcon.setFitHeight(32);
         deleteIcon.setFitWidth(32);
         deleteButton = new Button();
         deleteButton.setGraphic(deleteIcon);
-        deleteButton.setStyle("-fx-background-color: transparent;-fx-border-color: black;-fx-border-width: 2;");
+        deleteButton.getStyleClass().add("action-button");
 
         actionButtonHBox = new HBox(10, goBackButton, modifyButton, deleteButton);
         actionButtonHBox.setPadding(new Insets(10, 0, 0, 0));
-        actionButtonHBox.setStyle("-fx-alignment: center-right;");
+        actionButtonHBox.setAlignment(Pos.CENTER_RIGHT);
 
         centralPanel.getChildren().addAll(nameField, descriptionArea, actionButtonHBox);
 
