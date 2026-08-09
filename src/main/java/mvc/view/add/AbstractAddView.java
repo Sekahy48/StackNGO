@@ -1,6 +1,7 @@
 package mvc.view.add;
  
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -62,7 +63,7 @@ public abstract class AbstractAddView extends AbstractView {
         
         HBox imageBox = new HBox(10, imageButton, preview, fileNameLabel);
         HBox buttonBox = new HBox(10, this.addButton, goBackButton);
-        buttonBox.setStyle("-fx-alignment: center-right;");
+        buttonBox.setAlignment(Pos.CENTER_RIGHT);
         root.setPadding(new Insets(15));
         root.setSpacing(10);
         root.getChildren().addAll(

@@ -75,7 +75,7 @@ public class RecipeModifyController extends AbstractModifyController<RecipeModif
         String newName = !this.view.getNewName().isBlank() ? this.view.getNewName() : dto.name;
 
         if (!newName.equals(dto.name)) {  
-            if (recipeService.containsEntryByName(newName)) {
+            if (recipeService.containsEntryByName(newName, sessionService.getCurrentCollectionDTO().id)) {
                 this.view.showAlert("Nombre duplicado","Ya existe una receta con ese nombre", Alert.AlertType.ERROR);
                 return null;
             }

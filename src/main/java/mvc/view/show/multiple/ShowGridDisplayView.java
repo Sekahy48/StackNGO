@@ -55,9 +55,8 @@ public abstract class ShowGridDisplayView<T extends GenericDTO> extends Abstract
 
         ScrollPane scrollPane = new ScrollPane(contentGrid);
         scrollPane.setFitToWidth(true);
-        scrollPane.setStyle("-fx-background-color: transparent;");
-  
-        this.initSidebar(this.contentGrid);
+
+        this.initSidebar(scrollPane);
         
     }
 
@@ -87,23 +86,18 @@ public abstract class ShowGridDisplayView<T extends GenericDTO> extends Abstract
             }
 
             imageView = new ImageView(image);
-            imageView.setFitWidth(120);
-            imageView.setFitHeight(120);
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(200);
             imageView.setPreserveRatio(false);
         } else {
             imageView = new ImageView();
-            imageView.setFitWidth(120);
-            imageView.setFitHeight(120);
-            imageView.setStyle("-fx-background-color: #888888;");
+            imageView.setFitWidth(200);
+            imageView.setFitHeight(200);
+            imageView.getStyleClass().add("card-placeholder");
         }
 
         Label titleLabel = new Label(title);
-        titleLabel.setStyle(
-            "-fx-background-color: rgba(0,0,0,0.6);" +
-            "-fx-text-fill: white;" +
-            "-fx-alignment: center;" +
-            "-fx-padding: 5;"
-        );
+        titleLabel.getStyleClass().add("card-title");
         titleLabel.setMaxWidth(Double.MAX_VALUE);
 
         StackPane stack = new StackPane();
@@ -112,7 +106,7 @@ public abstract class ShowGridDisplayView<T extends GenericDTO> extends Abstract
 
         Button cardButton = new Button();
         cardButton.setGraphic(stack);
-        cardButton.setStyle("-fx-padding: 0; -fx-background-color: transparent;");
+        cardButton.getStyleClass().add("card-button");
 
         return cardButton;
     }

@@ -1,15 +1,19 @@
 package mvc.controller.show.single;
  
+import java.util.List;
 import java.util.Set;
 
+import dataTransportLayer.ComponentDefinitionDTO;
 import dataTransportLayer.ItemDTO;
 import event.EventBus;
 import event.NavigateEvent;
 import javafx.scene.control.Alert;
-import javafx.scene.image.Image; 
+import javafx.scene.image.Image;
 import logger.Logger;
+import mvc.model.entries.component.ItemComponentValue;
 import mvc.view.ViewType;
 import mvc.view.show.single.ShowItemDataView;
+import service.ComponentService;
 import service.ItemService;
 import service.ServiceType;
 import service.SessionService;
@@ -53,6 +57,7 @@ public class ShowItemDataController extends AbstractShowDataController<ShowItemD
     @Override
     public void updateAtShow() {
         SessionService sessionService = this.getService(ServiceType.SESSION);
+        ComponentService componentService = this.getService(ServiceType.COMPONENT);
 
         ItemDTO dto = sessionService.getCurrentItemDTO();
 
@@ -60,7 +65,20 @@ public class ShowItemDataController extends AbstractShowDataController<ShowItemD
 
         this.view.getNameField().setText(dto.name);
         this.view.getDescriptionArea().setText(dto.description);
-        this.view.getEntryIcon().setImage(image); 
+        this.view.getEntryIcon().setImage(image);
+
+        // Mostrar componentes read-only
+        this.view.clearComponents();
+        List<ComponentDefinitionDTO> available = componentService.getAllDTO(sessionService.getCurrentAccount().getId().value());
+        for (ItemComponentValue value : dto.components) {
+            ComponentDefinitionDTO def = available.stream()
+                    .filter(d -> d.id == value.getComponentDefId())
+                    .findFirst()
+                    .orElse(null);
+            if (def != null) {
+                this.view.displayComponentRow(def, value);
+            }
+        }
     }
 
     @Override
@@ -76,6 +94,6 @@ public class ShowItemDataController extends AbstractShowDataController<ShowItemD
 
     @Override
     public Set<ServiceType> requiredServices() {
-        return Set.of(ServiceType.ITEM, ServiceType.SESSION); 
+        return Set.of(ServiceType.ITEM, ServiceType.COMPONENT, ServiceType.SESSION); 
     }
 }

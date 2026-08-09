@@ -20,10 +20,10 @@ public class AbstractShowEntryView extends AbstractShowDataView {
     @Override
     protected void buildFields() {
         Label nameLabel = this.entryName;
-        nameLabel.setStyle("-fx-background-color: lightblue; -fx-padding: 10px; -fx-font-size: 16px; -fx-border-color: black; -fx-border-width: 1px;");
+        nameLabel.getStyleClass().add("entry-name");
 
         Label descriptionLabel = this.description;
-        descriptionLabel.setStyle("-fx-background-color: lightgreen; -fx-padding: 10px; -fx-font-size: 14px; -fx-border-color: black; -fx-border-width: 1px;");
+        descriptionLabel.getStyleClass().add("entry-description");
 
         VBox textContainer = new VBox(10);
         textContainer.getChildren().addAll(nameLabel, descriptionLabel);

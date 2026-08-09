@@ -95,10 +95,13 @@ public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
         }
     }
 
-    public List<ItemWithCollectionDTO> readAllWithCollection() {
+    public List<ItemWithCollectionDTO> readAllWithCollection(int accountId) {
         List<ItemWithCollectionDTO> out = new ArrayList<>();
-        String sql = "SELECT i.*, c.name AS collection_name FROM items i JOIN collections c ON i.collection_id = c.id";
+        String sql = "SELECT i.*, c.name AS collection_name FROM items i " +
+                "JOIN collections c ON i.collection_id = c.id " +
+                "WHERE c.account_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, accountId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 ItemDTO item = buildDTO(rs);
@@ -109,5 +112,10 @@ public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
             throw new RuntimeException(e);
         }
         return out;
+    }
+
+    @Override
+    protected String getParentColumnName() {
+        return "collection_id";
     }
 }

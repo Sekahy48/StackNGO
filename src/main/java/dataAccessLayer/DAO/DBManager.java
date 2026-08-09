@@ -110,14 +110,14 @@ public class DBManager {
 
             // Campos de componentes
             stmt.executeUpdate(
-                "CREATE TABLE IF NOT EXISTS component_fields (" +
-                "id INT AUTO_INCREMENT PRIMARY KEY," +
-                "component_def_id INT NOT NULL," +
-                "field_name VARCHAR(100) NOT NULL," +
-                "field_type VARCHAR(50) NOT NULL," +
-                "enum_values VARCHAR(500)," +
-                "FOREIGN KEY (component_def_id) REFERENCES component_definitions(id) ON DELETE CASCADE," +
-                "UNIQUE KEY unique_field_per_def (component_def_id, field_name)" +
+                "CREATE TABLE IF NOT EXISTS component_definitions (" +
+                "id INT PRIMARY KEY," +
+                "name VARCHAR(100) NOT NULL," +   // sin UNIQUE global
+                "description VARCHAR(500)," +
+                "icon VARCHAR(255)," +
+                "account_id INT NOT NULL, " +
+                "FOREIGN KEY (account_id) REFERENCES accounts(id) ON DELETE CASCADE, " +
+                "UNIQUE KEY unique_def_per_account (name, account_id)" +
                 ");"
             );
 

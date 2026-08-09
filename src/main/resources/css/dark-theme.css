@@ -1,18 +1,441 @@
-/* .root {
-    -fx-background-color: #202020;
+/* ============================================
+   Stack&Go — Dark Theme
+   Palette: deep charcoal base, warm accent gold
+   ============================================ */
+
+/* --- Global --- */
+.root {
+    -fx-background-color: #1a1a2e;
+    -fx-font-family: "Segoe UI", sans-serif;
 }
 
+/* --- Text --- */
 .label {
-    -fx-text-fill: white;
+    -fx-text-fill: #e0e0e0;
 }
 
+.text {
+    -fx-fill: #e0e0e0;
+}
+
+/* --- Buttons --- */
 .button {
-    -fx-background-color: #3a3a3a;
-    -fx-text-fill: white;
+    -fx-background-color: #2d2d44;
+    -fx-text-fill: #e0e0e0;
+    -fx-border-color: #3d3d5c;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-cursor: hand;
 }
 
+.button:hover {
+    -fx-background-color: #3d3d5c;
+    -fx-border-color: #c4a35a;
+}
+
+.button:pressed {
+    -fx-background-color: #4a4a6a;
+}
+
+.button:focused {
+    -fx-border-color: #c4a35a;
+    -fx-border-width: 1.5;
+}
+
+/* Icon-only buttons (sidebar, actions) */
+.button.icon-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 4;
+}
+
+.button.icon-button:hover {
+    -fx-background-color: #2d2d44;
+    -fx-border-color: #3d3d5c;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+/* Action buttons (go back, modify, delete, export) */
+.button.action-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #3d3d5c;
+    -fx-border-width: 2;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.button.action-button:hover {
+    -fx-background-color: #2d2d44;
+    -fx-border-color: #c4a35a;
+}
+
+/* --- Text fields & areas --- */
 .text-field {
-    -fx-control-inner-background: #2b2b2b;
+    -fx-background-color: #16213e;
+    -fx-text-fill: #e0e0e0;
+    -fx-prompt-text-fill: #666680;
+    -fx-border-color: #3d3d5c;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.text-field:focused {
+    -fx-border-color: #c4a35a;
+    -fx-border-width: 1.5;
+}
+
+.password-field {
+    -fx-background-color: #16213e;
+    -fx-text-fill: #e0e0e0;
+    -fx-prompt-text-fill: #666680;
+    -fx-border-color: #3d3d5c;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.password-field:focused {
+    -fx-border-color: #c4a35a;
+    -fx-border-width: 1.5;
+}
+
+.text-area {
+    -fx-background-color: #16213e;
+    -fx-text-fill: #e0e0e0;
+    -fx-border-color: #3d3d5c;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.text-area .content {
+    -fx-background-color: #16213e;
+}
+
+.text-area:focused {
+    -fx-border-color: #c4a35a;
+}
+
+/* --- ScrollPane --- */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: #1a1a2e;
+}
+
+.scroll-bar {
+    -fx-background-color: #1a1a2e;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #3d3d5c;
+    -fx-background-radius: 4;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #4a4a6a;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-background-color: transparent;
+    -fx-shape: "";
+    -fx-padding: 0;
+}
+
+/* --- SplitPane --- */
+.split-pane {
+    -fx-background-color: #1a1a2e;
+    -fx-padding: 0;
+}
+
+.split-pane > .split-pane-divider {
+    -fx-background-color: #3d3d5c;
+    -fx-padding: 0 1 0 1;
+}
+
+/* --- ListView --- */
+.list-view {
+    -fx-background-color: #16213e;
+    -fx-border-color: #3d3d5c;
+}
+
+.list-cell {
+    -fx-background-color: #16213e;
+    -fx-text-fill: #e0e0e0;
+    -fx-padding: 6 10;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #2d2d44;
+}
+
+.list-cell:filled:selected {
+    -fx-background-color: #3d3d5c;
+    -fx-text-fill: #c4a35a;
+}
+
+.list-cell:empty {
+    -fx-background-color: #16213e;
+}
+
+/* --- Tooltip --- */
+.tooltip {
+    -fx-background-color: #2d2d44;
+    -fx-text-fill: #e0e0e0;
+    -fx-border-color: #3d3d5c;
+    -fx-border-width: 1;
+    -fx-background-radius: 4;
+    -fx-border-radius: 4;
+    -fx-font-size: 12px;
+}
+
+/* --- Alert / Dialog --- */
+.dialog-pane {
+    -fx-background-color: #1a1a2e;
+}
+
+.dialog-pane > .content {
+    -fx-background-color: #1a1a2e;
+}
+
+.dialog-pane > .button-bar > .container {
+    -fx-background-color: #1a1a2e;
+}
+
+.dialog-pane .label {
+    -fx-text-fill: #e0e0e0;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #16213e;
+}
+
+/* --- VBox / HBox / Panes --- */
+.vbox {
+    -fx-background-color: transparent;
+}
+
+.hbox {
+    -fx-background-color: transparent;
+}
+
+.border-pane {
+    -fx-background-color: transparent;
+}
+
+.stack-pane {
+    -fx-background-color: transparent;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    -fx-border-color: #3d3d5c;
+    -fx-border-width: 0 2 0 0;
+    -fx-background-color: #16213e;
+}
+
+/* --- Entry detail: name banner --- */
+.entry-name {
+    -fx-background-color: #2d2d44;
+    -fx-text-fill: #c4a35a;
+    -fx-padding: 10;
+    -fx-font-size: 16px;
+    -fx-border-color: #3d3d5c;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+/* --- Entry detail: description banner --- */
+.entry-description {
+    -fx-background-color: #1e3a2f;
+    -fx-text-fill: #a8d8b9;
+    -fx-padding: 10;
+    -fx-font-size: 14px;
+    -fx-border-color: #2d5a4a;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+/* --- Context labels (collection/recipe selection) --- */
+.context-label {
+    -fx-border-color: #3d3d5c;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5;
+    -fx-background-color: #16213e;
+    -fx-text-fill: #b0b0c0;
+}
+
+/* --- Grid cards overlay labels --- */
+.card-title {
+    -fx-background-color: rgba(0, 0, 0, 0.65);
     -fx-text-fill: white;
-    
-}  */
+    -fx-alignment: center;
+    -fx-padding: 5;
+}
+
+.card-collection {
+    -fx-background-color: rgba(0, 0, 0, 0.45);
+    -fx-text-fill: #c4a35a;
+    -fx-alignment: center;
+    -fx-padding: 3;
+}
+
+/* --- Inventory title --- */
+.inventory-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #c4a35a;
+}
+
+/* --- Component box in Add/Modify views --- */
+.component-box {
+    -fx-border-color: #3d3d5c;
+    -fx-border-width: 1;
+    -fx-padding: 8;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+/* --- Font weight helper --- */
+.bold-label {
+    -fx-font-weight: bold;
+}
+
+/* --- GridPane (content grid) --- */
+.grid-pane {
+    -fx-background-color: transparent;
+}
+
+/* --- Popup --- */
+.popup {
+    -fx-background-color: #16213e;
+}
+
+/* --- ChoiceBox / ComboBox --- */
+.choice-box {
+    -fx-background-color: #2d2d44;
+    -fx-text-fill: #e0e0e0;
+    -fx-border-color: #3d3d5c;
+}
+
+.combo-box {
+    -fx-background-color: #2d2d44;
+    -fx-border-color: #3d3d5c;
+}
+
+.combo-box .list-cell {
+    -fx-text-fill: #e0e0e0;
+    -fx-background-color: #2d2d44;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #16213e;
+}
+
+/* --- Tab pane (if used) --- */
+.tab-pane .tab-header-background {
+    -fx-background-color: #16213e;
+}
+
+.tab {
+    -fx-background-color: #2d2d44;
+}
+
+.tab:selected {
+    -fx-background-color: #3d3d5c;
+}
+
+.tab .tab-label {
+    -fx-text-fill: #e0e0e0;
+}
+
+/* --- Add-list buttons (ingredient/result with border) --- */
+.add-list-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #3d3d5c;
+    -fx-border-width: 2;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+.add-list-button:hover {
+    -fx-background-color: #2d2d44;
+    -fx-border-color: #c4a35a;
+}
+
+/* --- Inventory grid cells --- */
+.inventory-cell {
+    -fx-border-color: #444;
+    -fx-background-color: #1e1e1e;
+}
+
+.inventory-cell-selected {
+    -fx-border-color: gold;
+    -fx-background-color: #2a2a2a;
+}
+
+/* --- Inventory amount badge --- */
+.inventory-amount {
+    -fx-background-color: rgba(0, 0, 0, 0.6);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 2;
+}
+
+/* --- Icon pane border (modify views) --- */
+.icon-pane {
+    -fx-border-color: #3d3d5c;
+}
+
+/* --- Card image placeholder --- */
+.card-placeholder {
+    -fx-background-color: #2d2d44;
+}
+
+/* --- Card button (grid cards, zero padding) --- */
+.card-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+}
+
+.card-button:hover {
+    -fx-background-color: #2d2d44;
+    -fx-border-color: #3d3d5c;
+    -fx-border-radius: 6;
+    -fx-background-radius: 6;
+}
+
+/* --- Scrollable list containers (collections, recipes, components) --- */
+.scrollable-list-box {
+    -fx-border-color: #d4c9a8;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+}
+
+/* --- Amount label (UIPrefabsFactory) --- */
+.amount-label {
+    -fx-padding: 2 6 2 6;
+}

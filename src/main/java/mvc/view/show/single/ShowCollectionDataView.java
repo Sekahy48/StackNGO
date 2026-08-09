@@ -1,5 +1,7 @@
 package mvc.view.show.single;
 
+import javax.swing.Icon;
+
 import creational.UIPrefabsFactory;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -8,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import utilities.ThemeManager;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -26,10 +29,12 @@ public class ShowCollectionDataView extends AbstractShowDataView {
     private VBox recipes;
 
     private ImageView plusIconR, plusIconI;
-    private HBox actionButtonHBox; 
+    private HBox actionButtonHBox;  
 
-    public Button getGoBackButton() { return this.goBackButton; }
+    private ImageView exportCollectionIcon;
+    private Button exportCollectionButton;
 
+    public Button getExportCollectionButton() { return exportCollectionButton; }
     @Override
     protected void buildFields(){
         build();
@@ -47,13 +52,13 @@ public class ShowCollectionDataView extends AbstractShowDataView {
         leftPanel.setPadding(new Insets(10));
 
         recipesLabel = new Label("Recipes");
-        plusIconR = new ImageView(new Image("images/añadir.png"));
+        plusIconR = new ImageView(ThemeManager.getThemedImage("añadir.png"));
         plusIconR.setFitHeight(16);
         plusIconR.setFitWidth(16);
 
         addRecipeButton = new Button();
         addRecipeButton.setGraphic(plusIconR);
-        addRecipeButton.setStyle("-fx-background-color: transparent;");
+        addRecipeButton.getStyleClass().add("icon-button");
 
         recipes = new VBox(5);
         recipeList = UIPrefabsFactory.createScrollableModifableList(recipesLabel, recipes, addRecipeButton);
@@ -61,13 +66,13 @@ public class ShowCollectionDataView extends AbstractShowDataView {
         VBox.setVgrow(recipeList, Priority.ALWAYS);
 
         itemsLabel = new Label("Items");
-        plusIconI = new ImageView(new Image("images/añadir.png"));
+        plusIconI = new ImageView(ThemeManager.getThemedImage("añadir.png"));
         plusIconI.setFitHeight(16);
         plusIconI.setFitWidth(16);
 
         addItemButton = new Button();
         addItemButton.setGraphic(plusIconI);
-        addItemButton.setStyle("-fx-background-color: transparent;");
+        addItemButton.getStyleClass().add("icon-button");
 
         items = new VBox(5);
         itemList = UIPrefabsFactory.createScrollableModifableList(itemsLabel, items, addItemButton);
@@ -98,25 +103,32 @@ public class ShowCollectionDataView extends AbstractShowDataView {
         goBackIcon.setFitWidth(32);
         goBackButton = new Button();
         goBackButton.setGraphic(goBackIcon);
-        goBackButton.setStyle("-fx-background-color: transparent;-fx-border-color: black;-fx-border-width: 2;");
+        goBackButton.getStyleClass().add("action-button");
 
-        modifyIcon = new ImageView(new Image("images/lapiz.png"));
+        modifyIcon = new ImageView(ThemeManager.getThemedImage("lapiz.png"));
         modifyIcon.setFitHeight(32);
         modifyIcon.setFitWidth(32);
         modifyButton = new Button();
         modifyButton.setGraphic(modifyIcon);
-        modifyButton.setStyle("-fx-background-color: transparent;-fx-border-color: black;-fx-border-width: 2;");
+        modifyButton.getStyleClass().add("action-button");
 
-        deleteIcon = new ImageView(new Image("images/papelera.png"));
+        deleteIcon = new ImageView(ThemeManager.getThemedImage("papelera.png"));
         deleteIcon.setFitHeight(32);
         deleteIcon.setFitWidth(32);
         deleteButton = new Button();
         deleteButton.setGraphic(deleteIcon);
-        deleteButton.setStyle("-fx-background-color: transparent;-fx-border-color: black;-fx-border-width: 2;");
+        deleteButton.getStyleClass().add("action-button");
 
-        actionButtonHBox = new HBox(10, goBackButton, modifyButton, deleteButton);
+        exportCollectionIcon = new ImageView(ThemeManager.getThemedImage("export.png"));
+        exportCollectionIcon.setFitHeight(32);
+        exportCollectionIcon.setFitWidth(32);
+        exportCollectionButton = new Button();
+        exportCollectionButton.setGraphic(exportCollectionIcon);
+        exportCollectionButton.getStyleClass().add("action-button");
+
+        actionButtonHBox = new HBox(10, goBackButton, modifyButton, deleteButton, exportCollectionButton);
         actionButtonHBox.setPadding(new Insets(10, 0, 0, 0));
-        actionButtonHBox.setStyle("-fx-alignment: center-right;");
+        actionButtonHBox.setAlignment(Pos.CENTER_RIGHT); 
 
         centralPanel.getChildren().addAll(nameField, descriptionArea, actionButtonHBox);
 

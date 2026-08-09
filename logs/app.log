@@ -1837,3 +1837,165 @@
 (2026-07-04 08:23:47)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
 (2026-07-04 08:25:00)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Oak Log ha sido modificado.
 (2026-07-04 08:25:05)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Oak Log ha sido modificado.
+(2026-07-04 12:50:47)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-04 12:57:00)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-04 12:58:20)	[WARNING] class mvc.controller.user.SignUpController: Intento de creacion de una cuenta existente con nombre b
+(2026-07-04 12:58:22)	[INFO] class mvc.controller.user.LoginController: El usuario b ha iniciado sesion
+(2026-07-04 13:05:33)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Iron Pickaxe ha sido modificado.
+(2026-07-04 13:06:44)	[INFO] class mvc.controller.user.LoginController: El usuario b ha iniciado sesion
+(2026-07-04 13:11:13)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado saseseasdasde3wasd ha sido modificado.
+(2026-07-04 13:12:11)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Minecraft ha sido modificada.
+(2026-07-04 13:12:19)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Stick ha sido modificado.
+(2026-07-04 13:12:45)	[INFO] class mvc.controller.user.LoginController: El usuario b ha iniciado sesion
+(2026-07-04 14:06:45)	[INFO] class mvc.controller.user.SignUpController: El usuario c ha creado su cuenta correctamente
+(2026-07-04 14:06:47)	[INFO] class mvc.controller.user.LoginController: El usuario c ha iniciado sesion
+(2026-07-04 18:58:31)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-04 19:03:06)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-04 19:03:09)	[WARNING] class service.CollectionService: Entry with name a not found in database.
+(2026-07-04 19:11:13)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-04 19:11:25)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada Minecraft ha sido modificada.
+(2026-07-04 19:11:32)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Oak Log ha sido modificado.
+(2026-07-04 19:12:21)	[WARNING] class service.CollectionService: Entry with name a not found in database.
+(2026-07-04 19:13:18)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-04 19:13:20)	[WARNING] class service.CollectionService: Entry with name a not found in database.
+(2026-07-04 21:17:04)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-04 23:17:14)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-04 23:17:29)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Iron Pickaxe ha sido modificado.
+(2026-07-04 23:20:21)	[INFO] class mvc.controller.user.LoginController: El usuario b ha iniciado sesion
+(2026-07-04 23:20:34)	[WARNING] class service.ComponentService: Entry with name Fisiologic Component not found in database.
+(2026-07-04 23:22:05)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-04 23:22:35)	[WARNING] class mvc.controller.user.LoginController: No existe una cuenta con nombre d
+(2026-07-04 23:22:38)	[INFO] class mvc.controller.user.SignUpController: El usuario d ha creado su cuenta correctamente
+(2026-07-04 23:22:40)	[INFO] class mvc.controller.user.LoginController: El usuario d ha iniciado sesion
+(2026-07-04 23:23:00)	[WARNING] class service.ComponentService: Entry with name Fisiologic Component not found in database.
+(2026-07-05 00:19:53)	[INFO] class mvc.controller.user.LoginController: El usuario c ha iniciado sesion
+(2026-07-05 00:20:03)	[WARNING] class service.ComponentService: Entry with name Fisiologic Component not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ComponentService: Entry with name Matirial not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.CollectionService: Entry with name Minecraft not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name Stick not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name Oak Log not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name Oak Planks not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name Chest not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name Iron Ingot not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name Iron Chestplate not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name Iron Pickaxe not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name asdasdasd not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name sasessesas not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name erfwerywty not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name Esquizo not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.CollectionService: Entry with name TW3 - Wildhunt not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name SDASDASD not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name sasesrfsr not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name saseseasdasde3wasd not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.CollectionService: Entry with name Satisfactory not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name Iron Rod not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name Iron Plate not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.ItemService: Item with name Portable Miner not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.RecipeService: Recipe with name Iron Pickaxe not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.RecipeService: Recipe with name Oak Planks 1 not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.RecipeService: Recipe with name Stick 1 not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.RecipeService: Recipe with name Stick 2 not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.RecipeService: Recipe with name Iron Plate not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.RecipeService: Recipe with name Oak Chest not found in database.
+(2026-07-05 00:20:03)	[WARNING] class service.RecipeService: Recipe with name Portable Miner not found in database.
+(2026-07-05 00:20:16)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Oak Log ha sido modificado.
+(2026-07-05 11:30:39)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-05 11:31:08)	[INFO] class mvc.controller.user.LoginController: El usuario d ha iniciado sesion
+(2026-07-05 11:31:15)	[WARNING] class service.ComponentService: Entry with name Fisiologic Component not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ComponentService: Entry with name Matirial not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.CollectionService: Entry with name Minecraft not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name Stick not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name Oak Log not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name Oak Planks not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name Chest not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name Iron Ingot not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name Iron Chestplate not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name Iron Pickaxe not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name asdasdasd not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name sasessesas not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name erfwerywty not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name Esquizo not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.CollectionService: Entry with name TW3 - Wildhunt not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name SDASDASD not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name sasesrfsr not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name saseseasdasde3wasd not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.CollectionService: Entry with name Satisfactory not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name Iron Rod not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name Iron Plate not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.ItemService: Item with name Portable Miner not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.RecipeService: Recipe with name Iron Pickaxe not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.RecipeService: Recipe with name Oak Planks 1 not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.RecipeService: Recipe with name Stick 1 not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.RecipeService: Recipe with name Stick 2 not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.RecipeService: Recipe with name Iron Plate not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.RecipeService: Recipe with name Oak Chest not found in database.
+(2026-07-05 11:31:15)	[WARNING] class service.RecipeService: Recipe with name Portable Miner not found in database.
+(2026-07-05 11:43:19)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-05 11:43:27)	[INFO] class mvc.controller.user.LoginController: El usuario d ha iniciado sesion
+(2026-07-05 15:06:55)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-05 15:08:16)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-05 15:09:55)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-05 15:58:43)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado asdasdasd ha sido modificado.
+(2026-07-05 15:58:54)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Oak Log ha sido modificado.
+(2026-07-05 16:01:04)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-05 16:01:23)	[INFO] class mvc.controller.add.AddRecipeController: El usuario a ha creado La receta lul
+(2026-07-05 16:01:35)	[INFO] class mvc.controller.modify.RecipeModifyController: La colección llamada lul ha sido modificada.
+(2026-07-05 16:01:41)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada TW3 - Wildhunt ha sido modificada.
+(2026-07-05 16:01:46)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada TW3 - Wildhunt ha sido modificada.
+(2026-07-05 16:01:52)	[INFO] class mvc.controller.modify.RecipeModifyController: La colección llamada lul ha sido modificada.
+(2026-07-05 16:02:00)	[INFO] class mvc.controller.modify.CollectionModifyController: La colección llamada TW3 - Wildhunt ha sido modificada.
+(2026-07-12 09:17:08)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-14 09:55:57)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-14 10:02:41)	[INFO] class mvc.controller.add.AddCollectionController: El usuario a ha creado La coleccion Artisan
+(2026-07-14 10:39:40)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-14 11:02:16)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-14 11:03:10)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-14 11:13:31)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-14 11:19:14)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-14 11:19:22)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Oak Log ha sido modificado.
+(2026-07-14 11:19:43)	[INFO] class mvc.controller.show.single.ShowComponentDataController: El usuario a ha borrado el componente con nombre Matirial
+(2026-07-14 11:20:02)	[INFO] class mvc.controller.show.single.ShowComponentDataController: El usuario a ha borrado el componente con nombre Fisiologic Component
+(2026-07-14 12:34:34)	[INFO] class mvc.controller.add.AddComponentController: El usuario a ha creado El componente Damage
+(2026-07-14 12:37:04)	[INFO] class mvc.controller.add.AddComponentController: El usuario a ha creado El componente Material
+(2026-07-14 12:39:41)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-14 12:41:19)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-14 12:44:18)	[INFO] class mvc.controller.add.AddComponentController: El usuario a ha creado El componente StorageComponent
+(2026-07-14 12:51:11)	[INFO] class mvc.controller.add.AddComponentController: El usuario a ha creado El componente Nutrition
+(2026-07-14 12:55:50)	[INFO] class mvc.controller.add.AddComponentController: El usuario a ha creado El componente Fluid
+(2026-07-14 12:56:10)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-14 12:59:02)	[INFO] class mvc.controller.add.AddComponentController: El usuario a ha creado El componente HealComponent
+(2026-07-14 13:09:44)	[INFO] class mvc.controller.add.AddComponentController: El usuario a ha creado El componente Resource
+(2026-07-16 07:42:08)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-16 08:19:28)	[INFO] class mvc.controller.add.AddItemController: El usuario a ha creado El item Espada de hierro
+(2026-07-16 08:20:19)	[WARNING] class mvc.controller.user.LoginController: Contraseña incorrecta para el usuario a
+(2026-07-16 08:20:21)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-16 08:21:25)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Espada de hierro ha sido modificado.
+(2026-07-16 08:24:29)	[INFO] class mvc.controller.add.AddItemController: El usuario a ha creado El item Arco corto
+(2026-07-16 08:25:24)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Arco corto ha sido modificado.
+(2026-07-16 08:27:40)	[INFO] class mvc.controller.add.AddItemController: El usuario a ha creado El item Manzana
+(2026-07-16 08:29:31)	[INFO] class mvc.controller.add.AddItemController: El usuario a ha creado El item Odre
+(2026-07-16 08:31:47)	[INFO] class mvc.controller.add.AddItemController: El usuario a ha creado El item Venda
+(2026-07-16 08:34:12)	[INFO] class mvc.controller.add.AddItemController: El usuario a ha creado El item Arcón pequeño
+(2026-07-16 08:39:33)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-16 08:42:01)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-16 19:44:40)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-16 21:34:24)	[INFO] class mvc.controller.add.AddComponentController: El usuario a ha creado El componente BaseItem
+(2026-07-16 21:34:49)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Espada de hierro ha sido modificado.
+(2026-07-16 21:36:01)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Espada de hierro ha sido modificado.
+(2026-07-16 21:36:30)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Arco corto ha sido modificado.
+(2026-07-16 21:37:00)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Manzana ha sido modificado.
+(2026-07-16 21:37:22)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Odre ha sido modificado.
+(2026-07-16 21:37:53)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Venda ha sido modificado.
+(2026-07-16 21:38:37)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Arcón pequeño ha sido modificado.
+(2026-07-16 21:39:04)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Arcón pequeño ha sido modificado.
+(2026-07-16 21:49:41)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-16 21:50:34)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Arcón pequeño ha sido modificado.
+(2026-07-17 08:11:24)	[INFO] class mvc.controller.user.LoginController: El usuario a ha iniciado sesion
+(2026-07-17 08:11:43)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Espada de hierro ha sido modificado.
+(2026-07-17 08:17:53)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Espada de hierro ha sido modificado.
+(2026-07-17 08:18:07)	[INFO] class mvc.controller.add.AddItemController: El usuario a ha creado El item aass
+(2026-07-17 08:18:12)	[INFO] class mvc.controller.show.single.ShowItemDataController: El usuario a ha borrado el item con nombre aass en la coleccion Artisan
+(2026-07-17 08:21:22)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Arco corto ha sido modificado.
+(2026-07-17 08:27:48)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Espada de hierro ha sido modificado.
+(2026-07-17 08:27:59)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Arco corto ha sido modificado.
+(2026-07-17 08:28:10)	[INFO] class mvc.controller.modify.ItemModifyController: El item llamado Manzana ha sido modificado.

@@ -103,7 +103,7 @@ public abstract class AbstractInventoryView extends AbstractView {
         });
 
         inventoryLabel = new Label("INVENTARIO");
-        inventoryLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold;");
+        inventoryLabel.getStyleClass().add("inventory-title");
         inventoryLabel.setMaxWidth(Double.MAX_VALUE);
         inventoryLabel.setAlignment(Pos.CENTER);
 
@@ -120,7 +120,7 @@ public abstract class AbstractInventoryView extends AbstractView {
 
         selectedCollectionLabel = new Label("Colección: Ninguna");
         selectedCollectionLabel.setMaxWidth(Double.MAX_VALUE);
-        selectedCollectionLabel.setStyle("-fx-border-color: black; -fx-padding: 5;");
+        selectedCollectionLabel.getStyleClass().add("context-label");
 
         /* Lo elimino pq en la clase padre no se decide si se puede seleccionar o no coleccion
         selectCollectionButton = new Button("Seleccionar colección");
@@ -129,7 +129,7 @@ public abstract class AbstractInventoryView extends AbstractView {
 
         selectedRecipeLabel = new Label("Receta: Ninguna");
         selectedRecipeLabel.setMaxWidth(Double.MAX_VALUE);
-        selectedRecipeLabel.setStyle("-fx-border-color: black; -fx-padding: 5;");
+        selectedRecipeLabel.getStyleClass().add("context-label");
 
         /* Lo elimino pq en la clase padre no se decide si se puede seleccionar o no receta
         selectRecipeButton = new Button("Seleccionar receta");
@@ -233,10 +233,7 @@ public abstract class AbstractInventoryView extends AbstractView {
                 cell.setMinSize(CELL_SIZE, CELL_SIZE);
                 cell.setMaxSize(CELL_SIZE, CELL_SIZE);
 
-                cell.setStyle("""
-                    -fx-border-color: #444;
-                    -fx-background-color: #1e1e1e;
-                """);
+                cell.getStyleClass().add("inventory-cell");
 
                 final int index = cellIndex++;
 
@@ -244,18 +241,16 @@ public abstract class AbstractInventoryView extends AbstractView {
                 // Selección normal (igual que ahora)
                 for (javafx.scene.Node n : inventoryGrid.getChildren()) {
                     if (n instanceof StackPane c) {
-                        c.setStyle("""
-                            -fx-border-color: #444;
-                            -fx-background-color: #1e1e1e;
-                        """);
+                        c.getStyleClass().remove("inventory-cell-selected");
+                        if (!c.getStyleClass().contains("inventory-cell")) {
+                            c.getStyleClass().add("inventory-cell");
+                        }
                     }
                 }
 
                 inventoryGrid.setUserData(index);
-                cell.setStyle("""
-                    -fx-border-color: gold;
-                    -fx-background-color: #2a2a2a;
-                """);
+                cell.getStyleClass().remove("inventory-cell");
+                cell.getStyleClass().add("inventory-cell-selected");
 
                 // === NUEVO: DOBLE CLICK ===
                 if (e.getClickCount() == 2 && onCellDoubleClicked != null) {
@@ -341,12 +336,7 @@ public abstract class AbstractInventoryView extends AbstractView {
 
                     // Cantidad esquina
                     Label amountLabel = new Label(String.valueOf(dto.amount));
-                    amountLabel.setStyle("""
-                        -fx-background-color: rgba(0,0,0,0.6);
-                        -fx-text-fill: white;
-                        -fx-font-weight: bold;
-                        -fx-padding: 2;
-                    """);
+                    amountLabel.getStyleClass().add("inventory-amount");
                     StackPane.setAlignment(amountLabel, Pos.TOP_RIGHT);
 
                     cell.getChildren().addAll(icon, amountLabel);

@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import utilities.ThemeManager;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import mvc.view.AbstractView;
@@ -36,7 +37,7 @@ public abstract class AbstractShowDataView extends AbstractView {
 
     @Override
     protected void build() {
-        this.goBackIcon = new ImageView(new Image("images/volver.png"));
+        this.goBackIcon = new ImageView(ThemeManager.getThemedImage("volver.png"));
     }
 
     public Button getAddRecipeButton() { return this.addRecipeButton; }

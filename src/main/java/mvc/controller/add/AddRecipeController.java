@@ -8,6 +8,7 @@ import event.NavigateEvent;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import utilities.ThemeManager;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -76,7 +77,7 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO, Recipe
         }
 
         Image icon = ImageUtils.getImage(iconPath);
-        Image deleteIcon = new Image("images/papelera.png");
+        Image deleteIcon = ThemeManager.getThemedImage("papelera.png");
 
         ImageView deleteView = new ImageView(deleteIcon);
         deleteView.setFitHeight(16);
@@ -84,7 +85,7 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO, Recipe
 
         Button deleteButton = new Button();
         deleteButton.setGraphic(deleteView);
-        deleteButton.setStyle("-fx-background-color: transparent;");
+        deleteButton.getStyleClass().add("icon-button");
 
         TextField amount = new TextField("1");
         amount.setPrefWidth(50);
@@ -201,6 +202,7 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO, Recipe
         ArrayList<ItemIdStackDTO> list = new ArrayList<>();
         //ItemDAO itemDAO = (ItemDAO) this.context.getDAO(DAOType.ITEM);
         ItemService service = this.getService(ServiceType.ITEM);
+        SessionService sessionService = this.getService(ServiceType.SESSION);
 
         for (Node row : box.getChildren()) {
             if (row instanceof HBox){
@@ -227,7 +229,7 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO, Recipe
                         }
                     }
 
-                    ItemDTO itemDTO = service.getDTOByName(itemName);
+                    ItemDTO itemDTO = service.getDTOByName(itemName, sessionService.getCurrentCollectionDTO().id);
                     int itemId = itemDTO.getId();
 
                     list.add(new ItemIdStackDTO(itemId, amount));
@@ -241,6 +243,7 @@ public class AddRecipeController extends AbstractAddController<RecipeDTO, Recipe
     public Set<ServiceType> requiredServices() {
         Set<ServiceType> out = new HashSet<>(super.requiredServices());
         out.add(ServiceType.RECIPE);
+        out.add(ServiceType.ITEM);
         return out;
     }
 
