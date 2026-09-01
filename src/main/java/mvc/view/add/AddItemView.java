@@ -106,6 +106,15 @@ public class AddItemView extends AbstractAddView {
                 HBox row = new HBox(10, fLabel, valueCombo);
                 row.setAlignment(Pos.CENTER_LEFT);
                 fieldsBox.getChildren().add(row);
+            } else if (field.getFieldType() == mvc.model.entries.component.FieldType.BOOLEAN) {
+                ComboBox<String> boolCombo = new ComboBox<>();
+                boolCombo.getItems().addAll("true", "false");
+                boolCombo.setValue("false");
+                value.setValue(field.getFieldName(), "false");
+                boolCombo.valueProperty().addListener((obs, oldV, newV) -> value.setValue(field.getFieldName(), newV));
+                HBox row = new HBox(10, fLabel, boolCombo);
+                row.setAlignment(Pos.CENTER_LEFT);
+                fieldsBox.getChildren().add(row);
             } else {
                 TextField valueField = new TextField();
                 valueField.textProperty().addListener((obs, oldV, newV) -> value.setValue(field.getFieldName(), newV));

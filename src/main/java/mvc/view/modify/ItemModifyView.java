@@ -101,6 +101,15 @@ public class ItemModifyView extends AbstractModifyView<ItemDTO>{
                 HBox row = new HBox(10, fLabel, valueCombo);
                 row.setAlignment(Pos.CENTER_LEFT);
                 fieldsBox.getChildren().add(row);
+            } else if (field.getFieldType() == FieldType.BOOLEAN) {
+                ComboBox<String> boolCombo = new ComboBox<>();
+                boolCombo.getItems().addAll("true", "false");
+                boolCombo.setValue("true".equalsIgnoreCase(currentValue) ? "true" : "false");
+                value.setValue(field.getFieldName(), boolCombo.getValue());
+                boolCombo.valueProperty().addListener((obs, oldV, newV) -> value.setValue(field.getFieldName(), newV));
+                HBox row = new HBox(10, fLabel, boolCombo);
+                row.setAlignment(Pos.CENTER_LEFT);
+                fieldsBox.getChildren().add(row);
             } else {
                 TextField valueField = new TextField(currentValue != null ? currentValue : "");
                 valueField.textProperty().addListener((obs, oldV, newV) -> value.setValue(field.getFieldName(), newV));
