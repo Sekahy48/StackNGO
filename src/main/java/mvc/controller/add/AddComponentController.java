@@ -53,7 +53,7 @@ public class AddComponentController extends AbstractAddController<ComponentDefin
         }
 
         List<String> enumValues = new ArrayList<>();
-        if (type == FieldType.ENUM) {
+        if (type == FieldType.ENUM || type == FieldType.ENUMLIST) {
             String raw = view.getEnumValuesField().getText();
             if (raw == null || raw.isBlank()) {
                 view.showAlert("Opciones vacias", "Un campo de tipo enum debe tener al menos una opcion", Alert.AlertType.ERROR);

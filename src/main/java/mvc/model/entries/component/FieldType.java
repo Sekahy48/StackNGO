@@ -5,5 +5,6 @@ public enum FieldType {
     FLOAT,
     STRING,
     BOOLEAN,
-    ENUM
+    ENUM,
+    ENUMLIST
 }

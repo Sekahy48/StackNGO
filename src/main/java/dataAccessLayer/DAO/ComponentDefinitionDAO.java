@@ -4,7 +4,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import dataTransportLayer.ComponentDefinitionDTO;
 import mvc.model.entries.component.ComponentDefinition;
@@ -76,14 +78,38 @@ public class ComponentDefinitionDAO extends AbstractEntryDAO<ComponentDefinition
     }
 
     public boolean updateFields(int defId, List<ComponentField> fields) {
-        String deleteSql = "DELETE FROM component_fields WHERE component_def_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(deleteSql)) {
-            stmt.setInt(1, defId);
-            stmt.executeUpdate();
+        try {
+            // Nombres que existian antes del cambio.
+            Set<String> oldNames = new HashSet<>();
+            for (ComponentField f : readFields(defId)) oldNames.add(f.getFieldName());
+
+            String deleteSql = "DELETE FROM component_fields WHERE component_def_id = ?";
+            try (PreparedStatement stmt = connection.prepareStatement(deleteSql)) {
+                stmt.setInt(1, defId);
+                stmt.executeUpdate();
+            }
             insertFields(defId, fields);
+
+            // Los que ya no existen: renombrados o borrados. Sus valores en los items
+            // quedarian huerfanos, porque item_components se indexa por field_name.
+            for (ComponentField f : fields) oldNames.remove(f.getFieldName());
+            if (!oldNames.isEmpty()) purgeOrphanValues(defId, oldNames);
+
             return true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void purgeOrphanValues(int defId, Set<String> deadNames) throws SQLException {
+        String sql = "DELETE FROM item_components WHERE component_def_id = ? AND field_name = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            for (String name : deadNames) {
+                stmt.setInt(1, defId);
+                stmt.setString(2, name);
+                stmt.addBatch();
+            }
+            stmt.executeBatch();
         }
     }
 

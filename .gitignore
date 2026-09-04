@@ -44,3 +44,6 @@ build/
 ### Logs ###
 logs/
 *.log
+
+### DB ###
+stack_db_backup.sql

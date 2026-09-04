@@ -56,7 +56,7 @@ public class AddComponentView extends AbstractAddView {
         HBox.setHgrow(enumValuesField, Priority.ALWAYS);
 
         fieldTypeCombo.valueProperty().addListener((obs, oldV, newV) -> {
-            boolean isEnum = newV == FieldType.ENUM;
+            boolean isEnum = newV == FieldType.ENUM || newV == FieldType.ENUMLIST;
             enumValuesField.setVisible(isEnum);
             enumValuesField.setManaged(isEnum);
         });
@@ -100,7 +100,7 @@ public class AddComponentView extends AbstractAddView {
         HBox.setHgrow(nameLabel, Priority.ALWAYS);
 
         Label typeLabel = new Label(field.getFieldType().toString()
-                + (field.getFieldType() == FieldType.ENUM ? " " + field.getEnumValues() : ""));
+                + (field.getFieldType() == FieldType.ENUM || field.getFieldType() == FieldType.ENUMLIST ? " " + field.getEnumValues() : ""));
         typeLabel.setMinWidth(80);
 
         Button editBtn = new Button("Editar");

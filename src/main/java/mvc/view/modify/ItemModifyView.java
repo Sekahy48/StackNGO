@@ -1,5 +1,7 @@
 package mvc.view.modify;
  
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import dataTransportLayer.ComponentDefinitionDTO;
@@ -101,6 +103,67 @@ public class ItemModifyView extends AbstractModifyView<ItemDTO>{
                 HBox row = new HBox(10, fLabel, valueCombo);
                 row.setAlignment(Pos.CENTER_LEFT);
                 fieldsBox.getChildren().add(row);
+            } else if (field.getFieldType() == mvc.model.entries.component.FieldType.ENUMLIST) {
+
+                ComboBox<String> enumCombo = new ComboBox<>();
+                enumCombo.setPromptText("Selecciona un valor");
+                enumCombo.getItems().addAll(field.getEnumValues());
+
+                Button addButton = new Button("Añadir");
+                Button removeButton = new Button("Retirar");
+
+                TextField selectedValues = new TextField();
+                selectedValues.setEditable(false);
+
+                List<String> selected = new ArrayList<>();
+
+                if (currentValue != null && !currentValue.isBlank()) {
+                    selected.addAll(Arrays.asList(currentValue.split(",")));
+                }
+
+                selectedValues.setText(String.join(", ", selected));
+
+                addButton.setOnAction(e -> {
+                    String valueToAdd = enumCombo.getValue();
+
+                    if (valueToAdd != null && !selected.contains(valueToAdd)) {
+                        selected.add(valueToAdd);
+
+                        selectedValues.setText(String.join(", ", selected));
+
+                        value.setValue(
+                            field.getFieldName(),
+                            String.join(",", selected)
+                        );
+                    }
+                });
+
+                removeButton.setOnAction(e -> {
+                    String valueToRemove = enumCombo.getValue();
+
+                    if (valueToRemove != null && selected.remove(valueToRemove)) {
+                        selectedValues.setText(String.join(", ", selected));
+
+                        value.setValue(
+                            field.getFieldName(),
+                            String.join(",", selected)
+                        );
+                    }
+                });
+
+                HBox row = new HBox(
+                    10,
+                    fLabel,
+                    enumCombo,
+                    addButton,
+                    removeButton,
+                    selectedValues
+                );
+
+                row.setAlignment(Pos.CENTER_LEFT);
+
+                fieldsBox.getChildren().add(row);
+  
             } else if (field.getFieldType() == FieldType.BOOLEAN) {
                 ComboBox<String> boolCombo = new ComboBox<>();
                 boolCombo.getItems().addAll("true", "false");
