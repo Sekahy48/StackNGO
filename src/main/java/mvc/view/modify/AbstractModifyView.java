@@ -78,7 +78,7 @@ public class AbstractModifyView<T extends EntryDTO> extends AbstractView {
 
         StackPane iconPane = new StackPane(currentIconView);
         iconPane.setPrefSize(140, 140);
-        iconPane.setStyle("-fx-border-color: gray;");
+        iconPane.getStyleClass().add("icon-pane");
 
         suggestIconBtn = new Button("Sugerir icono");
         suggestIconBtn.setPrefSize(140, 40);

@@ -49,10 +49,10 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * @param name the entry name
      * @return the entry of type E
      */
-    public E  getEntryByName(String name) {
+    public E  getEntryByName(String name, int parentId) {
         E out = getConcreteEntryByName(name);
         if (out == null) {
-            T dto = getDTOByName(name);
+            T dto = getDTOByName(name, parentId);
             out = createEntry(dto);
             addConcreteEntry(out);
         }
@@ -65,8 +65,8 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * @param name entries name to search.
      * @return true if found
      */
-    public boolean containsEntryByName(String name) {
-        return getDAO().readByName(name) != null;
+    public boolean containsEntryByName(String name, int parentId) {
+        return getDAO().readByName(name, parentId) != null;
     }
 
     /**
@@ -127,8 +127,8 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * @param name the name of the entry
      * @return the DTO of type T 
      */
-    public T getDTOByName(String name) {
-        T out = getDAO().readByName(name);
+    public T getDTOByName(String name, int parentId) {
+        T out = getDAO().readByName(name, parentId);
         if (out == null) {
             String error = "Entry with name " + name + " not found in database.";
             Logger.getInstance().warning(this.getClass().toString(), error); 
@@ -194,7 +194,7 @@ public abstract class AbstractEntryService<T extends EntryDTO, E extends Entry> 
      * is alredy present in database.
      */ 
     public E saveFromImport(T dto, int[] extraData) {
-        T existingDTO = getDAO().readByName(dto.name);
+        T existingDTO = getDAO().readByName(dto.name, extraData[0]);
         if (existingDTO != null) {
             dto.id = existingDTO.id;
         }

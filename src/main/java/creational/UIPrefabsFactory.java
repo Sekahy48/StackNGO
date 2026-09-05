@@ -23,6 +23,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import utilities.ThemeManager;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -43,6 +44,7 @@ public class UIPrefabsFactory {
         container.setPadding(new Insets(5));
         container.setFillWidth(true);
         container.setMaxWidth(Double.MAX_VALUE);
+        container.getStyleClass().add("scrollable-list-box");
 
         return container;
     }
@@ -55,6 +57,7 @@ public class UIPrefabsFactory {
 
         VBox container = new VBox(5, titleLabel, scrollPane);
         container.setPadding(new Insets(5));
+        container.getStyleClass().add("scrollable-list-box");
 
         return container;
 
@@ -98,7 +101,7 @@ public class UIPrefabsFactory {
         Label amountLabel = new Label(String.valueOf(amount));
         amountLabel.setMinWidth(32);
         amountLabel.setAlignment(Pos.CENTER);
-        amountLabel.setStyle("-fx-padding: 2 6 2 6;");
+        amountLabel.getStyleClass().add("amount-label");
 
         HBox row = new HBox(8, iv, nameLabel, amountLabel);
         row.setAlignment(Pos.CENTER);
@@ -207,7 +210,7 @@ public class UIPrefabsFactory {
 
 
     public static Button createRemoveButton(){
-        Image icon = new Image("images/papelera.png");   // ruta relativa o URL
+        Image icon = ThemeManager.getThemedImage("papelera.png");   // ruta relativa o URL
         ImageView iconView = new ImageView(icon);
         iconView.setFitWidth(24);   // ancho deseado
         iconView.setFitHeight(24);  // alto deseado
@@ -215,7 +218,7 @@ public class UIPrefabsFactory {
 
         Button btn = new Button();
         btn.setGraphic(iconView);   // aquí pones la imagen en el botón
-        btn.setStyle("-fx-background-color: transparent;"); // opcional, sin fondo
+        btn.getStyleClass().add("icon-button");
 
         return btn;
     }
@@ -232,7 +235,7 @@ public class UIPrefabsFactory {
         inventoryIcon.setFitHeight(defaultSize);
 
         inventoryButton.setGraphic(inventoryIcon);
-        inventoryButton.setStyle("-fx-background-color: transparent;");
+        inventoryButton.getStyleClass().add("icon-button");
 
         // Private zone
         ImageView userIcon = new ImageView(new Image("images/usuario.png"));
@@ -240,7 +243,7 @@ public class UIPrefabsFactory {
         userIcon.setFitHeight(defaultSize);
 
         userButton.setGraphic(userIcon);
-        userButton.setStyle("-fx-background-color: transparent;");
+        userButton.getStyleClass().add("icon-button");
 
         // Collections
         ImageView collectionsIcon = new ImageView(new Image("images/caja.png"));
@@ -248,7 +251,7 @@ public class UIPrefabsFactory {
         collectionsIcon.setFitHeight(defaultSize);
 
         collectionButton.setGraphic(collectionsIcon);
-        collectionButton.setStyle("-fx-background-color: transparent;");
+        collectionButton.getStyleClass().add("icon-button");
         
         // Components
         ImageView componentsIcon = new ImageView(new Image("images/components.png"));
@@ -256,7 +259,7 @@ public class UIPrefabsFactory {
         componentsIcon.setFitHeight(defaultSize);
 
         componentButton.setGraphic(componentsIcon);
-        componentButton.setStyle("-fx-background-color: transparent;");
+        componentButton.getStyleClass().add("icon-button");
 
         // Items
         ImageView itemsIcon = new ImageView(new Image("images/items.png"));
@@ -264,22 +267,29 @@ public class UIPrefabsFactory {
         itemsIcon.setFitHeight(defaultSize);
 
         itemButton.setGraphic(itemsIcon);
-        itemButton.setStyle("-fx-background-color: transparent;");
+        itemButton.getStyleClass().add("icon-button");
 
         sideBar.getChildren().addAll(userButton, collectionButton, componentButton, itemButton, inventoryButton);
-        sideBar.setStyle("-fx-border-color: black; -fx-border-width: 2;");
-        sideBar.setPrefWidth(150);
+        sideBar.getStyleClass().add("sidebar");
+        sideBar.setMinWidth(75);
+        sideBar.setPrefWidth(75);
+        sideBar.setMaxWidth(75);
 
-        
         splitPane.setOrientation(Orientation.HORIZONTAL);
         splitPane.getItems().addAll(sideBar, content);
-        splitPane.setDividerPositions(0.15);
         VBox.setVgrow(splitPane, Priority.ALWAYS);
+        SplitPane.setResizableWithParent(sideBar, false);
+
+        // Mantener la sidebar con ancho fijo tras cada cambio de tamaño
+        splitPane.widthProperty().addListener((obs, oldW, newW) -> {
+            double w = newW.doubleValue();
+            if (w > 0) splitPane.setDividerPositions(75.0 / w);
+        });
     }
  
 
     public static Button createGoBackButton(){
-        Image icon = new Image("images/volver.png");   // ruta relativa o URL
+        Image icon = ThemeManager.getThemedImage("volver.png");   // ruta relativa o URL
         ImageView iconView = new ImageView(icon);
         iconView.setFitWidth(24);   // ancho deseado
         iconView.setFitHeight(24);  // alto deseado
@@ -287,7 +297,7 @@ public class UIPrefabsFactory {
 
         Button btn = new Button();
         btn.setGraphic(iconView);   // aquí pones la imagen en el botón
-        btn.setStyle("-fx-background-color: transparent;"); // opcional, sin fondo
+        btn.getStyleClass().add("icon-button");
 
         return btn;
     }

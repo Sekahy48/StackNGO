@@ -40,3 +40,10 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Logs ###
+logs/
+*.log
+
+### DB ###
+stack_db_backup.sql

@@ -4,6 +4,7 @@ import creational.UIPrefabsFactory;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import utilities.ThemeManager;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -33,30 +34,22 @@ public class AddRecipeView extends AbstractAddView {
         this.ingredientsList = new VBox(5);
         this.resultsList = new VBox(5);
 
-        this.plusView1 = new ImageView(new Image("images/añadir.png"));
+        this.plusView1 = new ImageView(ThemeManager.getThemedImage("añadir.png"));
         this.plusView1.setFitWidth(20);
         this.plusView1.setFitHeight(20);
 
-        this.plusView2 = new ImageView(new Image("images/añadir.png"));
+        this.plusView2 = new ImageView(ThemeManager.getThemedImage("añadir.png"));
         this.plusView2.setFitWidth(20);
         this.plusView2.setFitHeight(20);
 
         this.addIngredientButton = new Button();
         this.addIngredientButton.setGraphic(plusView1);
-        this.addIngredientButton.setStyle(
-            "-fx-background-color: transparent;" +
-            "-fx-border-color: #c0c0c0;" +
-            "-fx-border-width: 2;"
-        );
+        this.addIngredientButton.getStyleClass().add("add-list-button");
         this.addIngredientButton.setMaxWidth(Double.MAX_VALUE);
 
         this.addResultButton = new Button();
         this.addResultButton.setGraphic(plusView2);
-        this.addResultButton.setStyle(
-            "-fx-background-color: transparent;" +
-            "-fx-border-color: #c0c0c0;" +
-            "-fx-border-width: 2;"
-        );
+        this.addResultButton.getStyleClass().add("add-list-button");
         this.addResultButton.setMaxWidth(Double.MAX_VALUE);
 
         this.ingredients = new VBox(5);

@@ -1,2 +1,0 @@
-(2026-01-20 15:25:07)	[ERROR] class mvc.model.entries.repository.EntriesRepository: El repositorio no puede tener una expulsion de cache nula
-(2026-01-20 15:25:07)	[ERROR] class mvc.model.entries.repository.EntriesRepository: El limite del cache del repositorio no puede ser negativo o nulo

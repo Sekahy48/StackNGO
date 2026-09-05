@@ -40,10 +40,10 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
     }
 
     @Override
-    public Recipe getEntryByName(String name) {
+    public Recipe getEntryByName(String name, int parentId) {
         Recipe out = data.getEntriesRepo().getRecipeByName(name);
         if (out == null) {
-            RecipeDTO dto = getDTOByName(name);
+            RecipeDTO dto = getDTOByName(name, parentId);
             out = createEntry(dto);
             data.getEntriesRepo().addRecipe(out);
         }
@@ -83,8 +83,8 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
     }
 
     @Override
-    public RecipeDTO getDTOByName(String name) {
-        RecipeDTO out = data.getRecipeDAO().readByName(name);
+    public RecipeDTO getDTOByName(String name, int parentId) {
+        RecipeDTO out = data.getRecipeDAO().readByName(name, parentId);
         if (out == null) {
             String error = "Recipe with name " + name + " not found in database.";
             Logger.getInstance().warning(this.getClass().toString(), error); 
@@ -132,7 +132,7 @@ public class RecipeService extends AbstractEntryService<RecipeDTO, Recipe> {
     @Override
     public Recipe saveFromImport(RecipeDTO dto, int[] extraData) {
         RecipeDAO dao = this.data.getRecipeDAO();
-        RecipeDTO existingDTO = dao.readByName(dto.name);
+        RecipeDTO existingDTO = dao.readByName(dto.name, extraData[0]);
         if (existingDTO != null) {
             dto.id = existingDTO.id;
         }

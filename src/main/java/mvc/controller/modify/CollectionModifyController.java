@@ -45,7 +45,7 @@ public class CollectionModifyController extends AbstractModifyController<Collect
         String newName = !this.view.getNewName().isBlank() ? this.view.getNewName() : dto.name;
 
         if (!newName.equals(dto.name)) { 
-            if (collectionService.containsEntryByName(newName)){
+            if (collectionService.containsEntryByName(newName, sessionService.getCurrentAccount().getId().value())) {
                 this.view.showAlert("Nombre duplicado","Ya existe una coleccion con ese nombre", Alert.AlertType.ERROR);
                 return null;
             }

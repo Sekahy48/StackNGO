@@ -1,5 +1,7 @@
 package mvc.view.modify;
  
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import dataTransportLayer.ComponentDefinitionDTO;
@@ -80,7 +82,7 @@ public class ItemModifyView extends AbstractModifyView<ItemDTO>{
     public void addComponentRow(ComponentDefinitionDTO def, ItemComponentValue value, Runnable onRemove) {
 
         Label nameLabel = new Label(def.name);
-        nameLabel.setStyle("-fx-font-weight: bold;");
+        nameLabel.getStyleClass().add("bold-label");
 
         Button removeBtn = new Button("Quitar");
         removeBtn.setOnAction(e -> onRemove.run());
@@ -101,6 +103,76 @@ public class ItemModifyView extends AbstractModifyView<ItemDTO>{
                 HBox row = new HBox(10, fLabel, valueCombo);
                 row.setAlignment(Pos.CENTER_LEFT);
                 fieldsBox.getChildren().add(row);
+            } else if (field.getFieldType() == mvc.model.entries.component.FieldType.ENUMLIST) {
+
+                ComboBox<String> enumCombo = new ComboBox<>();
+                enumCombo.setPromptText("Selecciona un valor");
+                enumCombo.getItems().addAll(field.getEnumValues());
+
+                Button addButton = new Button("Añadir");
+                Button removeButton = new Button("Retirar");
+
+                TextField selectedValues = new TextField();
+                selectedValues.setEditable(false);
+
+                List<String> selected = new ArrayList<>();
+
+                if (currentValue != null && !currentValue.isBlank()) {
+                    selected.addAll(Arrays.asList(currentValue.split(",")));
+                }
+
+                selectedValues.setText(String.join(", ", selected));
+
+                addButton.setOnAction(e -> {
+                    String valueToAdd = enumCombo.getValue();
+
+                    if (valueToAdd != null && !selected.contains(valueToAdd)) {
+                        selected.add(valueToAdd);
+
+                        selectedValues.setText(String.join(", ", selected));
+
+                        value.setValue(
+                            field.getFieldName(),
+                            String.join(",", selected)
+                        );
+                    }
+                });
+
+                removeButton.setOnAction(e -> {
+                    String valueToRemove = enumCombo.getValue();
+
+                    if (valueToRemove != null && selected.remove(valueToRemove)) {
+                        selectedValues.setText(String.join(", ", selected));
+
+                        value.setValue(
+                            field.getFieldName(),
+                            String.join(",", selected)
+                        );
+                    }
+                });
+
+                HBox row = new HBox(
+                    10,
+                    fLabel,
+                    enumCombo,
+                    addButton,
+                    removeButton,
+                    selectedValues
+                );
+
+                row.setAlignment(Pos.CENTER_LEFT);
+
+                fieldsBox.getChildren().add(row);
+  
+            } else if (field.getFieldType() == FieldType.BOOLEAN) {
+                ComboBox<String> boolCombo = new ComboBox<>();
+                boolCombo.getItems().addAll("true", "false");
+                boolCombo.setValue("true".equalsIgnoreCase(currentValue) ? "true" : "false");
+                value.setValue(field.getFieldName(), boolCombo.getValue());
+                boolCombo.valueProperty().addListener((obs, oldV, newV) -> value.setValue(field.getFieldName(), newV));
+                HBox row = new HBox(10, fLabel, boolCombo);
+                row.setAlignment(Pos.CENTER_LEFT);
+                fieldsBox.getChildren().add(row);
             } else {
                 TextField valueField = new TextField(currentValue != null ? currentValue : "");
                 valueField.textProperty().addListener((obs, oldV, newV) -> value.setValue(field.getFieldName(), newV));
@@ -111,7 +183,7 @@ public class ItemModifyView extends AbstractModifyView<ItemDTO>{
         }
 
         VBox componentBox = new VBox(5, header, fieldsBox);
-        componentBox.setStyle("-fx-border-color: gray; -fx-border-width: 1; -fx-padding: 8;");
+        componentBox.getStyleClass().add("component-box");
         componentBox.setUserData(value);
 
         componentsList.getChildren().add(componentBox);

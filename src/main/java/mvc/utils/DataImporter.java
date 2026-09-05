@@ -4,10 +4,15 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import creational.DTOFactory;
 import dataTransportLayer.*;
+import domain.accounts.Account;
 import javafx.stage.FileChooser;
 import logger.Logger;
+import mvc.model.entries.component.ComponentField;
+import mvc.model.entries.component.FieldType;
+import mvc.model.entries.component.ItemComponentValue;
 import mvc.model.entries.repository.EntryIdGenerator;
 import service.CollectionService;
+import service.ComponentService;
 import service.ItemService;
 import service.RecipeService;
 import service.ServiceConsumer;
@@ -25,9 +30,12 @@ public class DataImporter extends ServiceConsumer {
         CollectionService collectionService = this.getService(ServiceType.COLLECTION);
         ItemService itemService = this.getService(ServiceType.ITEM);
         RecipeService recipeService = this.getService(ServiceType.RECIPE);
+        ComponentService componentService = this.getService(ServiceType.COMPONENT);
         SessionService sessionService = this.getService(ServiceType.SESSION);
 
         List<RecipeDTO> wrongRecipes = new ArrayList<>();
+
+        Account currentAccount = sessionService.getCurrentAccount();
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Importar datos del usuario");
@@ -36,7 +44,7 @@ public class DataImporter extends ServiceConsumer {
         if (file == null) return wrongRecipes;
 
         Map<String, Path> imagesMap = new HashMap<>();
-        List<Map<String, Object>> collectionsData = null;
+        Map<String, Object> root = null;
 
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(file))) {
             ZipEntry entry;
@@ -49,8 +57,8 @@ public class DataImporter extends ServiceConsumer {
                         baos.write(buffer, 0, read);
                     }
                     String json = baos.toString();
-                    Type listType = new TypeToken<List<Map<String, Object>>>() {}.getType();
-                    collectionsData = new Gson().fromJson(json, listType);
+                    Type rootType = new TypeToken<Map<String, Object>>() {}.getType();
+                    root = new Gson().fromJson(json, rootType);
                 } else if (entry.getName().startsWith("images/")) {
                     Path tempImg = Files.createTempFile("import_img_", "_" + Paths.get(entry.getName()).getFileName());
                     Files.copy(zis, tempImg, StandardCopyOption.REPLACE_EXISTING);
@@ -63,9 +71,59 @@ public class DataImporter extends ServiceConsumer {
             return wrongRecipes;
         }
 
-        if (collectionsData == null) return wrongRecipes;
+        if (root == null) return wrongRecipes;
 
         EntryIdGenerator idGen = EntryIdGenerator.getInstance();
+        int accountId = sessionService.getCurrentAccount().getId().value();
+
+        // ===== COMPONENTS (a nivel de cuenta) =====
+        Map<Integer, Integer> oldDefIdToNewDefId = new HashMap<>();
+        Map<Integer, List<ComponentField>> newDefIdToFields = new HashMap<>();
+
+        List<Map<String, Object>> componentsRaw = (List<Map<String, Object>>) root.get("components");
+        if (componentsRaw != null) {
+            for (Map<String, Object> compData : componentsRaw) {
+                String compName = (String) compData.get("name");
+                ComponentDefinitionDTO oldCompDTO = componentService.getDTOByName(compName, currentAccount.getId().value());
+
+                String compDescription = (String) compData.get("description");
+                String compImgName = (String) compData.get("imagePath");
+                Path compImgPath = compImgName != null
+                        ? imagesMap.get(Paths.get(compImgName).getFileName().toString())
+                        : null;
+
+                String resolvedImg  = compImgPath != null ? compImgPath.toString()
+                                    : oldCompDTO   != null ? oldCompDTO.imagePath
+                                    : null;
+                String resolvedDesc = compDescription != null ? compDescription
+                                    : oldCompDTO      != null ? oldCompDTO.description
+                                    : null;
+
+                Object oldIdObj = compData.get("id");
+                int oldDefId = oldIdObj != null ? ((Double) oldIdObj).intValue() : -1;
+                int resolvedId = oldCompDTO != null ? oldCompDTO.id : idGen.generateId();
+
+                List<Map<String, Object>> fieldsRaw = (List<Map<String, Object>>) compData.get("fields");
+                List<ComponentField> fields = new ArrayList<>();
+                if (fieldsRaw != null) {
+                    for (Map<String, Object> fieldData : fieldsRaw) {
+                        String fieldName = (String) fieldData.get("fieldName");
+                        FieldType fieldType = FieldType.valueOf((String) fieldData.get("fieldType"));
+                        List<String> enumValues = (List<String>) fieldData.get("enumValues");
+                        fields.add(new ComponentField(fieldName, fieldType, enumValues != null ? enumValues : new ArrayList<>()));
+                    }
+                }
+
+                ComponentDefinitionDTO newCompDTO = DTOFactory.component(resolvedId, compName, resolvedImg, resolvedDesc, fields);
+                componentService.saveFromImport(newCompDTO, new int[]{accountId});
+
+                if (oldDefId != -1) oldDefIdToNewDefId.put(oldDefId, resolvedId);
+                newDefIdToFields.put(resolvedId, fields);
+            }
+        }
+
+        List<Map<String, Object>> collectionsData = (List<Map<String, Object>>) root.get("collections");
+        if (collectionsData == null) return wrongRecipes;
 
         // PASADA 1: collections + items (todo item disponible antes de tocar recetas)
         Map<String, Integer> collectionNameToId = new HashMap<>();
@@ -74,10 +132,10 @@ public class DataImporter extends ServiceConsumer {
         for (Map<String, Object> collMap : collectionsData) {
             Map<String, Object> collData = (Map<String, Object>) collMap.get("collection");
             String collectionName = (String) collData.get("name");
-            CollectionDTO oldCollectionDTO = collectionService.getDTOByName(collectionName);
+            CollectionDTO oldCollectionDTO = collectionService.getDTOByName(collectionName, currentAccount.getId().value());
 
             String collectionDescription = (String) collData.get("description");
-            String collectionImgName = (String) collData.get("iconPath");
+            String collectionImgName = (String) collData.get("imagePath");
             Path colectionImgPath = collectionImgName != null
                     ? imagesMap.get(Paths.get(collectionImgName).getFileName().toString())
                     : null;
@@ -98,7 +156,7 @@ public class DataImporter extends ServiceConsumer {
                     resolvedCDesc,
                     resolvedCId
                 );
-            int[] extraData = new int[]{sessionService.getCurrentAccount().getId().value()};
+            int[] extraData = new int[]{accountId};
             collectionService.saveFromImport(newCollection, extraData);
 
             collectionNameToId.put(collectionName, newCollection.id);
@@ -106,10 +164,10 @@ public class DataImporter extends ServiceConsumer {
             List<Map<String, Object>> items = (List<Map<String, Object>>) collMap.get("items");
             for (Map<String, Object> itemData : items) {
                 String itemName = (String) itemData.get("name");
-                ItemDTO oldItemDTO = itemService.getDTOByName(itemName);
+                ItemDTO oldItemDTO = itemService.getDTOByName(itemName, newCollection.id);
 
                 String itemDescription = (String) itemData.get("description");
-                String itemImgName    = (String) itemData.get("iconPath");
+                String itemImgName    = (String) itemData.get("imagePath");
                 Path itemImgPath = itemImgName != null
                     ? imagesMap.get(Paths.get(itemImgName).getFileName().toString())
                     : null;
@@ -122,7 +180,24 @@ public class DataImporter extends ServiceConsumer {
                                     : null;
                 int    resolvedId   = oldItemDTO != null ? oldItemDTO.id : idGen.generateId();
 
-                ItemDTO newItemDTO = DTOFactory.item(itemName, resolvedImg, resolvedDesc, resolvedId);
+                // ===== COMPONENTES DEL ITEM =====
+                List<ItemComponentValue> components = new ArrayList<>();
+                List<Map<String, Object>> componentsRawForItem = (List<Map<String, Object>>) itemData.get("components");
+                if (componentsRawForItem != null) {
+                    for (Map<String, Object> compValueData : componentsRawForItem) {
+                        Object oldDefIdObj = compValueData.get("componentDefId");
+                        int oldDefId = oldDefIdObj != null ? ((Double) oldDefIdObj).intValue() : -1;
+                        Integer newDefId = oldDefIdToNewDefId.get(oldDefId);
+                        if (newDefId == null) {
+                            Logger.getInstance().error("DataImporter", "No se encontró el componente id '" + oldDefId + "' para el item '" + itemName + "'. Omitiendo componente.");
+                            continue;
+                        }
+                        Map<String, String> fieldValues = (Map<String, String>) compValueData.get("fieldValues");
+                        components.add(new ItemComponentValue(newDefId, fieldValues != null ? new HashMap<>(fieldValues) : new HashMap<>()));
+                    }
+                }
+
+                ItemDTO newItemDTO = DTOFactory.item(itemName, resolvedImg, resolvedDesc, resolvedId, components);
                 itemService.saveFromImport(newItemDTO, new int[]{newCollection.id});
 
                 Object oldItemId = itemData.get("id");
@@ -141,10 +216,10 @@ public class DataImporter extends ServiceConsumer {
 
             for (Map<String, Object> recipeData : recipes) {
                 String recipeName = (String) recipeData.get("name");
-                RecipeDTO oldRecipeDTO = recipeService.getDTOByName(recipeName);
+                RecipeDTO oldRecipeDTO = recipeService.getDTOByName(recipeName, collectionId);
 
                 String recipeDescription = (String) recipeData.get("description");
-                String recipeImgName     = (String) recipeData.get("iconPath");
+                String recipeImgName     = (String) recipeData.get("imagePath");
                 Path recipeImgPath = recipeImgName != null
                     ? imagesMap.get(Paths.get(recipeImgName).getFileName().toString())
                     : null;
@@ -217,6 +292,7 @@ public class DataImporter extends ServiceConsumer {
         out.add(ServiceType.COLLECTION);
         out.add(ServiceType.ITEM);
         out.add(ServiceType.RECIPE);
+        out.add(ServiceType.COMPONENT);
         out.add(ServiceType.SESSION);
         return out;
     }

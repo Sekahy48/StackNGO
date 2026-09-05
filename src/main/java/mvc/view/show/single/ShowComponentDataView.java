@@ -8,8 +8,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
+import javafx.scene.control.TextField; 
+import utilities.ThemeManager;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -55,7 +55,11 @@ public class ShowComponentDataView extends AbstractShowEntryView {
         fieldsList = new VBox(5);
         fieldsList.setPadding(new Insets(5, 0, 5, 0));
 
-        fieldsScroll = new ScrollPane(fieldsList);
+        VBox fieldsContainer = new VBox(5, fieldsTitle, fieldsList);
+        fieldsContainer.setPadding(new Insets(5));
+        fieldsContainer.getStyleClass().add("scrollable-list-box");
+
+        fieldsScroll = new ScrollPane(fieldsContainer);
         fieldsScroll.setFitToWidth(true);
         fieldsScroll.setPrefHeight(150);
 
@@ -64,27 +68,27 @@ public class ShowComponentDataView extends AbstractShowEntryView {
         goBackIcon.setFitWidth(32);
         goBackButton = new Button();
         goBackButton.setGraphic(goBackIcon);
-        goBackButton.setStyle("-fx-background-color: transparent;-fx-border-color: black;-fx-border-width: 2;");
+        goBackButton.getStyleClass().add("action-button");
 
-        modifyIcon = new ImageView(new Image("images/lapiz.png"));
+        modifyIcon = new ImageView(ThemeManager.getThemedImage("lapiz.png"));
         modifyIcon.setFitHeight(32);
         modifyIcon.setFitWidth(32);
         modifyButton = new Button();
         modifyButton.setGraphic(modifyIcon);
-        modifyButton.setStyle("-fx-background-color: transparent;-fx-border-color: black;-fx-border-width: 2;");
+        modifyButton.getStyleClass().add("action-button");
 
-        deleteIcon = new ImageView(new Image("images/papelera.png"));
+        deleteIcon = new ImageView(ThemeManager.getThemedImage("papelera.png"));
         deleteIcon.setFitHeight(32);
         deleteIcon.setFitWidth(32);
         deleteButton = new Button();
         deleteButton.setGraphic(deleteIcon);
-        deleteButton.setStyle("-fx-background-color: transparent;-fx-border-color: black;-fx-border-width: 2;");
+        deleteButton.getStyleClass().add("action-button");
 
         actionButtonHBox = new HBox(10, goBackButton, modifyButton, deleteButton);
         actionButtonHBox.setPadding(new Insets(10, 0, 0, 0));
-        actionButtonHBox.setStyle("-fx-alignment: center-right;");
+        actionButtonHBox.setAlignment(Pos.CENTER_RIGHT);
 
-        centralPanel.getChildren().addAll(nameField, descriptionArea, fieldsTitle, fieldsScroll, actionButtonHBox);
+        centralPanel.getChildren().addAll(nameField, descriptionArea, fieldsScroll, actionButtonHBox);
 
         // --- PANEL DERECHO ---
         rightPanel = new VBox();

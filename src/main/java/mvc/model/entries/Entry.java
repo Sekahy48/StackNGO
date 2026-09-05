@@ -83,9 +83,7 @@ public abstract class Entry implements Comparable<Entry>{
                 dest = src;
             } else {
                 dest = appImagesDir.resolve(src.getFileName());
-                if (!Files.exists(dest)) {
-                    Files.copy(src, dest);
-                }
+                Files.copy(src, dest, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
             }
 
             this.imagePath = dest.toString();

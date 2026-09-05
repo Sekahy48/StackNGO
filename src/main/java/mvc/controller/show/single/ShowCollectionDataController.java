@@ -13,7 +13,8 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import logger.Logger; 
+import logger.Logger;
+import mvc.utils.DataExporter;
 import mvc.view.ViewType;
 import mvc.view.show.single.ShowCollectionDataView;
 import service.CollectionService; 
@@ -25,6 +26,8 @@ import utilities.ImageUtils;
 
 public class ShowCollectionDataController extends AbstractShowDataController<ShowCollectionDataView> { 
 
+    private DataExporter dataExporter;
+
     @Override
     public void handleButtons() {
 
@@ -34,7 +37,9 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
         this.view.getAddItemButton().setOnAction(e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.ADD_ITEM));});
 
         this.view.getAddRecipeButton().setOnAction(e -> {EventBus.getInstance().publish(new NavigateEvent(ViewType.ADD_RECIPE));;});
- 
+        
+        this.view.getExportCollectionButton().setOnAction(e -> { dataExporter.exportCollection();});
+
         this.view.getModifyButton().setOnAction(
                 e -> { EventBus.getInstance().publish(new NavigateEvent(ViewType.MODIFY_COLLECTION)); }
         );
@@ -125,5 +130,9 @@ public class ShowCollectionDataController extends AbstractShowDataController<Sho
     @Override
     public Set<ServiceType> requiredServices() {
         return Set.of(ServiceType.COLLECTION, ServiceType.ITEM, ServiceType.RECIPE, ServiceType.SESSION); 
+    }
+
+    public void setExporter(DataExporter dataExporter) {
+        this.dataExporter = dataExporter;
     }
 }

@@ -122,7 +122,7 @@ public class CollectionService extends AbstractEntryService<CollectionDTO, Colle
     @Override
     public Collection saveFromImport(CollectionDTO dto, int[] extraData) {
         CollectionDAO dao = this.data.getCollectionDAO();
-        CollectionDTO existingDTO = dao.readByName(dto.name);
+        CollectionDTO existingDTO = dao.readByName(dto.name, extraData[0]);
         if (existingDTO != null) {
             dto.id = existingDTO.id;
         }
