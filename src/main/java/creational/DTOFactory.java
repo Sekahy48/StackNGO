@@ -16,6 +16,7 @@ import dataTransportLayer.RecipeDTO;
 import dataTransportLayer.RecipeWithCollectionDTO;
 import mvc.model.entries.component.ComponentField;
 import mvc.model.entries.component.ItemComponentValue;
+import mvc.model.entries.model3d.ItemModelStage;
 
 public final class DTOFactory {
 
@@ -53,6 +54,18 @@ public final class DTOFactory {
             List<ItemComponentValue> components
     ) {
         return new ItemDTO(name, iconPath, description, id, components);
+    }
+
+    public static ItemDTO item(
+            String name,
+            String iconPath,
+            String description,
+            int id,
+            List<ItemComponentValue> components,
+            String modelDrivenBy,
+            List<ItemModelStage> modelStages
+    ) {
+        return new ItemDTO(name, iconPath, description, id, components, modelDrivenBy, modelStages);
     }
 
     public static ItemDTO item(

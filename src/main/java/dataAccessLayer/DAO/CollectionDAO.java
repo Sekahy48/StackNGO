@@ -12,9 +12,26 @@ import mvc.model.entries.Collection;
 
 public class CollectionDAO extends AbstractEntryDAO<CollectionDTO, Collection> {
 
+    private final ItemModelDAO itemModelDAO = new ItemModelDAO();
+
     @Override
     protected String getTableName() {
         return "collections";
+    }
+
+    /**
+     * Borra la coleccion y repasa despues la carpeta de modelos.
+     *
+     * <p>Los items de la coleccion caen por cascada sin pasar por {@link ItemDAO#delete},
+     * asi que sus .glb se quedarian en disco sin que ninguna fila los nombrase. El repaso va
+     * despues del borrado porque es entonces cuando se sabe que ha dejado de estar
+     * referenciado.</p>
+     */
+    @Override
+    public boolean delete(int id) {
+        boolean deleted = super.delete(id);
+        if (deleted) itemModelDAO.purgeUnreferenced();
+        return deleted;
     }
 
     @Override

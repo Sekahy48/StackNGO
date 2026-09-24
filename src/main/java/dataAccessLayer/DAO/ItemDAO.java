@@ -15,6 +15,7 @@ import mvc.model.entries.component.ItemComponentValue;
 public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
 
     private final ItemComponentDAO itemComponentDAO = new ItemComponentDAO();
+    private final ItemModelDAO itemModelDAO = new ItemModelDAO();
 
     @Override
     protected String getTableName() {
@@ -29,8 +30,24 @@ public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
             rs.getString("icon"),
             rs.getString("description"),
             id,
-            itemComponentDAO.readByItem(id)
+            itemComponentDAO.readByItem(id),
+            rs.getString("model_driven_by"),
+            itemModelDAO.readByItem(id)
         );
+    }
+
+    /**
+     * Borra el item y, antes, sus modelos.
+     *
+     * <p>La cascada de la base de datos se lleva las filas de etapas y ficheros sola, pero
+     * los .glb viven en la carpeta de la aplicacion y nadie mas los conoce. Si el borrado
+     * del item fallara despues, lo perdido serian ficheros que ya no se veian en ningun
+     * sitio, no filas.</p>
+     */
+    @Override
+    public boolean delete(int id) {
+        itemModelDAO.purgeForItem(id);
+        return super.delete(id);
     }
 
     @Override
@@ -64,15 +81,19 @@ public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
 
     @Override
     public boolean create(Item entry, int[] foreignKeys) {
-        String sql = "INSERT INTO items (id, name, icon, description, collection_id) VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO items (id, name, icon, description, collection_id, model_driven_by) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, entry.getId().value());
             stmt.setString(2, entry.getName());
             stmt.setString(3, entry.getImagePath());
             stmt.setString(4, entry.getDescription());
             stmt.setInt(5, foreignKeys[0]); // collection_id
+            stmt.setString(6, entry.getModelDrivenBy());
             boolean ok = stmt.executeUpdate() > 0;
-            if (ok) itemComponentDAO.updateForItem(entry.getId().value(), entry.getComponents());
+            if (ok) {
+                itemComponentDAO.updateForItem(entry.getId().value(), entry.getComponents());
+                itemModelDAO.updateForItem(entry.getId().value(), entry.getModelStages());
+            }
             return ok;
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -81,14 +102,18 @@ public class ItemDAO extends AbstractEntryDAO<ItemDTO, Item> {
 
     @Override
     public boolean update(Item entry, int id) {
-        String sql = "UPDATE items SET name = ?, icon = ?, description = ? WHERE id = ?";
+        String sql = "UPDATE items SET name = ?, icon = ?, description = ?, model_driven_by = ? WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, entry.getName());
             stmt.setString(2, entry.getImagePath());
             stmt.setString(3, entry.getDescription());
-            stmt.setInt(4, id);
+            stmt.setString(4, entry.getModelDrivenBy());
+            stmt.setInt(5, id);
             boolean ok = stmt.executeUpdate() > 0;
-            if (ok) itemComponentDAO.updateForItem(id, entry.getComponents());
+            if (ok) {
+                itemComponentDAO.updateForItem(id, entry.getComponents());
+                itemModelDAO.updateForItem(id, entry.getModelStages());
+            }
             return ok;
         } catch (SQLException e) {
             throw new RuntimeException(e);

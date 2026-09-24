@@ -10,7 +10,10 @@ import logger.Logger;
 import mvc.model.entries.component.ComponentField;
 import mvc.model.entries.component.FieldType;
 import mvc.model.entries.component.ItemComponentValue;
+import mvc.model.entries.model3d.ItemModelStage;
+import mvc.model.entries.model3d.ModelFile;
 import mvc.model.entries.repository.EntryIdGenerator;
+import utilities.ModelFileStore;
 import service.CollectionService;
 import service.ComponentService;
 import service.ItemService;
@@ -44,6 +47,7 @@ public class DataImporter extends ServiceConsumer {
         if (file == null) return wrongRecipes;
 
         Map<String, Path> imagesMap = new HashMap<>();
+        Map<String, byte[]> modelsMap = new HashMap<>();
         Map<String, Object> root = null;
 
         try (ZipInputStream zis = new ZipInputStream(new FileInputStream(file))) {
@@ -63,6 +67,17 @@ public class DataImporter extends ServiceConsumer {
                     Path tempImg = Files.createTempFile("import_img_", "_" + Paths.get(entry.getName()).getFileName());
                     Files.copy(zis, tempImg, StandardCopyOption.REPLACE_EXISTING);
                     imagesMap.put(Paths.get(entry.getName()).getFileName().toString(), tempImg);
+                } else if (entry.getName().startsWith("models/")) {
+                    // Los modelos se quedan en memoria y no pasan por un temporal: al
+                    // guardarlos reciben un nombre nuevo, asi que un fichero intermedio solo
+                    // seria un sitio mas del que recogerlos.
+                    ByteArrayOutputStream modelBytes = new ByteArrayOutputStream();
+                    byte[] modelBuffer = new byte[4096];
+                    int modelRead;
+                    while ((modelRead = zis.read(modelBuffer)) != -1) {
+                        modelBytes.write(modelBuffer, 0, modelRead);
+                    }
+                    modelsMap.put(Paths.get(entry.getName()).getFileName().toString(), modelBytes.toByteArray());
                 }
                 zis.closeEntry();
             }
@@ -197,7 +212,15 @@ public class DataImporter extends ServiceConsumer {
                     }
                 }
 
-                ItemDTO newItemDTO = DTOFactory.item(itemName, resolvedImg, resolvedDesc, resolvedId, components);
+                ItemDTO newItemDTO = DTOFactory.item(
+                        itemName,
+                        resolvedImg,
+                        resolvedDesc,
+                        resolvedId,
+                        components,
+                        (String) itemData.get("modelDrivenBy"),
+                        restoreModelStages(itemData, modelsMap)
+                );
                 itemService.saveFromImport(newItemDTO, new int[]{newCollection.id});
 
                 Object oldItemId = itemData.get("id");
@@ -284,6 +307,66 @@ public class DataImporter extends ServiceConsumer {
         }
 
         return wrongRecipes;
+    }
+
+    /**
+     * Reconstruye las etapas de modelo de un item a partir de lo que trae el fichero.
+     *
+     * <p>Cada modelo se vuelve a guardar en la carpeta de la aplicacion y recibe un nombre
+     * almacenado nuevo. No se conserva el del equipo de origen a proposito: ese nombre solo
+     * tenia sentido alli, y reutilizarlo obligaria a que dos equipos se pusieran de acuerdo
+     * en algo que ninguno de los dos necesita saber del otro. Lo que si se conserva es el
+     * nombre original, que es lo unico que el autor reconoce.</p>
+     *
+     * <p>Un fichero que no viene en el paquete se acepta solo si ya existe localmente con
+     * ese mismo nombre, que es el caso de reimportar sobre el equipo donde se creo. Si no
+     * esta en ninguno de los dos sitios se descarta: guardar la fila dejaria una etapa
+     * apuntando a un fichero que no existe, y eso no se descubriria hasta exportar.</p>
+     *
+     * @param itemData datos del item tal como vienen del JSON
+     * @param modelsMap modelos del paquete, por nombre de fichero
+     * @return etapas reconstruidas, sin las que se quedaron sin ningun modelo
+     */
+    @SuppressWarnings("unchecked")
+    private List<ItemModelStage> restoreModelStages(Map<String, Object> itemData, Map<String, byte[]> modelsMap) {
+        List<ItemModelStage> out = new ArrayList<>();
+
+        List<Map<String, Object>> stagesRaw = (List<Map<String, Object>>) itemData.get("modelStages");
+        if (stagesRaw == null) return out;
+
+        for (Map<String, Object> stageData : stagesRaw) {
+            Object thresholdObj = stageData.get("threshold");
+            if (thresholdObj == null) continue;
+
+            ItemModelStage stage = new ItemModelStage(((Number) thresholdObj).floatValue());
+
+            List<Map<String, Object>> filesRaw = (List<Map<String, Object>>) stageData.get("files");
+            if (filesRaw != null) {
+                for (Map<String, Object> fileData : filesRaw) {
+                    String storedName = (String) fileData.get("storedName");
+                    String originalName = (String) fileData.get("originalName");
+                    if (storedName == null) continue;
+
+                    byte[] bytes = modelsMap.get(storedName);
+
+                    String resolvedName = bytes != null
+                            ? ModelFileStore.storeBytes(bytes)
+                            : ModelFileStore.exists(storedName) ? storedName : null;
+
+                    if (resolvedName != null) {
+                        stage.addFile(ModelFile.stored(resolvedName, originalName));
+                    } else {
+                        Logger.getInstance().warning("DataImporter",
+                                "El modelo '" + (originalName != null ? originalName : storedName)
+                                + "' no viene en el paquete ni existe en este equipo. Se omite.");
+                    }
+                }
+            }
+
+            if (!stage.isEmpty()) out.add(stage);
+        }
+
+        return out;
     }
 
     @Override

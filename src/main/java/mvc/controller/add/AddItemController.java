@@ -11,8 +11,9 @@ import dataTransportLayer.ItemDTO;
 import event.EventBus;
 import event.NavigateEvent;
 import mvc.model.entries.Item;
+import mvc.controller.model3d.ModelSectionController;
 import mvc.model.entries.component.ItemComponentValue;
-import mvc.view.ViewType; 
+import mvc.view.ViewType;
 import mvc.view.add.AddItemView; 
 import service.ComponentService;
 import service.ItemService;
@@ -27,12 +28,14 @@ import service.SessionService;
 public class AddItemController extends AbstractAddController<ItemDTO, Item, AddItemView>{ 
     //Estaria guay poder no tener esto aquí, TODO preguntar
     private List<ItemComponentValue> componentValues = new ArrayList<>();
- 
+    private ModelSectionController modelSection;
+
 
     @Override
     public void attachView(AddItemView view) {
         super.attachView(view);
         wireComponentButtons();
+        this.modelSection = new ModelSectionController(view.getModelSection(), view);
     }
 
     private void wireComponentButtons() {
@@ -88,6 +91,9 @@ public class AddItemController extends AbstractAddController<ItemDTO, Item, AddI
         SessionService sessionService = this.getService(ServiceType.SESSION);
         List<ComponentDefinitionDTO> available = componentService.getAllDTO(sessionService.getCurrentAccount().getId().value());
         view.setAvailableComponents(available);
+
+        modelSection.setAvailableMagnitudes(available);
+        modelSection.clear();
     }
 
     @Override
@@ -101,7 +107,9 @@ public class AddItemController extends AbstractAddController<ItemDTO, Item, AddI
                         iconLabel,
                         description,
                         this.idGenerator.generateId(),
-                        new ArrayList<>(componentValues)
+                        new ArrayList<>(componentValues),
+                        modelSection.getDrivenBy(),
+                        modelSection.getStages()
         );
 
         return dto;
@@ -112,6 +120,7 @@ public class AddItemController extends AbstractAddController<ItemDTO, Item, AddI
         super.onCreateEvent(dto);
         componentValues.clear();
         view.clearComponentRows();
+        modelSection.clear();
     }
 
     @Override

@@ -19,12 +19,14 @@ import javafx.scene.layout.VBox;
 import mvc.model.entries.component.ComponentField;
 import mvc.model.entries.component.FieldType;
 import mvc.model.entries.component.ItemComponentValue;
+import mvc.view.model3d.ModelSectionView;
 
 public class ItemModifyView extends AbstractModifyView<ItemDTO>{
 
     private ComboBox<ComponentDefinitionDTO> componentCombo;
     private Button addComponentButton;
     private VBox componentsList;
+    private ModelSectionView modelSection;
 
     @Override
     public void modifyFields(ItemDTO dto) {
@@ -64,8 +66,13 @@ public class ItemModifyView extends AbstractModifyView<ItemDTO>{
 
         VBox box = new VBox(5, title, scroll, inputRow);
         box.setPadding(new Insets(10, 0, 0, 0));
-        root.getChildren().add(box);
+
+        this.modelSection = new ModelSectionView();
+
+        root.getChildren().addAll(box, this.modelSection);
     }
+
+    public ModelSectionView getModelSection() { return this.modelSection; }
 
     public ComboBox<ComponentDefinitionDTO> getComponentCombo() { return this.componentCombo; }
     public Button getAddComponentButton() { return this.addComponentButton; }

@@ -8,6 +8,7 @@ import mvc.model.entries.*;
 import mvc.model.entries.component.ComponentDefinition;
 import mvc.model.entries.component.ComponentField;
 import mvc.model.entries.component.ItemComponentValue;
+import mvc.model.entries.model3d.ItemModelStage;
 
 public class EntryBuilder {
     private Entry entry;
@@ -71,6 +72,16 @@ public class EntryBuilder {
     //#region Item specific
     public EntryBuilder addComponents(List<ItemComponentValue> components) {
         ((Item) this.entry).setComponents(components);
+        return this;
+    }
+
+    public EntryBuilder addModelStages(List<ItemModelStage> stages) {
+        ((Item) this.entry).setModelStages(stages);
+        return this;
+    }
+
+    public EntryBuilder setModelDrivenBy(String drivenBy) {
+        ((Item) this.entry).setModelDrivenBy(drivenBy);
         return this;
     }
     //#endregion

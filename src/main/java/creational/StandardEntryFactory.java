@@ -21,8 +21,9 @@ public class StandardEntryFactory implements IEntriesFactory{
     
     public Item createItem(ItemDTO dto){
         this.builder.restoreEntry(new Item("default_item", 1));
-        this.createEntry((EntryDTO) dto); 
+        this.createEntry((EntryDTO) dto);
         this.builder.addComponents(dto.components);
+        this.builder.addModelStages(dto.modelStages).setModelDrivenBy(dto.modelDrivenBy);
         return (Item) this.builder.build();
     }
 

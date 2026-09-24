@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import dataTransportLayer.ComponentDefinitionDTO;
 import mvc.model.entries.component.ComponentField;
 import mvc.model.entries.component.ItemComponentValue;
+import mvc.view.model3d.ModelSectionView;
 
 /**
  * View para añadir item. Ademas de campos comunes, permite asignar
@@ -26,6 +27,7 @@ public class AddItemView extends AbstractAddView {
     private ComboBox<ComponentDefinitionDTO> componentCombo;
     private Button addComponentButton;
     private VBox componentsList;
+    private ModelSectionView modelSection;
 
     @Override
     protected void buildSpecificFields() {
@@ -66,8 +68,13 @@ public class AddItemView extends AbstractAddView {
 
         VBox box = new VBox(5, title, scroll);
         VBox.setVgrow(box, Priority.ALWAYS);
-        root.getChildren().addAll(box, inputRow);
+
+        this.modelSection = new ModelSectionView();
+
+        root.getChildren().addAll(box, inputRow, this.modelSection);
     }
+
+    public ModelSectionView getModelSection() { return this.modelSection; }
 
     public ComboBox<ComponentDefinitionDTO> getComponentCombo() { return this.componentCombo; }
     public Button getAddComponentButton() { return this.addComponentButton; }

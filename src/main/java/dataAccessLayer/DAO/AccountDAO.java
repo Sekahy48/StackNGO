@@ -30,12 +30,20 @@ public class AccountDAO extends AbstractDAO<AccountDTO, Account> {
         }
     }
 
+    /**
+     * Borra la cuenta y repasa despues la carpeta de modelos.
+     *
+     * <p>Una cuenta arrastra en cascada sus colecciones y, con ellas, todos sus items. Nada
+     * de eso pasa por el borrado de item, asi que los .glb quedarian en disco sin dueno.</p>
+     */
     @Override
     public boolean delete(int id) {
         String sql = "DELETE FROM accounts WHERE id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
+            boolean deleted = stmt.executeUpdate() > 0;
+            if (deleted) new ItemModelDAO().purgeUnreferenced();
+            return deleted;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

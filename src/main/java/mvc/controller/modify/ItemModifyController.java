@@ -13,6 +13,7 @@ import event.EventBus;
 import event.NavigateEvent;
 import javafx.scene.control.Alert;
 import logger.Logger;
+import mvc.controller.model3d.ModelSectionController;
 import mvc.model.entries.component.ItemComponentValue;
 import mvc.view.ViewType;
 import mvc.view.modify.ItemModifyView; 
@@ -24,11 +25,13 @@ import service.SessionService;
 public class ItemModifyController extends AbstractModifyController<ItemModifyView, ItemDTO>{
 
     private List<ItemComponentValue> componentValues = new ArrayList<>();
+    private ModelSectionController modelSection;
 
     @Override
     public void attachView(ItemModifyView view) {
         super.attachView(view);
         view.getAddComponentButton().setOnAction(e -> onAddComponent());
+        this.modelSection = new ModelSectionController(view.getModelSection(), view);
     }
 
     private void onAddComponent() {
@@ -74,9 +77,15 @@ public class ItemModifyController extends AbstractModifyController<ItemModifyVie
                             ? this.view.getNewDescription()
                             : dto.description;
 
-        return DTOFactory.item(newName, iconPath, description, dto.id, new ArrayList<>(componentValues));
-
-            
+        return DTOFactory.item(
+                newName,
+                iconPath,
+                description,
+                dto.id,
+                new ArrayList<>(componentValues),
+                modelSection.getDrivenBy(),
+                modelSection.getStages()
+        );
     }
 
     @Override
@@ -107,6 +116,9 @@ public class ItemModifyController extends AbstractModifyController<ItemModifyVie
         SessionService sessionService = this.getService(ServiceType.SESSION);
         List<ComponentDefinitionDTO> available = componentService.getAllDTO(sessionService.getCurrentAccount().getId().value());
         view.setAvailableComponents(available);
+
+        modelSection.setAvailableMagnitudes(available);
+        modelSection.load(getCurrentDTO().modelStages, getCurrentDTO().modelDrivenBy);
 
         view.clearComponentRows();
         for (ItemComponentValue value : componentValues) {

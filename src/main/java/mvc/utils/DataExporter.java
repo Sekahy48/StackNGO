@@ -24,8 +24,12 @@ import dataTransportLayer.ComponentDefinitionDTO;
 import dataTransportLayer.ItemDTO;
 import dataTransportLayer.ItemIdStackDTO;
 import dataTransportLayer.RecipeDTO;
+import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
 import mvc.model.entries.component.ItemComponentValue;
+import mvc.model.entries.model3d.ItemModelStage;
+import mvc.model.entries.model3d.ModelFile;
+import utilities.ModelFileStore;
 import service.CollectionService;
 import service.ComponentService;
 import service.ItemService;
@@ -56,6 +60,7 @@ public class DataExporter extends ServiceConsumer {
 
             List<Map<String, Object>> collectionsData = new ArrayList<>();
             Set<Path> imagesToAdd = new HashSet<>();
+            Map<String, Path> modelsToAdd = new LinkedHashMap<>();
 
             // ===== COMPONENTS (a nivel de cuenta) =====
             List<ComponentDefinitionDTO> components = componentService.getAllDTO(sessionService.getCurrentAccount().getId().value());
@@ -115,12 +120,28 @@ public class DataExporter extends ServiceConsumer {
                         iconPath = "images/" + p.getFileName();
                     }
 
+                    // Aqui los modelos viajan con su nombre almacenado y no con el nombre
+                    // legible de la exportacion de coleccion. Esto es una copia entre
+                    // equipos, no material para el juego: lo que importa es poder devolver
+                    // cada fichero a su etapa, y el nombre almacenado es justo lo que las
+                    // etapas referencian.
+                    for (ItemModelStage stage : i.modelStages) {
+                        for (ModelFile model : stage.getFiles()) {
+                            Path modelPath = ModelFileStore.resolve(model.getStoredName());
+                            if (modelPath != null && Files.isRegularFile(modelPath)) {
+                                modelsToAdd.put("models/" + model.getStoredName(), modelPath);
+                            }
+                        }
+                    }
+
                     exportedItems.add(DTOFactory.item(
                             i.name,
                             iconPath,
                             i.description,
                             i.id,
-                            i.components
+                            i.components,
+                            i.modelDrivenBy,
+                            i.modelStages
                     ));
                 }
 
@@ -180,7 +201,13 @@ public class DataExporter extends ServiceConsumer {
                 Files.copy(imgPath, zos);
                 zos.closeEntry();
             }
- 
+
+            // ===== MODELS =====
+            for (Map.Entry<String, Path> model : modelsToAdd.entrySet()) {
+                zos.putNextEntry(new ZipEntry(model.getKey()));
+                Files.copy(model.getValue(), zos);
+                zos.closeEntry();
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -195,6 +222,17 @@ public class DataExporter extends ServiceConsumer {
 
         CollectionDTO c = sessionService.getCurrentCollectionDTO();
 
+        List<ItemDTO> collectionItems = itemService.getAllDTO(c.id);
+        List<String> problems = ModelExporter.validate(
+                collectionItems,
+                componentService.getAllDTO(sessionService.getCurrentAccount().getId().value())
+        );
+
+        if (!problems.isEmpty()) {
+            reportProblems(problems);
+            return;
+        }
+
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Exportar colección");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("ZIP files", "*.zip"));
@@ -205,13 +243,15 @@ public class DataExporter extends ServiceConsumer {
         try (ZipOutputStream zos = new ZipOutputStream(new FileOutputStream(file))) {
 
             Set<Path> imagesToAdd = new HashSet<>();
+            Map<String, Path> modelsToAdd = new LinkedHashMap<>();
             Map<String, Object> root = new LinkedHashMap<>();
             root.put("collection", c.name);
 
             // ===== ITEMS =====
             List<Map<String, Object>> exportedItems = new ArrayList<>();
-            for (ItemDTO i : itemService.getAllDTO(c.id)) {
+            for (ItemDTO i : collectionItems) {
                 Map<String, Object> itemMap = new LinkedHashMap<>();
+                itemMap.put("id", i.id);
                 itemMap.put("name", i.name);
                 itemMap.put("description", i.description);
 
@@ -230,6 +270,17 @@ public class DataExporter extends ServiceConsumer {
                     compMap.put("values", parseFieldValues(v.getFieldValues()));
                     comps.add(compMap);
                 }
+
+                // Los modelos viajan como un componente mas, no como una seccion aparte del
+                // JSON: para el juego "que modelo muestro" es una propiedad del item igual
+                // que su peso, y darle forma propia obligaria a leer el fichero de dos
+                // maneras distintas.
+                ModelExporter.ItemModels models = ModelExporter.of(i);
+                if (models.component != null) {
+                    comps.add(models.component);
+                    modelsToAdd.putAll(models.entries);
+                }
+
                 itemMap.put("components", comps);
 
                 exportedItems.add(itemMap);
@@ -288,9 +339,34 @@ public class DataExporter extends ServiceConsumer {
                 zos.closeEntry();
             }
 
+            // ===== MODELS =====
+            for (Map.Entry<String, Path> model : modelsToAdd.entrySet()) {
+                zos.putNextEntry(new ZipEntry(model.getKey()));
+                Files.copy(model.getValue(), zos);
+                zos.closeEntry();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Avisa de por que no se ha exportado.
+     *
+     * <p>Se listan todos los problemas de una vez en lugar de parar en el primero: quien
+     * exporta quiere saber cuanto trabajo tiene por delante, no descubrirlo de uno en
+     * uno.</p>
+     *
+     * @param problems descripciones de lo que impide exportar
+     */
+    private void reportProblems(List<String> problems) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("No se puede exportar");
+        alert.setHeaderText("Hay problemas con los modelos 3D de esta coleccion.");
+        alert.setContentText(String.join("\n", problems));
+        alert.getDialogPane().setPrefWidth(520);
+        alert.showAndWait();
     }
 
     private Map<String, Object> parseFieldValues(Map<String, String> raw) {
